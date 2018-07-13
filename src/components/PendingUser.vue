@@ -1,10 +1,7 @@
 <template>
 
 	<div>
-
-		<h2>Pending Users
-		</h2>
-
+		<h2>Pending Users</h2>
 		<table class="table table-hover table-striped">
 			<thead>
 				<tr>
@@ -27,17 +24,6 @@
 						</a>
 					</td>
 				</tr>
-				<tr>
-					<td>Name 2</td>
-					<td>Status 2</td>
-					<td>Credits 2</td>
-					<td>Installment 2</td>
-					<td>
-						<a href @click.prevent="modalUserShow = !modalUserShow">
-							<i class="nc-icon nc-zoom-split"></i> View
-						</a>
-					</td>
-				</tr>
 			</tbody>
 		</table>
 
@@ -47,36 +33,32 @@
 			</div>
 			<div class="row">
 				<div class="col-md-8">
-					<!-- <div class="card">
-						<div class="card-body"> -->
-							<table class="table table-bordered table-sm">
-								<tr>
-									<td class="table-info">Name</td>
-									<td class="table-secondary">Junjun dela Cruz</td>
-								</tr>
-								<tr>
-									<td class="table-info">Gender</td>
-									<td class="table-secondary">Male</td>
-								</tr>
-								<tr>
-									<td class="table-info">Date of Birth</td>
-									<td class="table-secondary">800 B.C.</td>
-								</tr>
-								<tr>
-									<td class="table-info">Mobile No.</td>
-									<td class="table-secondary">911</td>
-								</tr>
-								<tr>
-									<td class="table-info">E-mail</td>
-									<td class="table-secondary">email@email.com</td>
-								</tr>
-								<tr>
-									<td class="table-info">Address</td>
-									<td class="table-secondary">Planet Namek</td>
-								</tr>
-							</table>
-						<!-- </div>
-					</div> -->
+					<table class="table table-bordered table-sm">
+						<tr>
+							<td class="table-info">Name</td>
+							<td class="table-secondary">Junjun dela Cruz</td>
+						</tr>
+						<tr>
+							<td class="table-info">Gender</td>
+							<td class="table-secondary">Male</td>
+						</tr>
+						<tr>
+							<td class="table-info">Date of Birth</td>
+							<td class="table-secondary">800 B.C.</td>
+						</tr>
+						<tr>
+							<td class="table-info">Mobile No.</td>
+							<td class="table-secondary">911</td>
+						</tr>
+						<tr>
+							<td class="table-info">E-mail</td>
+							<td class="table-secondary">email@email.com</td>
+						</tr>
+						<tr>
+							<td class="table-info">Address</td>
+							<td class="table-secondary">Planet Namek</td>
+						</tr>
+					</table>
 				</div>
 				<div class="col-md-4">
 					<div class="card">
@@ -97,19 +79,25 @@
 					</div>
 				</div>
 			</div>
-
 		</b-modal>
-
 	</div>
 
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
 	data() {
 		return {
 			modalUserShow: false
 		}
+	},
+	created() {
+		let vm = this
+		axios.get('http://127.0.0.1:8080/users?status=0').then(res => {
+			console.log(res.data)
+		})
 	}
 }
 </script>

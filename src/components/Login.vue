@@ -55,23 +55,25 @@ export default {
     methods: {
         login() {
             let vm = this
-            let redirect = vm.$auth.redirect()
+            /*let redirect = vm.$auth.redirect()
             vm.$auth.login({
                 body: vm.data.body, // Vue-resource
                 data: vm.data.body, // Axios
                 rememberMe: vm.data.rememberMe,
                 redirect: {name: redirect ? redirect.from.name : 'account'},
                 fetchUser: vm.data.fetchUser
-            }).then(() => {
+            }).then((res) => {
+                console.log('data', res.data)
                 // console.log('success ' + this.context);
-            }, (res) => {
-                /*console.log('error ' + this.context);
-                this.error = res.data;*/
-            })
-            /*vm.$auth.login({
+            }, (err) => {
+                console.log('error', err.data)
+                console.log('error ' + this.context);
+                this.error = res.data;
+            })*/
+            vm.$auth.login({
                 data: {
-                    email: vm.email,
-                    password: vm.password
+                    email: vm.data.body.email,
+                    password: vm.data.body.password
                 },
                 success: function(res) {
                     console.log('response', res.data)
@@ -80,7 +82,7 @@ export default {
                     console.log('error', err)
                 },
                 fetchUser: false
-            })*/
+            })
         }
     }
 }

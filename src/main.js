@@ -17,7 +17,6 @@ Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
 Vue.axios.defaults.baseURL = '//13.229.69.37/'
 
-
 import Login from './components/Login.vue'
 import Dashboard from './components/Dashboard.vue'
 import ActiveUser from './components/ActiveUser.vue'

@@ -95,14 +95,14 @@
 							<td class="table-secondary">{{ modalDataUser.pd_income }}</td>
 						</tr>
 					</table>
-					<!-- <div>
+					<div>
 						<div class="form-group row">
 							<label for="inputAssignCredit" class="col-sm-4 col-form-label">Assign Credit</label>
 							<div class="col-sm-8">
-								<input type="password" class="form-control" id="inputAssignCredit" placeholder="Admin Password">
+								<input type="password" class="form-control" id="inputAssignCredit" placeholder="Assign Credit">
 							</div>
 						</div>
-					</div> -->
+					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="card">
@@ -124,9 +124,9 @@
 				</div>
 			</div>
 			<div slot="modal-footer">
-				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Close</button>
-				<!-- <button class="btn btn-lg btn-danger mr-2 ml-2" @click="actionBtn(modalDataUser._id,'reject')">Reject</button>
-				<button class="btn btn-lg btn-success" @click="actionBtn(modalDataUser._id,'save')">Save</button> -->
+				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Cancel</button>
+				<button class="btn btn-lg btn-danger mr-2 ml-2" @click="actionBtn(modalDataUser._id,'reject')">Reject</button>
+				<button class="btn btn-lg btn-success" @click="actionBtn(modalDataUser._id,'save')">Save</button>
 			</div>
 		</b-modal>
 	</div>

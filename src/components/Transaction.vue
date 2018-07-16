@@ -5,20 +5,18 @@
 		<table class="table table-hover table-striped">
 			<thead>
 				<tr>
-					<th>Transaction Id</th>
-					<th>Balance</th>
-					<th>&nbsp;</th>
+					<th class="col-md-4">Name</th>
+					<th class="col-md-4">Item Name</th>
+					<th class="col-md-2">Date of Transaction</th>
+					<th class="col-md-2" style="text-align: right !important">Installment Amount</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr v-for="data in transactions">
-					<td>{{ data._id }}</td>
-					<td>{{ data.initial_balance }}</td>
-					<td>
-						<a href>
-							<i class="nc-icon nc-zoom-split"></i> View
-						</a>
-					</td>
+					<td></td>
+					<td></td>
+					<td>{{ data.transactions.created_at }}</td>
+					<td class="text-right">{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions.amount) }}</td>
 				</tr>
 			</tbody>
 		</table>

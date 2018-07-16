@@ -6,16 +6,14 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Credits</th>
-					<th>Installment</th>
+					<th>Mobile</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr v-for="data in users">
 					<td>{{ `${data.firstname} ${data.lastname}` }}</td>
-					<td>0</td>
-					<td>0</td>
+					<td>{{ data.mobile }}</td>
 					<td>
 						<a href @click.prevent="openModal(data)">
 							<i class="nc-icon nc-zoom-split"></i> View
@@ -95,14 +93,6 @@
 							<td class="table-secondary">{{ modalDataUser.pd_income }}</td>
 						</tr>
 					</table>
-					<div>
-						<div class="form-group row">
-							<label for="inputAssignCredit" class="col-sm-4 col-form-label">Assign Credit</label>
-							<div class="col-sm-8">
-								<input type="password" class="form-control" id="inputAssignCredit" placeholder="Admin Password">
-							</div>
-						</div>
-					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="card">
@@ -121,12 +111,12 @@
 							</figure>
 						</div>
 					</div>
+					<button class="btn btn-lg btn-block btn-secondary" @click="modalUserShow = false">Close</button>
+					<button class="btn btn-lg btn-block btn-success" @click="activate(modalDataUser._id)">Activate User</button>
 				</div>
 			</div>
 			<div slot="modal-footer">
-				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Cancel</button>
-				<button class="btn btn-lg btn-danger mr-2 ml-2" @click="actionBtn(modalDataUser._id,'reject')">Reject</button>
-				<button class="btn btn-lg btn-success" @click="actionBtn(modalDataUser._id,'save')">Save</button>
+				<!--  -->
 			</div>
 		</b-modal>
 	</div>
@@ -175,27 +165,13 @@ export default {
 				pd_income: ((user.personal_data != undefined) ? user.personal_data.income : '---')
 			}
 		},
-		actionBtn(id, actionTaken) {
-			switch (actionTaken) {
-				case 'save':
-					axios.put(`http://127.0.0.1:8080/users/${id}/update-status`, { status: true }).then(res => {
-						alert('Successfully Saved!')
-						this.modalUserShow = false
-						location.reload()
-						// axios.get('http://127.0.0.1:8080/users?status=0').then(res => vm.users = res.data.data)
-					})
-					break
-				case 'reject':
-					axios.put(`http://127.0.0.1:8080/users/${id}/update-status`, { status: false }).then(res => {
-						alert('User Rejected!')
-						this.modalUserShow = false
-						location.reload()
-						// axios.get('http://127.0.0.1:8080/users?status=0').then(res => vm.users = res.data.data)
-					})
-					break
-				default:
-					alert('error')
-					break
+		activate(id) {
+			if (confirm("You really want to activate this account?")) {
+				axios.put(`http://127.0.0.1:8080/users/${id}/activate`, { status: true }).then(res => {
+					alert(res.data.msg)
+					this.modalUserShow = false
+					axios.get('http://127.0.0.1:8080/users?status=0').then(res2 => vm.users = res2.data.data)
+				})
 			}
 		}
 	}

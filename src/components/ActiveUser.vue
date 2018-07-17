@@ -14,7 +14,7 @@
 			<tbody>
 				<tr v-for="data in users">
 					<td>{{ `${data.firstname} ${data.lastname}` }}</td>
-					<td>0</td>
+					<td>{{ (data.transactions[0]) ? Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions[0].initial_balance) : 0 }}</td>
 					<td>0</td>
 					<td>
 						<a href @click.prevent="openModal(data)">
@@ -146,7 +146,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/users?s=activated').then(res => vm.users = res.data.data)
+		axios.get('http://127.0.0.1:8080/users?s=activated').then(res => vm.users = res.data)
 	},
 	methods: {
 		openModal(user) {

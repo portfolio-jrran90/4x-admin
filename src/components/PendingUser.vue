@@ -148,7 +148,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/users?s=pending').then(res => vm.users = res.data.data)
+		axios.get('http://127.0.0.1:8080/users?s=pending').then(res => vm.users = res.data)
 	},
 	methods: {
 		openModal(user) {
@@ -187,10 +187,10 @@ export default {
 			if (confirm("Assign credit?")) {
 				axios.put(`http://127.0.0.1:8080/users/${id}/assign-credit`, dataInput).then(() => {
 					alert("Success")
-					axios.get('http://127.0.0.1:8080/users?s=pending').then(res => {
-						vm.users = res.data.data
-						vm.modalUserShow = false
-					})
+				})
+				axios.get('http://127.0.0.1:8080/users?s=pending').then(res => {
+					vm.users = res.data.data
+					vm.modalUserShow = false
 				})
 			}
 		},

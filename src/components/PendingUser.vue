@@ -148,7 +148,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/users?s=pending').then(res => vm.users = res.data)
+		axios.get(`${process.env.VUE_APP_API_URL}/users?s=pending`).then(res => vm.users = res.data)
 	},
 	methods: {
 		openModal(user) {
@@ -163,8 +163,8 @@ export default {
 				mobile: user.mobile,
 				email: user.email,
 				address: user.address,
-				photo_identity_card: `http://127.0.0.1:8080/${user.photo.identity_card}`,
-				photo_holding_the_card: `http://127.0.0.1:8080/${user.photo.holding_the_card}`,
+				photo_identity_card: `${process.env.VUE_APP_API_URL}/${user.photo.identity_card}`,
+				photo_holding_the_card: `${process.env.VUE_APP_API_URL}/${user.photo.holding_the_card}`,
 				// Emergency Number
 				en_emergency_contact: ((user.emergency != undefined) ? user.emergency_number.emergency_contact : '---'),
 				en_income: ((user.emergency != undefined) ? user.emergency_number.income : '---'),
@@ -185,10 +185,10 @@ export default {
 			}
 
 			if (confirm("Assign credit?")) {
-				axios.put(`http://127.0.0.1:8080/users/${id}/assign-credit`, dataInput).then(() => {
+				axios.put(`${process.env.VUE_APP_API_URL}/users/${id}/assign-credit`, dataInput).then(() => {
 					alert("Success")
 				})
-				axios.get('http://127.0.0.1:8080/users?s=pending').then(res => {
+				axios.get(`${process.env.VUE_APP_API_URL}/users?s=pending`).then(res => {
 					vm.users = res.data.data
 					vm.modalUserShow = false
 				})

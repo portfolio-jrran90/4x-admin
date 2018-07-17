@@ -38,7 +38,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/transaction').then(res => vm.transactions = res.data)
+		axios.get(`${process.env.VUE_APP_API_URL}/transaction`).then(res => vm.transactions = res.data)
 	},
 }
 </script>

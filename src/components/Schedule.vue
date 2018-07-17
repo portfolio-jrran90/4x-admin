@@ -13,10 +13,13 @@
 			</thead>
 			<tbody>
 				<tr v-for="data in transactions">
-					<td></td>
-					<td></td>
+					<td>{{ `${data.user[0].firstname} ${data.user[0].lastname}` }}</td>
+					<td>{{ data.transactions.item_name }}</td>
 					<td>{{ data.transactions.created_at }}</td>
 					<td class="text-right">{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions.amount) }}</td>
+				</tr>
+				<tr v-if="transactions.length===0">
+					<td colspan="4">No schedule(s) found!</td>
 				</tr>
 			</tbody>
 		</table>
@@ -35,7 +38,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/transaction').then(res => vm.transactions = res.data)
+		axios.get(`${process.env.VUE_APP_API_URL}/transaction`).then(res => vm.transactions = res.data)
 	},
 }
 </script>

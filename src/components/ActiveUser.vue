@@ -22,6 +22,9 @@
 						</a>
 					</td>
 				</tr>
+				<tr v-if="users.length==0">
+					<td colspan="4">No active user(s) found!</td>
+				</tr>
 			</tbody>
 		</table>
 
@@ -146,7 +149,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/users?s=activated').then(res => vm.users = res.data)
+		axios.get(`${process.env.VUE_APP_API_URL}/users?s=activated`).then(res => vm.users = res.data)
 	},
 	methods: {
 		openModal(user) {
@@ -161,8 +164,8 @@ export default {
 				mobile: user.mobile,
 				email: user.email,
 				address: user.address,
-				photo_identity_card: `http://127.0.0.1:8080/${user.photo.identity_card}`,
-				photo_holding_the_card: `http://127.0.0.1:8080/${user.photo.holding_the_card}`,
+				photo_identity_card: `${process.env.VUE_APP_API_URL}/${user.photo.identity_card}`,
+				photo_holding_the_card: `${process.env.VUE_APP_API_URL}/${user.photo.holding_the_card}`,
 				// Emergency Number
 				en_emergency_contact: ((user.emergency != undefined) ? user.emergency_number.emergency_contact : '---'),
 				en_income: ((user.emergency != undefined) ? user.emergency_number.income : '---'),
@@ -178,10 +181,10 @@ export default {
 		actionBtn(id, actionTaken) {
 			switch (actionTaken) {
 				case 'save':
-					axios.put(`http://127.0.0.1:8080/users/${id}/update-status`, { status: true }).then(res => {
+					axios.put(`${process.env.VUE_APP_API_URL}/users/${id}/update-status`, { status: true }).then(res => {
 						alert('Successfully Saved!')
 						this.modalUserShow = false
-						axios.get('http://127.0.0.1:8080/users?status=0').then(res => vm.users = res.data.data)
+						axios.get(`${process.env.VUE_APP_API_URL}/users?status=0`).then(res => vm.users = res.data.data)
 					})
 					break
 				case 'reject':

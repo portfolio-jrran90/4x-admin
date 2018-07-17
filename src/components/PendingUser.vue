@@ -20,6 +20,9 @@
 						</a>
 					</td>
 				</tr>
+				<tr v-if="users.length===0">
+					<td colspan="3">No Record found!</td>
+				</tr>
 			</tbody>
 		</table>
 
@@ -93,6 +96,14 @@
 							<td class="table-secondary">{{ modalDataUser.pd_income }}</td>
 						</tr>
 					</table>
+					<div>
+						<div class="form-group row">
+							<label for="inputAssignCredit" class="col-sm-4 col-form-label">Assign Credit</label>
+							<div class="col-sm-8">
+								<input type="number" class="form-control text-right" id="inputAssignCredit" placeholder="Assign Credit" v-model="inputCredit">
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="card">
@@ -111,12 +122,12 @@
 							</figure>
 						</div>
 					</div>
-					<button class="btn btn-lg btn-block btn-secondary" @click="modalUserShow = false">Close</button>
-					<button class="btn btn-lg btn-block btn-success" @click="activate(modalDataUser._id)">Activate User</button>
 				</div>
 			</div>
 			<div slot="modal-footer">
-				<!--  -->
+				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Cancel</button>
+				<button class="btn btn-lg btn-danger mr-2 ml-2">Reject</button>
+				<button class="btn btn-lg btn-success" @click="changeStatus(modalDataUser._id)">Save</button>
 			</div>
 		</b-modal>
 	</div>
@@ -131,12 +142,13 @@ export default {
 		return {
 			modalUserShow: false,
 			users: {},
-			modalDataUser: {}
+			modalDataUser: {},
+			inputCredit: 0
 		}
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/users?status=0').then(res => vm.users = res.data.data)
+		axios.get('http://127.0.0.1:8080/users?s=pending').then(res => vm.users = res.data.data)
 	},
 	methods: {
 		openModal(user) {
@@ -165,14 +177,31 @@ export default {
 				pd_income: ((user.personal_data != undefined) ? user.personal_data.income : '---')
 			}
 		},
-		activate(id) {
-			if (confirm("You really want to activate this account?")) {
-				axios.put(`http://127.0.0.1:8080/users/${id}/activate`, { status: true }).then(res => {
-					alert(res.data.msg)
-					this.modalUserShow = false
-					axios.get('http://127.0.0.1:8080/users?status=0').then(res2 => vm.users = res2.data.data)
+		changeStatus(id) {
+			let vm = this
+			let dataInput = {
+				user_id: id,
+				credit: vm.inputCredit
+			}
+
+			if (confirm("Assign credit?")) {
+				axios.put(`http://127.0.0.1:8080/users/${id}/assign-credit`, dataInput).then(() => {
+					alert("Success")
+					axios.get('http://127.0.0.1:8080/users?s=pending').then(res => {
+						vm.users = res.data.data
+						vm.modalUserShow = false
+					})
 				})
 			}
+		},
+		activate(id) {
+			/*if (confirm("You really want to activate this account?")) {
+				// axios.put(`http://127.0.0.1:8080/users/${id}/assign-credit`, { status: true }).then(res => {
+					// alert(res.data.msg)
+				// 	this.modalUserShow = false
+				// 	axios.get('http://127.0.0.1:8080/users?status=0').then(res2 => vm.users = res2.data.data)
+				// })
+			}*/
 		}
 	}
 }

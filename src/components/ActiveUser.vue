@@ -146,7 +146,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get('http://127.0.0.1:8080/users?status=1').then(res => vm.users = res.data.data)
+		axios.get('http://127.0.0.1:8080/users?s=activated').then(res => vm.users = res.data.data)
 	},
 	methods: {
 		openModal(user) {

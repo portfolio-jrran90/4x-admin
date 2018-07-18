@@ -5,18 +5,19 @@
 		<table class="table table-hover table-striped">
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Credits</th>
-					<th>Installment</th>
-					<th></th>
+					<th class="col-md-5">Name</th>
+					<th class="col-md-3 text-right" style="text-align: right !important">Credits</th>
+					<th class="col-md-3 text-right" style="text-align: right !important">Installment</th>
+					<th class="col-md-1"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr v-for="data in users">
 					<td>{{ `${data.firstname} ${data.lastname}` }}</td>
-					<td>{{ (data.transactions[0]) ? Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions[0].initial_balance) : 0 }}</td>
-					<td>0</td>
-					<td>
+					<td class="text-right">{{ (data.transactions[0]) ? Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions[0].initial_balance) : 0 }}</td>
+					<td class="text-right">{{ totAmt }}</td>
+					<!-- <td>{{ computeTransactions(data.transactions[0].transactions) }}</td> -->
+					<td class="text-center">
 						<a href @click.prevent="openModal(data)">
 							<i class="nc-icon nc-zoom-split"></i> View
 						</a>
@@ -102,7 +103,7 @@
 						<div class="form-group row">
 							<label for="inputAssignCredit" class="col-sm-4 col-form-label">Assign Credit</label>
 							<div class="col-sm-8">
-								<input type="password" class="form-control" id="inputAssignCredit" placeholder="Assign Credit">
+								<input type="number" class="form-control text-right" id="inputAssignCredit" placeholder="0" v-model="inputCredit">
 							</div>
 						</div>
 					</div>
@@ -127,9 +128,8 @@
 				</div>
 			</div>
 			<div slot="modal-footer">
-				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Cancel</button>
-				<button class="btn btn-lg btn-danger mr-2 ml-2" @click="actionBtn(modalDataUser._id,'reject')">Reject</button>
-				<button class="btn btn-lg btn-success" @click="actionBtn(modalDataUser._id,'save')">Save</button>
+				<button class="btn btn-lg btn-secondary mr-2" @click="modalUserShow = false">Cancel</button>
+				<button class="btn btn-lg btn-success" @click="topUpCredit(modalDataUser._id)">Save</button>
 			</div>
 		</b-modal>
 	</div>
@@ -144,13 +144,22 @@ export default {
 		return {
 			modalUserShow: false,
 			users: {},
-			modalDataUser: {}
+			modalDataUser: {},
+			inputCredit: 0,
+			totAmt: 0
 		}
 	},
 	created() {
 		let vm = this
 		axios.get(`${process.env.VUE_APP_API_URL}/users?s=activated`).then(res => vm.users = res.data)
 	},
+	/*computed: {
+		// perhaps use watch??
+		totalInstallmentAmount() {
+			console.log(this.totAmt)
+			return this.totAmt
+		}
+	},*/
 	methods: {
 		openModal(user) {
 			let vm = this
@@ -178,27 +187,31 @@ export default {
 				pd_income: ((user.personal_data != undefined) ? user.personal_data.income : '---')
 			}
 		},
-		actionBtn(id, actionTaken) {
-			switch (actionTaken) {
-				case 'save':
-					axios.put(`${process.env.VUE_APP_API_URL}/users/${id}/update-status`, { status: true }).then(res => {
-						alert('Successfully Saved!')
-						this.modalUserShow = false
-						axios.get(`${process.env.VUE_APP_API_URL}/users?status=0`).then(res => vm.users = res.data.data)
-					})
-					break
-				case 'reject':
-					axios.put(`http://127.0.0.1:8080/users/${id}/update-status`, { status: false }).then(res => {
-						alert('User Rejected!')
-						this.modalUserShow = false
-						axios.get('http://127.0.0.1:8080/users?status=0').then(res => vm.users = res.data.data)
-					})
-					break
-				default:
-					alert('error')
-					break
+		topUpCredit(id) {
+			let vm = this
+			let dataInput = {
+				user_id: id,
+				credit: vm.inputCredit
 			}
-		}
+
+			if (confirm("Assign credit?")) {
+				axios.put(`${process.env.VUE_APP_API_URL}/users/${id}/assign-credit`, dataInput).then(() => {
+					axios.get(`${process.env.VUE_APP_API_URL}/users?s=activated`).then(res => {
+						alert("Credit Balance Updated!")
+						vm.users = res.data
+						vm.modalUserShow = false
+					})
+				})
+			}
+		},
+		/*computeTransactions(value) {
+			// value.data.map
+			var totAmt = 0
+			for(var i=0; i < value.length; i++) {
+				totAmt += parseFloat(value[i].amount)
+			}
+			this.totAmt = totAmt
+		}*/
 	}
 }
 </script>

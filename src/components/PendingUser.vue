@@ -7,15 +7,17 @@
 				<tr>
 					<th>Name</th>
 					<th>Mobile</th>
-					<th></th>
+					<th class="col-md-2">Date Registered</th>
+					<th class="col-md-1"></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="data in users">
+				<tr v-for="(data, index) in users">
 					<td>{{ `${data.firstname} ${data.lastname}` }}</td>
 					<td>{{ data.mobile }}</td>
-					<td>
-						<a href @click.prevent="openModal(data)">
+					<td>{{ data.created_at }}</td>
+					<td class="text-center">
+						<a href @click.prevent="openModal(data, index)">
 							<i class="nc-icon nc-zoom-split"></i> View
 						</a>
 					</td>
@@ -127,7 +129,7 @@
 			<div slot="modal-footer">
 				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Cancel</button>
 				<button class="btn btn-lg btn-danger mr-2 ml-2">Reject</button>
-				<button class="btn btn-lg btn-success" @click="changeStatus(modalDataUser._id)">Save</button>
+				<button class="btn btn-lg btn-success" @click="changeStatus(modalDataUser._id, modalDataUser.index)">Save</button>
 			</div>
 		</b-modal>
 	</div>
@@ -151,10 +153,11 @@ export default {
 		axios.get(`${process.env.VUE_APP_API_URL}/users?s=pending`).then(res => vm.users = res.data)
 	},
 	methods: {
-		openModal(user) {
+		openModal(user, index) {
 			let vm = this
 			vm.modalUserShow = true
 			vm.modalDataUser = {
+				index: index,
 				_id: user._id,
 				firstname: user.firstname,
 				lastname: user.lastname,
@@ -177,7 +180,14 @@ export default {
 				pd_income: ((user.personal_data != undefined) ? user.personal_data.income : '---')
 			}
 		},
-		changeStatus(id) {
+
+		/**
+		 * This will add credits to the user then add him/her to the active users list
+		 * 
+		 * @param  {integer} id    User Id
+		 * @param  {integer} index Index, Key
+		 */
+		changeStatus(id, index) {
 			let vm = this
 			let dataInput = {
 				user_id: id,
@@ -187,9 +197,7 @@ export default {
 			if (confirm("Assign credit?")) {
 				axios.put(`${process.env.VUE_APP_API_URL}/users/${id}/assign-credit`, dataInput).then(() => {
 					alert("Success")
-				})
-				axios.get(`${process.env.VUE_APP_API_URL}/users?s=pending`).then(res => {
-					vm.users = res.data.data
+					vm.users.splice(index, 1)
 					vm.modalUserShow = false
 				})
 			}

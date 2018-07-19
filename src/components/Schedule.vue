@@ -4,19 +4,19 @@
         <h2>Schedule</h2>
 		<table class="table table-hover table-striped">
 			<thead>
-				<tr>
-					<th class="col-md-4">Name</th>
-					<th class="col-md-4">Item Name</th>
-					<th class="col-md-2">Date of Transaction</th>
-					<th class="col-md-2" style="text-align: right !important">Installment Amount</th>
+				<tr class="d-flex">
+					<th class="col-4">Name</th>
+					<th class="col-4">Item Name</th>
+					<th class="col-2">Date of Transaction</th>
+					<th class="col-2" style="text-align: right !important">Installment Amount</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="data in transactions">
-					<td>{{ `${data.user[0].firstname} ${data.user[0].lastname}` }}</td>
-					<td>{{ data.transactions.item_name }}</td>
-					<td>{{ data.transactions.created_at }}</td>
-					<td class="text-right">{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions.amount) }}</td>
+				<tr class="d-flex" v-for="data in transactions">
+					<td class="col-4">{{ `${data.user[0].firstname} ${data.user[0].lastname}` }}</td>
+					<td class="col-4">{{ data.transactions.item_name }}</td>
+					<td class="col-2">{{ data.transactions.created_at | moment("YYYY-MM-D h:mm a") }}</td>
+					<td class="col-2 text-right">{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions.amount) }}</td>
 				</tr>
 				<tr v-if="transactions.length===0">
 					<td colspan="4">No schedule(s) found!</td>

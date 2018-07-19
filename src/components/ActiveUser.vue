@@ -2,32 +2,41 @@
 
 	<div>
 		<h2>Active Users</h2>
-		<table class="table table-hover table-striped">
-			<thead>
-				<tr>
-					<th class="col-md-5">Name</th>
-					<th class="col-md-3 text-right" style="text-align: right !important">Credits</th>
-					<th class="col-md-3 text-right" style="text-align: right !important">Installment</th>
-					<th class="col-md-1"></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="data in users">
-					<td>{{ `${data.firstname} ${data.lastname}` }}</td>
-					<td class="text-right">{{ (data.transactions[0]) ? Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions[0].initial_balance) : 0 }}</td>
-					<td class="text-right">{{ totAmt }}</td>
-					<!-- <td>{{ computeTransactions(data.transactions[0].transactions) }}</td> -->
-					<td class="text-center">
-						<a href @click.prevent="openModal(data)">
-							<i class="nc-icon nc-zoom-split"></i> View
-						</a>
-					</td>
-				</tr>
-				<tr v-if="users.length==0">
-					<td colspan="4">No active user(s) found!</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="row">
+			<div class="col-md-10">
+				<table class="table table-hover table-striped">
+					<thead>
+						<tr class="d-flex">
+							<th class="col-4">Name</th>
+							<th class="col-3 text-right" style="text-align: right !important">Credits</th>
+							<th class="col-3 text-right" style="text-align: right !important">Installment</th>
+							<th class="col-2"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(data, index) in users" class="d-flex">
+							<td class="col-4">{{ `${data.firstname} ${data.lastname}` }}</td>
+							<td class="col-3 text-right">
+								{{ (data.transactions[0]) ? Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.transactions[0].initial_balance) : 0 }}
+							</td>
+							<td class="col-3 text-right">
+								<a href @click.prevent="openModal('ItemizeInstallment', data)">
+									{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.totAmt) }}
+								</a>
+							</td>
+							<td class="col-2 text-center">
+								<a href @click.prevent="openModal('UserDetail', data, index)">
+									<i class="nc-icon nc-zoom-split"></i> View
+								</a>
+							</td>
+						</tr>
+						<tr v-if="users.length==0">
+							<td colspan="4">No active user(s) found!</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 
 		<b-modal v-model="modalUserShow" size="lg">
 			<div slot="modal-header">
@@ -129,7 +138,46 @@
 			</div>
 			<div slot="modal-footer">
 				<button class="btn btn-lg btn-secondary mr-2" @click="modalUserShow = false">Cancel</button>
-				<button class="btn btn-lg btn-success" @click="topUpCredit(modalDataUser._id)">Save</button>
+				<button class="btn btn-lg btn-success" @click="topUpCredit(modalDataUser, modalDataUser.index)">Save</button>
+			</div>
+		</b-modal>
+
+		<b-modal v-model="modalItemizeInstallent" size="lg">
+			<div slot="modal-header">
+				<h4>Installment</h4>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>Transaction No.</th>
+								<th>Item Name</th>
+								<th style="text-align: right !important">Installment Date</th>
+								<th style="text-align: right !important">Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="data in modalDataInstallment.transactions">
+								<td>{{ data._id }}</td>
+								<td>{{ data.item_name }}</td>
+								<td class="text-right">{{ data.created_at | moment("YYYY-MM-D h:mm a") }}</td>
+								<td class="text-right table-secondary">{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.amount) }}</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr class="table-info">
+								<th class="text-right" colspan="3">TOTAL AMOUNT</th>
+								<th class="text-right">
+									{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(modalDataInstallment.totAmt) }}
+								</th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+			<div slot="modal-footer">
+				<button class="btn btn-lg btn-secondary mr-2" @click="modalItemizeInstallent = false">Close</button>
 			</div>
 		</b-modal>
 	</div>
@@ -143,75 +191,84 @@ export default {
 	data() {
 		return {
 			modalUserShow: false,
+			modalItemizeInstallent: false,
 			users: {},
 			modalDataUser: {},
-			inputCredit: 0,
-			totAmt: 0
+			modalDataInstallment: {},
+			inputCredit: 0
 		}
 	},
 	created() {
 		let vm = this
-		axios.get(`${process.env.VUE_APP_API_URL}/users?s=activated`).then(res => vm.users = res.data)
+		axios.get(`${process.env.VUE_APP_API_URL}/users?s=activated`).then(res => {
+			vm.users = res.data
+			// Compute total amount
+			res.data.map(num => {
+				let a = 0
+				for (let i=0; i<num.transactions[0].transactions.length; i++) {
+					a += parseFloat(num.transactions[0].transactions[i].amount)
+				}
+				Object.assign(num, {totAmt: a})
+			})
+		})
 	},
-	/*computed: {
-		// perhaps use watch??
-		totalInstallmentAmount() {
-			console.log(this.totAmt)
-			return this.totAmt
-		}
-	},*/
 	methods: {
-		openModal(user) {
+		openModal(type, user, index) {
 			let vm = this
-			vm.modalUserShow = true
-			vm.modalDataUser = {
-				_id: user._id,
-				firstname: user.firstname,
-				lastname: user.lastname,
-				gender: user.gender,
-				dob: user.dob,
-				mobile: user.mobile,
-				email: user.email,
-				address: user.address,
-				photo_identity_card: `${process.env.VUE_APP_API_URL}/${user.photo.identity_card}`,
-				photo_holding_the_card: `${process.env.VUE_APP_API_URL}/${user.photo.holding_the_card}`,
-				// Emergency Number
-				en_emergency_contact: ((user.emergency != undefined) ? user.emergency_number.emergency_contact : '---'),
-				en_income: ((user.emergency != undefined) ? user.emergency_number.income : '---'),
-				en_mobile_no: ((user.emergency != undefined) ? user.emergency_number.mobile_no : '---'),
-				en_name: ((user.emergency != undefined) ? user.emergency_number.name : '---'),
-				// Personal Data
-				pd_industry: ((user.personal_data != undefined) ? user.personal_data.industry : '---'),
-				pd_work: ((user.personal_data != undefined) ? user.personal_data.work : '---'),
-				pd_education: ((user.personal_data != undefined) ? user.personal_data.education : '---'),
-				pd_income: ((user.personal_data != undefined) ? user.personal_data.income : '---')
+			switch (type) {
+				case "ItemizeInstallment":
+					vm.modalItemizeInstallent = true
+					vm.modalDataInstallment = {
+						transactions: user.transactions[0].transactions,
+						totAmt: user.totAmt
+					}
+					break
+				case "UserDetail":
+					vm.modalUserShow = true
+					vm.modalDataUser = {
+						index: index,
+						_id: user._id,
+						firstname: user.firstname,
+						lastname: user.lastname,
+						gender: user.gender,
+						dob: user.dob,
+						mobile: user.mobile,
+						email: user.email,
+						address: user.address,
+						photo_identity_card: `${process.env.VUE_APP_API_URL}/${user.photo.identity_card}`,
+						photo_holding_the_card: `${process.env.VUE_APP_API_URL}/${user.photo.holding_the_card}`,
+						// Emergency Number
+						en_emergency_contact: ((user.emergency != undefined) ? user.emergency_number.emergency_contact : '---'),
+						en_income: ((user.emergency != undefined) ? user.emergency_number.income : '---'),
+						en_mobile_no: ((user.emergency != undefined) ? user.emergency_number.mobile_no : '---'),
+						en_name: ((user.emergency != undefined) ? user.emergency_number.name : '---'),
+						// Personal Data
+						pd_industry: ((user.personal_data != undefined) ? user.personal_data.industry : '---'),
+						pd_work: ((user.personal_data != undefined) ? user.personal_data.work : '---'),
+						pd_education: ((user.personal_data != undefined) ? user.personal_data.education : '---'),
+						pd_income: ((user.personal_data != undefined) ? user.personal_data.income : '---')
+					}
+					break
+				default:
+					alert('error!, contact administrator')
+					break
 			}
 		},
-		topUpCredit(id) {
+		topUpCredit(data, index) {
 			let vm = this
 			let dataInput = {
-				user_id: id,
+				user_id: data._id,
 				credit: vm.inputCredit
 			}
 
 			if (confirm("Assign credit?")) {
-				axios.put(`${process.env.VUE_APP_API_URL}/users/${id}/assign-credit`, dataInput).then(() => {
-					axios.get(`${process.env.VUE_APP_API_URL}/users?s=activated`).then(res => {
-						alert("Credit Balance Updated!")
-						vm.users = res.data
-						vm.modalUserShow = false
-					})
+				axios.put(`${process.env.VUE_APP_API_URL}/users/${dataInput.user_id}/assign-credit`, dataInput).then(() => {
+					alert("Credit Balance Updated!")
+					vm.users[index].transactions[0].initial_balance = parseFloat(vm.users[index].transactions[0].initial_balance) + parseFloat(dataInput.credit)
+					vm.modalUserShow = false
 				})
 			}
-		},
-		/*computeTransactions(value) {
-			// value.data.map
-			var totAmt = 0
-			for(var i=0; i < value.length; i++) {
-				totAmt += parseFloat(value[i].amount)
-			}
-			this.totAmt = totAmt
-		}*/
+		}
 	}
 }
 </script>

@@ -8,6 +8,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VueMoment from 'vue-moment'
+
 import App from './App.vue'
 
 Vue.config.productionTip = false
@@ -15,6 +17,8 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
+Vue.use(VueMoment)
+
 Vue.axios.defaults.baseURL = '//13.229.69.37/'
 
 import Login from './components/Login.vue'

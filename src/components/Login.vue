@@ -38,6 +38,7 @@ export default {
     mounted() {
         console.log('redirect', this.$auth.redirect())
     },
+    created() {},
     data() {
         return {
             context: 'login context',
@@ -55,33 +56,17 @@ export default {
     methods: {
         login() {
             let vm = this
-            /*let redirect = vm.$auth.redirect()
+            let redirect = vm.$auth.redirect()
             vm.$auth.login({
-                body: vm.data.body, // Vue-resource
                 data: vm.data.body, // Axios
-                rememberMe: vm.data.rememberMe,
-                redirect: {name: redirect ? redirect.from.name : 'account'},
-                fetchUser: vm.data.fetchUser
-            }).then((res) => {
-                console.log('data', res.data)
-                // console.log('success ' + this.context);
-            }, (err) => {
-                console.log('error', err.data)
-                console.log('error ' + this.context);
-                this.error = res.data;
-            })*/
-            vm.$auth.login({
-                data: {
-                    email: vm.data.body.email,
-                    password: vm.data.body.password
-                },
-                success: function(res) {
-                    console.log('response', res.data)
-                },
-                error: function(err) {
-                    console.log('error', err)
-                },
+                rememberMe: true,
+                redirect: '/users/active',
                 fetchUser: false
+            }).then((res) => {
+                // alert('logging in..')
+                // should add some effects for logging in
+            }, (err) => {
+                alert('Invalid Email/Password!')
             })
         }
     }

@@ -49,7 +49,7 @@
                     <div class="collapse navbar-collapse justify-content-end" id="navigation">
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="#pablo">
+                                <a class="nav-link" href @click.prevent="logout()">
                                     <span class="no-icon">Log out</span>
                                 </a>
                             </li>
@@ -88,6 +88,20 @@
 
 <script>
 export default {
-    // 
+    methods: {
+        logout() {
+            this.$auth.logout({
+                // makeRequest: true,
+                success() {
+                    // console.log(res.data)
+                    console.log('success');
+                },
+                error() {
+                    console.log('error');
+                },
+                redirect: '/login'
+            });
+        }
+    }
 }
 </script>

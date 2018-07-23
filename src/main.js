@@ -19,8 +19,7 @@ Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
 Vue.use(VueMoment)
 
-Vue.axios.defaults.baseURL = 'http://127.0.0.1:8081'
-// Vue.axios.defaults.baseURL = process.env.VUE_APP_API_URL
+Vue.axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 
 import Login from './components/Login.vue'
 import Dashboard from './components/Dashboard.vue'
@@ -30,7 +29,7 @@ import Transaction from './components/Transaction.vue'
 import Schedule from './components/Schedule.vue'
 
 const routes = [
-	{ path: '*', redirect: '/users/active' },
+	{ path: '*', redirect: '/users/active'},
 	{ path: '/login', component: Login, meta: { auth: false } },
 	{
 		path: '/', component: Dashboard,
@@ -47,9 +46,9 @@ const routes = [
 ]
 
 const router = new VueRouter({
-	hashbang: false,
+	// hashbang: false,
 	linkActiveClass: 'active', // set as default value for active links
-	mode: 'history',
+	// mode: 'history',
 	routes
 })
 
@@ -71,8 +70,8 @@ Vue.use(require('@websanova/vue-auth'), {
 	// auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
 	http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
 	router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
-	loginData: {url: 'http://127.0.0.1:8080/auth/admin/login', method: 'POST', redirect: '/login'},
-	authRedirect: { path: 'http://127.0.0.1:8080/auth/admin/login' },
+	loginData: {url: `${process.env.VUE_APP_API_URL}/auth/admin/login`, method: 'POST', redirect: '/login'},
+	authRedirect: { path: `${process.env.VUE_APP_API_URL}/auth/admin/login` },
 	tokenDefaultName: 'auth_token',
 	refreshData: { enabled: false },
 	fetchData: { enabled: false }

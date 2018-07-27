@@ -200,7 +200,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get(`${process.env.VUE_APP_API_URL}/users?s=activated`).then(res => {
+		axios.get(`${process.env.VUE_APP_API_URL}/admin/get-users?s=activated`).then(res => {
 			vm.users = res.data
 			// Compute total amount
 			res.data.map(num => {

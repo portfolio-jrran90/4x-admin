@@ -154,7 +154,7 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get(`${process.env.VUE_APP_API_URL}/users?s=pending`).then(res => vm.users = res.data)
+		axios.get(`${process.env.VUE_APP_API_URL}/admin/get-users?s=pending`).then(res => vm.users = res.data)
 	},
 	methods: {
 		openModal(user, index) {

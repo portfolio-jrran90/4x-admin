@@ -6,23 +6,23 @@
 			<div class="col-md-8">
 				<table class="table table-hover table-striped">
 					<thead>
-						<tr class="d-flex">
-							<th class="col-4">Name</th>
-							<th class="col-3">Mobile</th>
-							<th class="col-3">Date Registered</th>
-							<th class="col-2"></th>
+						<tr>
+							<th>Name</th>
+							<th>Hp</th>
+							<th>Date Registered</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr class="d-flex" v-for="(data, index) in users">
-							<td class="col-4">{{ `${data.firstname} ${data.lastname}` }}</td>
-							<td class="col-3">{{ data.mobile }}</td>
-							<td class="col-3">{{ data.created_at | moment("YYYY-MM-D h:mm a") }}</td>
-							<td class="col-2 text-center">
+						<tr v-for="(data, index) in users">
+							<td class="col-4">{{ data.Name }}</td>
+							<td class="col-3">{{ data.Hp }}</td>
+							<!-- <td class="col-3">{{ data.created_at | moment("YYYY-MM-D h:mm a") }}</td> -->
+							<!-- <td class="col-2 text-center">
 								<a href @click.prevent="openModal(data, index)">
 									<i class="nc-icon nc-zoom-split"></i> View
 								</a>
-							</td>
+							</td> -->
 						</tr>
 						<tr v-if="users.length===0">
 							<td colspan="3">No Record found!</td>
@@ -154,7 +154,12 @@ export default {
 	},
 	created() {
 		let vm = this
-		axios.get(`${process.env.VUE_APP_API_URL}/admin/get-users?s=pending`).then(res => vm.users = res.data)
+		axios.get(`${process.env.VUE_APP_API_URL}/users/pending`, {
+			headers: { Authorization: "Bearer " + localStorage.getItem('auth_token') }
+		}).then(res => {
+			vm.users = res.data
+			console.log('pending', res.data)
+		})
 	},
 	methods: {
 		openModal(user, index) {

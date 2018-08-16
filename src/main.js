@@ -29,10 +29,10 @@ import Transaction from './components/Transaction.vue'
 import Schedule from './components/Schedule.vue'
 
 const routes = [
-	{ path: '*', redirect: '/users/active'},
+	{ path: '*', redirect: '/login'},
 	{ path: '/login', component: Login, meta: { auth: false } },
 	{
-		path: '/', component: Dashboard,
+		path: '/', component: Dashboard, redirect: '/users/active',
 		name: 'dashboard',
 		meta: { auth: true },
 		children: [
@@ -48,7 +48,7 @@ const routes = [
 const router = new VueRouter({
 	// hashbang: false,
 	linkActiveClass: 'active', // set as default value for active links
-	// mode: 'history',
+	mode: 'history',
 	routes
 })
 
@@ -60,7 +60,7 @@ Vue.use(require('@websanova/vue-auth'), {
 	        this.options.http._setHeaders.call(this, req, { Authorization: `Bearer ${token}` });
 	    },
 	    response(res) {
-			var token = res.data.token
+			var token = res.data.jwt
 			if (token) {
 				token = token.split(/Bearer\:?\s?/i);
 				return token[token.length > 1 ? 1 : 0].trim()
@@ -70,8 +70,8 @@ Vue.use(require('@websanova/vue-auth'), {
 	// auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
 	http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
 	router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
-	loginData: {url: `${process.env.VUE_APP_API_URL}/auth/admin/login`, method: 'POST', redirect: '/login'},
-	authRedirect: { path: `${process.env.VUE_APP_API_URL}/auth/admin/login` },
+	loginData: {url: `${process.env.VUE_APP_API_URL}/auth`, method: 'POST', redirect: '/login'},
+	authRedirect: { path: `${process.env.VUE_APP_API_URL}/auth` },
 	tokenDefaultName: 'auth_token',
 	refreshData: { enabled: false },
 	fetchData: { enabled: false }

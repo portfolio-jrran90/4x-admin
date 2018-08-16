@@ -27,7 +27,7 @@
 								{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingcredit) }}
 							</td>
 							<td class="text-right">
-								<a href><small>View Transaction(s)</small></a>
+								<a href @click.prevent="openModal('ViewTransactions', data)"><small>View Transaction(s)</small></a>
 							</td>
 							<td class="text-right">
 								0
@@ -44,6 +44,11 @@
 			</div>
 		</div>
 
+	
+		<!--
+		| =============================================================================
+		|	 Modals
+		| ============================================================================= -->
 		<b-modal v-model="modalAssignCredit" size="sm">
 			<div slot="modal-header">
 				<h4>Assign Credit - {{ modalUserInfo.data.Name }}</h4>
@@ -76,6 +81,50 @@
 				<button class="btn btn-secondary" @click="modalAssignCredit = false">Close</button>
 			</div>
 		</b-modal>
+
+		<b-modal v-model="modalShowViewTransactions" size="90" class="modal-transactions">
+			<div slot="modal-header">
+				<h4>Transactions</h4>
+				<!-- <h4>Transactions - {{ `${modalUserTransactionInfo.user.Name} (${modalUserTransactionInfo.user.Hp})` }}</h4> -->
+			</div>
+			<div class="row">
+				<div class="col">
+					<table class="table table-sm">
+						<thead>
+							<tr>
+								<th>No</th>
+								<th>Merchant</th>
+								<th>Date</th>
+								<th>Expiry Date</th>
+								<th class="text-right">Status</th>
+								<th class="text-right">Total</th>
+								<!-- <th></th> -->
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="data in modalUserTransactionInfo.data">
+								<td>{{ data.No }}</td>
+								<td>{{ data.merchant }}</td>
+								<td>{{ data.date | moment("YYYY-MM-DD") }}</td>
+								<td>{{ data.expire | moment("YYYY-MM-DD") }}</td>
+								<td class="text-right">
+									<span class="badge badge-pill badge-danger" v-if="data.status==0">havent paid at all</span>
+									<span class="badge badge-pill badge-warning" v-if="data.status==1">paid initial amount</span>
+									<span class="badge badge-pill badge-success" v-if="data.status==2">paid</span>
+								</td>
+								<td class="text-right">{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.Total) }}</td>
+								<!-- <td class="text-right">
+									view
+								</td> -->
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div slot="modal-footer">
+				<button class="btn btn-secondary" @click="modalShowViewTransactions = false">Close</button>
+			</div>
+		</b-modal>
 	</div>
 </template>
 
@@ -86,10 +135,12 @@ export default {
 	data() {
 		return {
 			modalAssignCredit: false,
+			modalShowViewTransactions: false,
 			users: {},
 			modalUserInfo: {
 				data: {}
 			},
+			modalUserTransactionInfo: {},
 			inputCredit: 0,
 			selectAssignCredit: ''
 		}
@@ -110,6 +161,17 @@ export default {
 						data: user,
 						index: index
 					}
+					break
+				case "ViewTransactions":
+					vm.modalShowViewTransactions = true
+					axios.get(`${process.env.VUE_APP_API_URL}/users/${user.Hp}/transactions`, {
+						headers: { Authorization: "Bearer " + localStorage.getItem('auth_token') }
+					}).then(res => {
+						vm.modalUserTransactionInfo = {
+							data: res.data,
+							user: user
+						}
+					})
 					break
 				default:
 					alert('error!, contact administrator')
@@ -143,3 +205,12 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+	.modal-dialog.modal-90 {
+		background: blue !important;
+		color: red !important;
+		/*border: 1px solid red !important;*/
+		max-width: 800px !important;
+	}
+</style>

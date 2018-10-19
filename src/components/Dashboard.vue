@@ -24,12 +24,6 @@
               <p>Transaction</p>
             </a>
           </router-link>
-          <router-link tag="li" :to="`/schedules`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-paper-2"></i>
-              <p>Schedule</p>
-            </a>
-          </router-link>
         </ul>
       </div>
     </div>

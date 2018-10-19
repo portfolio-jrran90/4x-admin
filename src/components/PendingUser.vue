@@ -65,7 +65,7 @@
 						</tr>
 						<tr>
 							<td class="table-info">Pekerjaan</td>
-							<td class="table-secondary">{{ userDetails.pekerjaan}}</td>
+							<td class="table-secondary">{{ userDetailsPekerjaan }}</td>
 						</tr>
 						<tr>
 							<td class="table-info">Pendidikan</td>
@@ -73,7 +73,7 @@
 						</tr>
 						<tr>
 							<td class="table-info">Penghasilan</td>
-							<td class="table-secondary">{{ userDetails.penghasilan }}</td>
+							<td class="table-secondary">{{ userDetailsPenghasilan }}</td>
 						</tr>
 						<tr>
 							<td class="table-info">No. NPWP</td>
@@ -113,10 +113,9 @@
 				</div>
 			</div>
 			<div slot="modal-footer">
-				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Cancel</button>
+				<button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Close</button>
 			</div>
 		</b-modal>
-				<!-- <button class="btn btn-lg btn-success" @click="changeStatus(modalDataUser._id, modalDataUser.index)">Save</button> -->
 	</div>
 
 </template>
@@ -134,6 +133,8 @@ export default {
 			userImageProfile: '',
 			userImageKtp: '',
 			userImageSelfieWithKtp: '',
+			userDetailsPekerjaan: '',
+			userDetailsPenghasilan: '',
 		}
 	},
 	created() {
@@ -157,36 +158,43 @@ export default {
 				headers: { Authorization: "Bearer " + localStorage.getItem('auth_token') }
 			}).then(res => {
 				vm.userDetails = res.data[0]
-				let parseImage = JSON.parse(res.data[0].ktp) // lol this, I need to parse???
 
+				// extract image
+				let parseImage = JSON.parse(res.data[0].ktp) // lol this, I need to parse???
 				for (let x in parseImage) {
 					if (x==='ktp') vm.userImageKtp = parseImage[x]
 					if (x==='photo') vm.userImageProfile = parseImage[x]
 				}
+
+				// extract value for pekerjaan
+				let pekerjaanValue = ''
+				switch(res.data[0].pekerjaan) {
+					case "negeri": pekerjaanValue = "Pegawai Negeri Sipil"; break
+					case "swasta": pekerjaanValue = "Karyawan Swasta"; break
+					case "bumn": pekerjaanValue = "Karyawan BUMN"; break
+					case "bumd": pekerjaanValue = "Karyawan BUMD"; break
+					case "konstruksi": pekerjaanValue = "Karyawan Jasa Konstruksi"; break
+					case "POLRI": pekerjaanValue = "Kepolisian RI"; break
+					case "TNI": pekerjaanValue = "Tentara Nasional Indonesia"; break
+					case "wiraswasta": pekerjaanValue = "Wiraswasta"; break
+					default: alert('Pekerjaan not found!'); break
+				}
+				vm.userDetailsPekerjaan = pekerjaanValue
+
+				// extract value for penghasilan
+				let penghasilanValue = ''
+				switch(res.data[0].penghasilan) {
+					case "gol1": penghasilanValue = "< Rp. 3.500.000"; break
+					case "gol2": penghasilanValue = "Rp. 3.500.000 - Rp 6.000.000"; break
+					case "gol3": penghasilanValue = "Rp. 6.000.000 - Rp 8.000.000"; break
+					case "gol4": penghasilanValue = "Rp. 8.000.000 - Rp 10.000.000"; break
+					case "gol5": penghasilanValue = "Rp. 10.000.000 - Rp 12.000.000"; break
+					case "gol6": penghasilanValue = "> Rp. 12.000.000"; break
+					default: alert('Penghasilan not found!'); break
+				}
+				vm.userDetailsPenghasilan = penghasilanValue
 			})
 		},
-
-		/**
-		 * This will add credits to the user then add him/her to the active users list
-		 * 
-		 * @param  {integer} id    User Id
-		 * @param  {integer} index Index, Key
-		 */
-		/*changeStatus(id, index) {
-			let vm = this
-			let dataInput = {
-				user_id: id,
-				credit: vm.inputCredit
-			}
-
-			if (confirm("Assign credit?")) {
-				axios.put(`${process.env.VUE_APP_API_URL}/users/${id}/assign-credit`, dataInput).then(() => {
-					alert("Success")
-					vm.users.splice(index, 1)
-					vm.modalUserShow = false
-				})
-			}
-		},*/
 
 		/**
 		 * Activate user
@@ -196,15 +204,10 @@ export default {
 		 */
 		activate(hp, index) {
 			let vm = this
-			let dataInput = {
-				credit: 0,
-				activated: 2
-			}
 			if (confirm("Activate this account?")) {
-				axios.post(`${process.env.VUE_APP_API_URL}/users/${hp}/assign-credit`, dataInput).then((res) => {
+				axios.post(`${process.env.VUE_APP_API_URL}/users/${hp}/activated`, { activated: 2 }).then((res) => {
 					alert("Successfully Activated!")
 					vm.users.splice(index, 1)
-					console.log(res.data)
 				})
 			}
 		}

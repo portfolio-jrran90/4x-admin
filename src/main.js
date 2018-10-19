@@ -29,7 +29,6 @@ import Dashboard from './components/Dashboard.vue'
 import ActiveUser from './components/ActiveUser.vue'
 import PendingUser from './components/PendingUser.vue'
 import Transaction from './components/Transaction.vue'
-import Schedule from './components/Schedule.vue'
 
 const routes = [
 	{ path: '*', redirect: '/login'},
@@ -43,7 +42,6 @@ const routes = [
 			{ path: '/users/active', component: ActiveUser },
 			{ path: '/users/pending', component: PendingUser },
 			{ path: '/transactions', component: Transaction },
-			{ path: '/schedules', component: Schedule },
 		]
 	},
 ]

@@ -17,7 +17,7 @@
 					</thead>
 					<tbody>
 						<tr v-for="(data, index) in users">
-							<td>{{ data.Name }}</td>
+							<td>{{ `${data.fname} ${data.lname}` }}</td>
 							<td>{{ data.Hp }}</td>
 							<td class="text-right">
 								{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit) }}
@@ -33,11 +33,12 @@
 								0
 							</td>
 							<td class="text-center">
-								<a href><small>Ban User</small></a>
+								<a href @click.prevent="unbanBan('ban', data, index)" v-if="data.activated==2"><small>Ban</small></a>
+								<a href @click.prevent="unbanBan('unban', data, index)" v-if="data.activated==3"><small>Unban</small></a>
 							</td>
 						</tr>
 						<tr v-if="users.length==0">
-							<td colspan="4">No active user(s) found!</td>
+							<td colspan="7">No active user(s) found!</td>
 						</tr>
 					</tbody>
 				</table>
@@ -163,6 +164,8 @@ export default {
 					}
 					break
 				case "ViewTransactions":
+					// clear all fields
+					vm.modalUserTransactionInfo = {}
 					vm.modalShowViewTransactions = true
 					axios.get(`${process.env.VUE_APP_API_URL}/users/${user.Hp}/transactions`, {
 						headers: { Authorization: "Bearer " + localStorage.getItem('auth_token') }
@@ -201,16 +204,25 @@ export default {
 					vm.modalAssignCredit = false
 				})
 			}
+		},
+		/**
+		 * Unba / Ban User
+		 * 
+		 * @param var toDo  value: ban || unban
+		 * @param object user  contains all user details
+		 * @param int index
+		 */
+		unbanBan(toDo, user, index) {
+			let vm = this
+			let activated = (toDo==='ban')? 3 : 2
+
+			if (confirm(`You really want to ${toDo} ${user.fname} ${user.lname}?`)) {
+				axios.post(`${process.env.VUE_APP_API_URL}/users/${user.Hp}/activated`, { activated: activated }).then((res) => {
+					alert(`Successfully ${toDo}ned!`)
+					vm.users.splice(index, 1)
+				})
+			}
 		}
 	}
 }
 </script>
-
-<style scoped>
-	.modal-dialog.modal-90 {
-		background: blue !important;
-		color: red !important;
-		/*border: 1px solid red !important;*/
-		max-width: 800px !important;
-	}
-</style>

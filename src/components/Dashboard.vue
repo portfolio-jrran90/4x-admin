@@ -3,7 +3,9 @@
     <div class="sidebar" data-color="black">
       <div class="sidebar-wrapper">
         <div class="logo">
-          <a href class="simple-text"><img src="https://empatkali.co.id/img/logo.svg" alt="empatkali logo"></a>
+          <a href class="simple-text">
+            <img src="https://empatkali.co.id/img/logo.svg" alt="empatkali logo">
+          </a>
         </div>
         <ul class="nav">
           <router-link tag="li" :to="`/users/active`">
@@ -24,6 +26,36 @@
               <p>Transaction</p>
             </a>
           </router-link>
+          <router-link tag="li" :to="`/addmerchantuser`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-simple-add"></i>
+              <p>Add Merchant User</p>
+            </a>
+          </router-link>
+          <router-link tag="li" :to="`/approvepromo`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-check-2"></i>
+              <p>Approve Promo</p>
+            </a>
+          </router-link>
+          <router-link tag="li" :to="`/allpromotion`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-paper-2"></i>
+              <p>All Promotion</p>
+            </a>
+          </router-link>
+          <router-link tag="li" :to="`/addcategory`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-simple-add"></i>
+              <p>Add Category</p>
+            </a>
+          </router-link>
+          <router-link tag="li" :to="`/assigncategory`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-check-2"></i>
+              <p>Assign Category</p>
+            </a>
+          </router-link>
         </ul>
       </div>
     </div>
@@ -31,7 +63,15 @@
       <nav class="navbar navbar-expand-lg" color-on-scroll="500">
         <div class="container-fluid">
           <a class="navbar-brand" href="#pablo">Admin Dashboard</a>
-          <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+          <button
+            href
+            class="navbar-toggler navbar-toggler-right"
+            type="button"
+            data-toggle="collapse"
+            aria-controls="navigation-index"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
             <span class="navbar-toggler-bar burger-lines"></span>
             <span class="navbar-toggler-bar burger-lines"></span>
             <span class="navbar-toggler-bar burger-lines"></span>
@@ -60,10 +100,11 @@
         <div class="container">
           <nav>
             <p class="copyright text-center">
-              &copy; <a href="http://www.creative-tim.com">EmpatKali</a>
+              &copy;
+              <a href="https://empatkali.co.id/">EmpatKali</a>
             </p>
           </nav>
-          </div>
+        </div>
       </footer>
     </div>
   </div>
@@ -71,20 +112,20 @@
 
 <script>
 export default {
-    methods: {
-        logout() {
-            this.$auth.logout({
-                // makeRequest: true,
-                success() {
-                    // console.log(res.data)
-                    console.log('success');
-                },
-                error() {
-                    console.log('error');
-                },
-                redirect: '/login'
-            });
-        }
+  methods: {
+    logout() {
+      this.$auth.logout({
+        // makeRequest: true,
+        success() {
+          // console.log(res.data)
+          console.log("success");
+        },
+        error() {
+          console.log("error");
+        },
+        redirect: "/login"
+      });
     }
-}
+  }
+};
 </script>

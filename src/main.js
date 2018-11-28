@@ -32,6 +32,8 @@ import Transaction from './components/Transaction.vue';
 import ApprovePromo from './components/ApprovePromo.vue';
 import AddMerchantUser from './components/AddMerchantUser.vue';
 import AllPromotion from './components/AllPromotion.vue';
+import AddCategory from './components/AddCategory.vue';
+import AssignCategory from './components/AssignCategory.vue';
 
 const routes = [
   { path: '*', redirect: '/login' },
@@ -50,6 +52,8 @@ const routes = [
       { path: '/approvepromo', component: ApprovePromo },
       { path: '/addmerchantuser', component: AddMerchantUser },
       { path: '/allpromotion', component: AllPromotion },
+      { path: '/addcategory', component: AddCategory },
+      { path: '/assigncategory', component: AssignCategory },
     ],
   },
 ];

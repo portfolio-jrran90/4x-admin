@@ -26,22 +26,34 @@
               <p>Transaction</p>
             </a>
           </router-link>
-          <router-link tag="li" :to="`/approvepromo`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-check-2"></i>
-              <p>Approve Promo</p>
-            </a>
-          </router-link>
           <router-link tag="li" :to="`/addmerchantuser`">
             <a class="nav-link" href="#">
               <i class="nc-icon nc-simple-add"></i>
               <p>Add Merchant User</p>
             </a>
           </router-link>
+          <router-link tag="li" :to="`/approvepromo`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-check-2"></i>
+              <p>Approve Promo</p>
+            </a>
+          </router-link>
           <router-link tag="li" :to="`/allpromotion`">
             <a class="nav-link" href="#">
               <i class="nc-icon nc-paper-2"></i>
               <p>All Promotion</p>
+            </a>
+          </router-link>
+          <router-link tag="li" :to="`/addcategory`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-simple-add"></i>
+              <p>Add Category</p>
+            </a>
+          </router-link>
+          <router-link tag="li" :to="`/assigncategory`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-check-2"></i>
+              <p>Assign Category</p>
             </a>
           </router-link>
         </ul>

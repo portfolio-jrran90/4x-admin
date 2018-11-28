@@ -19,7 +19,7 @@
               <td>{{ data.Name }}</td>
             </tr>
             <tr v-if="allCategory.length === 0">
-              <td colspan="4">No transaction record!</td>
+              <td colspan="4">No Category record!</td>
             </tr>
           </tbody>
         </table>

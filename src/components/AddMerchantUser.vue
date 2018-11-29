@@ -8,6 +8,39 @@
         @click.prevent="openModal('AddCategory')"
       >Add</a>
     </h2>
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Nama Merchant</th>
+              <th>Logo</th>
+              <th>Flogo</th>
+              <th>Prefix</th>
+              <th>HP</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="data in allMerchantUser">
+              <td>{{ data.id }}</td>
+              <td>{{ data.Name }}</td>
+              <td style="width: 30%">
+                <img :src="data.Logo" style="height: 230px; width: 60%; object-fit: cover">
+              </td>
+              <td>{{ data.Flogo }}</td>
+              <td>{{ data.prefix }}</td>
+              <td>{{ data.hp }}</td>
+              <td>{{ data.email }}</td>
+            </tr>
+            <tr v-if="allMerchantUser.length === 0">
+              <td colspan="4">No Category record!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <!-- modals -->
     <b-modal v-model="modalAddMerchantUser" title="Add Merchant User" @ok="addMerchUser">
@@ -72,8 +105,19 @@ export default {
   data() {
     return {
       modalAddMerchantUser: false,
-      dataAddMerchantUser: {}
+      dataAddMerchantUser: {},
+      allMerchantUser: {}
     };
+  },
+  created() {
+    let vm = this;
+    axios
+      .get(`${process.env.VUE_APP_API_URL}/merchant`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("auth_token")
+        }
+      })
+      .then(res => (vm.allMerchantUser = res.data));
   },
   methods: {
     openModal(modal, data) {

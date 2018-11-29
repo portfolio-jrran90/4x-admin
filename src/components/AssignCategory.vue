@@ -17,6 +17,7 @@
           <td style="width: 5%">{{ data.No }}</td>
           <td style="width: 35%">
             <b>{{ data.title }}</b>
+            <br>
             <img :src="data.img" style="height: 230px; width: 70%; object-fit: cover">
           </td>
           <td style="width: 10%">{{ data.author }}</td>

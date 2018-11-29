@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Assign Category to Merchant EmpatKali</h2>
+    <h2>Assign Category EmpatKali</h2>
     <table class="table table-hover table-striped">
       <thead>
         <tr>
@@ -16,7 +16,9 @@
       <tbody>
         <tr v-for="(data, index) in allPromotion">
           <td style="width: 5%">{{ data.No }}</td>
-          <td style="width: 35%"><img :src="data.img" style="height: 230px; width: 70%; object-fit: cover" /></td>
+          <td style="width: 35%">
+            <img :src="data.img" style="height: 230px; width: 70%; object-fit: cover">
+          </td>
           <td style="width: 20%">{{ data.title }}</td>
           <td style="width: 10%">{{ data.author }}</td>
           <td style="width: 20%">{{ data.period }}</td>

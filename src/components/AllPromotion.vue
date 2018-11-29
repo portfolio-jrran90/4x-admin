@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>All Promotion at Merchant EmpatKali</h2>
+    <h2>All Promotion EmpatKali</h2>
     <table class="table table-hover table-striped">
       <thead>
         <tr>
@@ -17,18 +17,32 @@
       <tbody>
         <tr v-for="(data, index) in allPromotion">
           <td>{{ data.No }}</td>
-          <td style="width: 30%"><img :src="data.img" style="height: 230px; width: 70%; object-fit: cover" /></td>
+          <td style="width: 30%">
+            <img :src="data.img" style="height: 230px; width: 70%; object-fit: cover">
+          </td>
           <td style="width: 10%">{{ data.title }}</td>
           <td style="width: 10%">{{ data.author }}</td>
           <td style="width: 17%">{{ data.period }}</td>
           <td style="width: 5%">{{ data.diskon }}%</td>
-          <td>
-            <small v-if="data.ok==0" style="color: red"><b>Pending</b></small>
-            <small v-if="data.ok==1" style="color: green"><b>Approve</b></small>
+          <td class="text-center">
+            <small v-if="data.ok==0" style="color: orange">
+              <b>Pending</b>
+            </small>
+            <small v-if="data.ok==1" style="color: green">
+              <b>Approve</b>
+            </small>
+            <small v-if="data.ok==2" style="color: blue">
+              <b>Hide</b>
+            </small>
           </td>
-          <td style="width: 10%" >
-            <small v-if="data.ok==1" style="color: blue"><b>Hide Promo</b></small> <br>
-            <small v-if="data.ok==1" style="color: red"><b>Delete Promo</b></small>
+          <td style="width: 10%">
+            <small v-if="data.ok==1" style="color: blue">
+              <b>Hide Promo</b>
+            </small>
+            <br>
+            <small v-if="data.ok==1" style="color: red">
+              <b>Delete Promo</b>
+            </small>
           </td>
         </tr>
         <tr v-if="allPromotion.length === 0">

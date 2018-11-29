@@ -39,45 +39,48 @@
         <div class="col-md-8">
           <table class="table table-bordered table-sm">
             <tr>
-              <td class="table-info">Alamat</td>
-              <td class="table-secondary">{{ userDetails.alamat }}</td>
+              <td class="table-info">Name</td>
+              <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td>
+            </tr>
+            <tr>
+              <td class="table-info">Tanggal Lahir</td>
+              <td
+                class="table-secondary"
+              >{{ `${userDetails.birthplace}, ${userDetails.birthdate}` }}</td>
             </tr>
             <tr>
               <td class="table-info">E-mail</td>
               <td class="table-secondary">{{ userDetails.email }}</td>
             </tr>
             <tr>
-              <td class="table-info">Name</td>
-              <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">Tanggal Lahir</td>
-              <td class="table-secondary"></td>
-            </tr>
-            <tr>
               <td class="table-info">No. KTP</td>
               <td class="table-secondary">{{ userDetails.idcard }}</td>
             </tr>
             <tr>
-              <td class="table-info">Bidang Kerja</td>
-              <td class="table-secondary"></td>
+              <td class="table-info">No. NPWP</td>
+              <td class="table-secondary">{{ userDetails.npwp }}</td>
             </tr>
             <tr>
-              <td class="table-info">Pekerjaan</td>
-              <td class="table-secondary">{{ userDetailsPekerjaan }}</td>
+              <td class="table-info">Alamat</td>
+              <td class="table-secondary">{{ userDetails.alamat }}</td>
             </tr>
             <tr>
               <td class="table-info">Pendidikan</td>
               <td class="table-secondary">{{ userDetails.pendidikan }}</td>
             </tr>
             <tr>
+              <td class="table-info">Pekerjaan</td>
+              <td class="table-secondary">{{ userDetailsPekerjaan }}</td>
+            </tr>
+            <tr>
+              <td class="table-info">Bidang Kerja</td>
+              <td class="table-secondary">{{ userdetailsBidangKerja }}</td>
+            </tr>
+            <tr>
               <td class="table-info">Penghasilan</td>
               <td class="table-secondary">{{ userDetailsPenghasilan }}</td>
             </tr>
-            <tr>
-              <td class="table-info">No. NPWP</td>
-              <td class="table-secondary">{{ userDetails.npwp }}</td>
-            </tr>
+
             <tr>
               <td class="table-info">Email Verifikasi</td>
               <td class="table-secondary">{{ ((userDetails.emailverified==0)?'Belum':'Sudah') }}</td>
@@ -139,6 +142,7 @@ export default {
       userImageProfile: "",
       userImageKtp: "",
       userImageSelfieWithKtp: "",
+      userdetailsBidangKerja: "",
       userDetailsPekerjaan: "",
       userDetailsPenghasilan: ""
     };
@@ -179,6 +183,49 @@ export default {
             if (x === "ktp") vm.userImageKtp = parseImage[x];
             if (x === "photo") vm.userImageProfile = parseImage[x];
           }
+
+          // extract value for Bidang Kerja
+          let nameIndustri = "";
+          switch (res.data[0].industri) {
+            case "industri1":
+              nameIndustri = "Angkasa & Pertahanan";
+              break;
+            case "industri2":
+              nameIndustri = "Angkutan Udara & Logistik";
+              break;
+            case "industri3":
+              nameIndustri = "Asuransi";
+              break;
+            case "industri4":
+              nameIndustri = "Bahan Kimia";
+              break;
+            case "industri5":
+              nameIndustri = "Bahan Konstruksi";
+              break;
+            case "industri6":
+              nameIndustri = "Konstruksi & Teknik";
+              break;
+            case "industri7":
+              nameIndustri = "Media";
+              break;
+            case "industri8":
+              nameIndustri = "Jasa IT";
+              break;
+            case "industri9":
+              nameIndustri = "Jasa Telekomunikasi Nirkabel";
+              break;
+            case "industri10":
+              nameIndustri = "Kelautan";
+              break;
+            case "industri11":
+              nameIndustri = "Oil, Gas & Bahan Bakar";
+              break;
+            case "":
+              nameIndustri = "-";
+              break;
+            default:
+          }
+          vm.userdetailsBidangKerja = nameIndustri;
 
           // extract value for pekerjaan
           let pekerjaanValue = "";

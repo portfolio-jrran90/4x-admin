@@ -29,20 +29,29 @@
               <b>Pending</b>
             </small>
             <small v-if="data.ok==1" style="color: green">
-              <b>Approve</b>
+              <b>Active</b>
             </small>
             <small v-if="data.ok==2" style="color: blue">
               <b>Hide</b>
             </small>
           </td>
           <td style="width: 10%">
-            <small v-if="data.ok==1" style="color: blue">
-              <b>Hide Promo</b>
-            </small>
+            <a href @click.prevent="hidePromo(data.No, index)" v-if="data.ok == 1">
+              <small style="color: blue">
+                <b>Hide Promo</b>
+              </small>
+            </a>
             <br>
-            <small v-if="data.ok==1" style="color: red">
-              <b>Delete Promo</b>
-            </small>
+            <a href @click.prevent="deletePromo(data.No, index)" v-if="data.ok == 1">
+              <small style="color: red">
+                <b>Delete Promo</b>
+              </small>
+            </a>
+            <a href @click.prevent="activePromo(data.No, index)" v-if="data.ok == 2">
+              <small style="color: blue">
+                <b>Activated Promo</b>
+              </small>
+            </a>
           </td>
         </tr>
         <tr v-if="allPromotion.length === 0">
@@ -74,6 +83,50 @@ export default {
         }
       })
       .then(res => (vm.allPromotion = res.data));
+  },
+  methods: {
+    hidePromo(No, index) {
+      let vm = this;
+      if (confirm("Hide this promotion?")) {
+        axios
+          .post(`${process.env.VUE_APP_API_URL}/assignpromotion`, {
+            idpromo: No,
+            ok: 2
+          })
+          .then(res => {
+            alert("Successfully Hide Promotion!");
+            vm.allPromotion.splice(index, 1);
+          });
+      }
+    },
+    deletePromo(No, index) {
+      let vm = this;
+      if (confirm("Delete this promotion?")) {
+        axios
+          .post(`${process.env.VUE_APP_API_URL}/assignpromotion`, {
+            idpromo: No,
+            ok: 11
+          })
+          .then(res => {
+            alert("Successfully Delete Promotion!");
+            vm.allPromotion.splice(index, 1);
+          });
+      }
+    },
+    activePromo(No, index) {
+      let vm = this;
+      if (confirm("Activated this promotion?")) {
+        axios
+          .post(`${process.env.VUE_APP_API_URL}/assignpromotion`, {
+            idpromo: No,
+            ok: 1
+          })
+          .then(res => {
+            alert("Successfully Activated Promotion!");
+            vm.allPromotion.splice(index, 1);
+          });
+      }
+    }
   }
 };
 </script>

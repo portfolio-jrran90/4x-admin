@@ -64,14 +64,14 @@ export default {
   methods: {
     approvePromo(No, index) {
       let vm = this;
-      if (confirm("Activate this account?")) {
+      if (confirm("Approve this promotion?")) {
         axios
           .post(`${process.env.VUE_APP_API_URL}/assignpromotion`, {
             idpromo: No,
             ok: 1
           })
           .then(res => {
-            alert("Successfully Activated!");
+            alert("Successfully Approve Promotion!");
             vm.allPromotion.splice(index, 1);
           });
       }

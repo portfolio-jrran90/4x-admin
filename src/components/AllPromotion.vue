@@ -6,7 +6,6 @@
         <tr>
           <th>ID</th>
           <th>Product</th>
-          <th>Title</th>
           <th>Author</th>
           <th>Period</th>
           <th>Diskon</th>
@@ -18,9 +17,9 @@
         <tr v-for="(data, index) in allPromotion">
           <td>{{ data.No }}</td>
           <td style="width: 30%">
+            <b>{{ data.title }}</b>
             <img :src="data.img" style="height: 230px; width: 70%; object-fit: cover">
           </td>
-          <td style="width: 10%">{{ data.title }}</td>
           <td style="width: 10%">{{ data.author }}</td>
           <td style="width: 17%">{{ data.period }}</td>
           <td style="width: 5%">{{ data.diskon }}%</td>

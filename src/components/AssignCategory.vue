@@ -1,27 +1,28 @@
 <template>
   <div>
-    <h2>All Promotion at Merchant EmpatKali</h2>
+    <h2>Assign Category EmpatKali</h2>
     <table class="table table-hover table-striped">
       <thead>
         <tr>
           <th>No</th>
-          <th>Title</th>
+          <th>Product</th>
           <th>Author</th>
           <th>Period</th>
           <th>Diskon</th>
-          <th>Detail</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(data, index) in allPromotion">
-          <td>{{ data.No }}</td>
-          <td style="width: 20%">{{ data.title }}</td>
-          <td>{{ data.author }}</td>
+          <td style="width: 5%">{{ data.No }}</td>
+          <td style="width: 35%">
+            <b>{{ data.title }}</b>
+            <br>
+            <img :src="data.img" style="height: 230px; width: 70%; object-fit: cover">
+          </td>
+          <td style="width: 10%">{{ data.author }}</td>
           <td style="width: 20%">{{ data.period }}</td>
-          <td>{{ data.diskon }}%</td>
-          <td>{{ data.detail }}</td>
-          <td v-if="data.ok === 1">selesai</td>
+          <td style="width: 10%">{{ data.diskon }}%</td>
         </tr>
         <tr v-if="allPromotion.length === 0">
           <td colspan="4">No transaction record!</td>

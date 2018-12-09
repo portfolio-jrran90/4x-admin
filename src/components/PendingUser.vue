@@ -86,6 +86,11 @@
               <td class="table-secondary">{{ ((userDetails.emailverified==0)?'Belum':'Sudah') }}</td>
             </tr>
           </table>
+
+          <div id="iframe-preloader" style="background: url(/assets/img/apple-icon.png) center no-repeat">
+            <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" onload="document.getElementById('iframe-preloader').style.backgroundImage = 'none'"></iframe>
+          </div>
+          
         </div>
         <div class="col-md-4">
           <div class="card">
@@ -176,6 +181,9 @@ export default {
         })
         .then(res => {
           vm.userDetails = res.data[0];
+
+          // refer to issue #6 under comment section
+          vm.userDetails['captchaSrc'] = 'https://sandbox2.empatkali.co.id/captcha.php?nama=dhonald%20johannes&nik=1671071103940019'
 
           // extract image
           let parseImage = JSON.parse(res.data[0].ktp); // lol this, I need to parse???
@@ -311,3 +319,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  #iframe-preloader {
+    /*display:table-cell;width:200px;height:200px;background:#fff;text-align:center;vertical-align:middle;*/
+  }
+</style>

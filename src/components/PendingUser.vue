@@ -87,9 +87,8 @@
             </tr>
           </table>
 
-          <div id="iframe-preloader" style="background: url(/assets/img/apple-icon.png) center no-repeat">
-            <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" onload="document.getElementById('iframe-preloader').style.backgroundImage = 'none'"></iframe>
-          </div>
+          <div id="iframe-preloader" v-if="spinner"><img src="/assets/img/spinner.svg" alt=""></div>
+          <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" @load="loadCaptcha" v-show="!spinner"></iframe>
           
         </div>
         <div class="col-md-4">
@@ -149,7 +148,9 @@ export default {
       userImageSelfieWithKtp: "",
       userdetailsBidangKerja: "",
       userDetailsPekerjaan: "",
-      userDetailsPenghasilan: ""
+      userDetailsPenghasilan: "",
+
+      spinner: true
     };
   },
   created() {
@@ -315,6 +316,10 @@ export default {
             vm.users.splice(index, 1);
           });
       }
+    },
+
+    loadCaptcha() {
+      this.spinner = false
     }
   }
 };

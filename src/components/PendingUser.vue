@@ -150,7 +150,7 @@ export default {
       userDetailsPekerjaan: "",
       userDetailsPenghasilan: "",
 
-      spinner: true
+      spinner: false
     };
   },
   created() {
@@ -182,6 +182,8 @@ export default {
         })
         .then(res => {
           vm.userDetails = res.data[0];
+
+          vm.spinner = true
 
           // refer to issue #6 under comment section
           vm.userDetails['captchaSrc'] = 'https://sandbox2.empatkali.co.id/captcha.php?nama=dhonald%20johannes&nik=1671071103940019'

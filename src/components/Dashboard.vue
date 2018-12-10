@@ -8,7 +8,7 @@
           </a>
         </div>
         <ul class="nav">
-          <b-nav-item-dropdown text="User" right>
+          <b-nav-item-dropdown text="User" right class="m-3">
             <b-dropdown-item href="#">
               <router-link tag="li" :to="`/users/active`">
                 <i class="nc-icon nc-single-02"></i>Active User
@@ -21,7 +21,7 @@
             </b-dropdown-item>
           </b-nav-item-dropdown>
 
-          <b-nav-item-dropdown text="Promo" right>
+          <b-nav-item-dropdown text="Promo" right class="m-3">
             <b-dropdown-item href="#">
               <router-link tag="li" :to="`/approvepromo`">
                 <i class="nc-icon nc-check-2"></i>
@@ -48,13 +48,13 @@
             </b-dropdown-item>
           </b-nav-item-dropdown>
 
-          <router-link tag="li" :to="`/transactions`">
+          <router-link tag="li" :to="`/transactions`" class="m-3">
             <a class="nav-link" href="#">
               <p>Transaction</p>
             </a>
           </router-link>
 
-          <router-link tag="li" :to="`/addmerchantuser`">
+          <router-link tag="li" :to="`/addmerchantuser`" class="m-3">
             <a class="nav-link" href="#">
               <p>Add Merchant User</p>
             </a>

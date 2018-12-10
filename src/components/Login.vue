@@ -55,8 +55,6 @@ export default {
       context: "login context",
       data: {
         body: {
-          email: "jhon@gmail.com",
-          password: "1234"
         },
         rememberMe: false,
         fetchUser: true

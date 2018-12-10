@@ -1,30 +1,46 @@
 <template>
   <div>
-    <h2>Active Users</h2>
+    <h2>User Aktif</h2>
     <div class="row">
       <div class="col">
         <table class="table table-hover table-striped">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Phone No.</th>
-              <th style="text-align: right !important">Assign Credits</th>
-              <th style="text-align: right !important">Used Credits</th>
-              <th style="text-align: right !important">Transaction No.</th>
-              <th style="text-align: right !important">Active Installment</th>
+              <th>Nama</th>
+              <th>Status</th>
+              <th>Handphone</th>
+              <th style="text-align: right !important">Kredit Dimiliki</th>
+              <th style="text-align: right !important">Kredit Terpakai</th>
+              <th style="text-align: center !important">Transaksi</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(data, index) in users">
-              <td>{{ `${data.fname} ${data.lname}` }}</td>
+              <td>
+                {{ `${data.fname} ${data.lname}` }}
+              </td>
+              <td>
+                  <span
+                    class="badge badge-success"
+                    v-if="data.activated == 2 && data.credit != 0"
+                  >Approve User</span>
+                  <span
+                    class="badge badge-warning"
+                    v-if="data.activated == 2 && data.credit == 0"
+                  >Pending User</span>
+                  <span
+                    class="badge badge-danger"
+                    v-if="data.activated == 3"
+                  >Red User</span>
+              </td>
               <td>{{ data.Hp }}</td>
               <td class="text-right">
                 {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit) }}
                 <a
                   href="#"
                   v-b-tooltip
-                  title="Increase/Decrease Credit"
+                  title="Tingkatkan/Turunkan Kredit"
                   @click.prevent="openModal('AssignCredit', data, index)"
                 >&plusmn;</a>
               </td>
@@ -33,16 +49,16 @@
               >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingcredit) }}</td>
               <td class="text-right">
                 <a href @click.prevent="openModal('ViewTransactions', data)">
-                  <small>View Transaction(s)</small>
+                  <small>Lihat Transaksi</small>
                 </a>
               </td>
-              <td class="text-right">0</td>
+              <!-- <td class="text-right">0</td> -->
               <td class="text-center">
                 <a href @click.prevent="unbanBan('ban', data, index)" v-if="data.activated==2">
-                  <small>Ban</small>
+                  <small>Ban User</small>
                 </a>
                 <a href @click.prevent="unbanBan('unban', data, index)" v-if="data.activated==3">
-                  <small>Unban</small>
+                  <small>Unban User</small>
                 </a>
               </td>
             </tr>
@@ -60,33 +76,33 @@
     | =============================================================================-->
     <b-modal v-model="modalAssignCredit" size="sm">
       <div slot="modal-header">
-        <h4>Assign Credit - {{ modalUserInfo.data.Name }}</h4>
+        <h4>Tetapkan Kredit Limit {{ modalUserInfo.data.Name }}</h4>
       </div>
       <div class="row">
         <div class="col">
           <p style="font-size: 1.5em">
-            <strong>Current Balance</strong>
+            <strong>Saldo Kredit Saat ini </strong>
             <br>
             {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(modalUserInfo.data.credit) }}
           </p>
           <div class="mb-1">
             <select class="form-control" v-model="selectAssignCredit">
               <option value>-- Select action --</option>
-              <option value="increase">Increase credit</option>
-              <option value="decrease">Decrease credit</option>
+              <option value="increase">Tingkatkan Kredit Limit</option>
+              <option value="decrease">Turunkan Kredit Limit</option>
             </select>
           </div>
           <div v-if="selectAssignCredit=='increase'">
-            <label>Amount to add</label>
+            <label>Tambahkan Kredit</label>
             <input
               type="text"
               class="form-control text-right"
-              placeholder="0.00"
+              placeholder="Rp0.00"
               v-model="inputCredit"
             >
           </div>
           <div v-if="selectAssignCredit=='decrease'">
-            <label>Amount to deduct</label>
+            <label>Kurangi Kredit</label>
             <input
               type="text"
               class="form-control text-right"
@@ -113,7 +129,7 @@
 
     <b-modal v-model="modalShowViewTransactions" size="90" class="modal-transactions">
       <div slot="modal-header">
-        <h4>Transactions</h4>
+        <h4>Transaksi</h4>
         <!-- <h4>Transactions - {{ `${modalUserTransactionInfo.user.Name} (${modalUserTransactionInfo.user.Hp})` }}</h4> -->
       </div>
       <div class="row">
@@ -121,10 +137,10 @@
           <table class="table table-sm">
             <thead>
               <tr>
-                <th>No</th>
+                <th>No Invoice</th>
                 <th>Merchant</th>
-                <th>Date</th>
-                <th>Expiry Date</th>
+                <th>Waktu Pembelian</th>
+                <th>Waktu Expire </th>
                 <th class="text-right">Status</th>
                 <th class="text-right">Total</th>
                 <!-- <th></th> -->
@@ -134,8 +150,8 @@
               <tr v-for="data in modalUserTransactionInfo.data">
                 <td>{{ data.No }}</td>
                 <td>{{ data.merchant }}</td>
-                <td>{{ data.date | moment("YYYY-MM-DD") }}</td>
-                <td>{{ data.expire | moment("YYYY-MM-DD") }}</td>
+                <td>{{ data.date | moment("YYYY-MM-DD hh-mm-ss") }}</td>
+                <td>{{ data.expire | moment("YYYY-MM-DD hh-mm-ss") }}</td>
                 <td class="text-right">
                   <span
                     class="badge badge-pill badge-danger"
@@ -169,6 +185,9 @@
 import axios from "axios";
 
 export default {
+  computed: {
+
+  },
   data() {
     return {
       modalAssignCredit: false,
@@ -185,7 +204,7 @@ export default {
   created() {
     let vm = this;
     axios
-      .get(`${process.env.VUE_APP_API_URL}/users/activated`, {
+      .get(`${process.env.VUE_APP_API_URL}/users`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("auth_token")
         }
@@ -283,6 +302,7 @@ export default {
           .then(res => {
             alert(`Successfully ${toDo}ned!`);
             vm.users.splice(index, 1);
+            location.reload();
           });
       }
     }

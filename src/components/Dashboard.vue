@@ -8,52 +8,55 @@
           </a>
         </div>
         <ul class="nav">
-          <router-link tag="li" :to="`/users/active`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-single-02"></i>
-              <p>Active Users</p>
-            </a>
-          </router-link>
-          <router-link tag="li" :to="`/users/pending`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-single-02"></i>
-              <p>Pending Users</p>
-            </a>
-          </router-link>
+          <b-nav-item-dropdown text="User" right>
+            <b-dropdown-item href="#">
+              <router-link tag="li" :to="`/users/active`">
+                <i class="nc-icon nc-single-02"></i>Active User
+              </router-link>
+            </b-dropdown-item>
+            <b-dropdown-item href="#">
+              <router-link tag="li" :to="`/users/pending`">
+                <i class="nc-icon nc-single-02"></i>Pending User
+              </router-link>
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+
+          <b-nav-item-dropdown text="Promo" right>
+            <b-dropdown-item href="#">
+              <router-link tag="li" :to="`/approvepromo`">
+                <i class="nc-icon nc-check-2"></i>
+                <p>Approve Promo</p>
+              </router-link>
+            </b-dropdown-item>
+            <b-dropdown-item href="#">
+              <router-link tag="li" :to="`/allpromotion`">
+                <i class="nc-icon nc-paper-2"></i>
+                <p>All Promotion</p>
+              </router-link>
+            </b-dropdown-item>
+            <b-dropdown-item href="#">
+              <router-link tag="li" :to="`/addcategory`">
+                <i class="nc-icon nc-simple-add"></i>
+                <p>Add Category</p>
+              </router-link>
+            </b-dropdown-item>
+            <b-dropdown-item href="#">
+              <router-link tag="li" :to="`/assigncategory`">
+                <i class="nc-icon nc-check-2"></i>
+                <p>Assign Category</p>
+              </router-link>
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+
           <router-link tag="li" :to="`/transactions`">
             <a class="nav-link" href="#">
-              <i class="nc-icon nc-notes"></i>
               <p>Transaction</p>
             </a>
           </router-link>
+
           <router-link tag="li" :to="`/addmerchantuser`">
             <a class="nav-link" href="#">
-              <i class="nc-icon nc-simple-add"></i>
               <p>Add Merchant User</p>
-            </a>
-          </router-link>
-          <router-link tag="li" :to="`/approvepromo`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-check-2"></i>
-              <p>Approve Promo</p>
-            </a>
-          </router-link>
-          <router-link tag="li" :to="`/allpromotion`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-paper-2"></i>
-              <p>All Promotion</p>
-            </a>
-          </router-link>
-          <router-link tag="li" :to="`/addcategory`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-simple-add"></i>
-              <p>Add Category</p>
-            </a>
-          </router-link>
-          <router-link tag="li" :to="`/assigncategory`">
-            <a class="nav-link" href="#">
-              <i class="nc-icon nc-check-2"></i>
-              <p>Assign Category</p>
             </a>
           </router-link>
         </ul>

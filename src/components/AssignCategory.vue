@@ -43,6 +43,13 @@
           <table class="table table-bordered table-sm table-stiped">
             <tr v-for="data in modalOutputAssignCategory.cat">
               <td>{{ data.text }}</td>
+              <td align="center">
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  @click.prevent="removeAssignedCategory(data.kategori)"
+                >x</button>
+              </td>
               <!-- <td>
                 <a href="#" @click.prevent="removeAssignedCategory(data.No)">remove</a>
               </td>-->
@@ -173,7 +180,23 @@ export default {
      * @param  int id category id
      * @return {[type]}    [description]
      */
-    removeAssignedCategory(id) {},
+    removeAssignedCategory(id) {
+      let vm = this;
+      axios
+        .post(`${process.env.VUE_APP_API_URL}/assigncategory`, {
+          idpromo: parseInt(vm.modalOutputAssignCategory.No),
+          kategori: id,
+          del: 1
+        })
+        .then(res => {
+          if (res.data.success == false) {
+            alert("Delete tidak berhasil");
+          } else {
+            alert("Delete Berhasil");
+            location.reload();
+          }
+        });
+    },
     /**
      * Assigning a category
      */

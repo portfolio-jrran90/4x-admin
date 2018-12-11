@@ -87,6 +87,7 @@ export default {
           axios
             .get("https://sandbox2.empatkali.co.id/category")
             .then(res2 => (vm.promotions = res2.data));
+            location.reload();
         });
     }
   }

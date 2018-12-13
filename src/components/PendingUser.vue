@@ -35,99 +35,158 @@
       <div slot="modal-header">
         <h4>User Detail</h4>
       </div>
-      <div class="row">
-        <div class="col-md-8">
-          <table class="table table-bordered table-sm">
-            <tr>
-              <td class="table-info">Name</td>
-              <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">Tanggal Lahir</td>
-              <td
-                class="table-secondary"
-              >{{ `${userDetails.birthplace}, ${userDetails.birthdate}` }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">E-mail</td>
-              <td class="table-secondary">{{ userDetails.email }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">No. KTP</td>
-              <td class="table-secondary">{{ userDetails.idcard }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">No. NPWP</td>
-              <td class="table-secondary">{{ userDetails.npwp }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">Alamat</td>
-              <td class="table-secondary">{{ userDetails.alamat }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">Pendidikan</td>
-              <td class="table-secondary">{{ userDetails.pendidikan }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">Pekerjaan</td>
-              <td class="table-secondary">{{ userDetailsPekerjaan }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">Bidang Kerja</td>
-              <td class="table-secondary">{{ userdetailsBidangKerja }}</td>
-            </tr>
-            <tr>
-              <td class="table-info">Penghasilan</td>
-              <td class="table-secondary">{{ userDetailsPenghasilan }}</td>
-            </tr>
+      <p><b>Data App EmpatKali</b></p>
+      <div class="card">
+        <div class="row" style="margin: 10px">
+          <div class="col-md-8">
+            <table class="table table-bordered table-sm">
+              <tr>
+                <td class="table-info">Nama</td>
+                <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">Tempat, Tanggal Lahir</td>
+                <td
+                  class="table-secondary"
+                >{{ `${userDetails.birthplace}, ${userDetails.birthdate}` }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">E-mail</td>
+                <td class="table-secondary">{{ userDetails.email }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">No. KTP</td>
+                <td class="table-secondary">{{ userDetails.idcard }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">No. NPWP</td>
+                <td class="table-secondary">{{ userDetails.npwp }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">Alamat</td>
+                <td class="table-secondary">{{ userDetails.alamat }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">Pendidikan Terakhir</td>
+                <td class="table-secondary">{{ userDetails.pendidikan }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">Pekerjaan</td>
+                <td class="table-secondary">{{ userDetailsPekerjaan }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">Bidang Kerja</td>
+                <td class="table-secondary">{{ userdetailsBidangKerja }}</td>
+              </tr>
+              <tr>
+                <td class="table-info">Penghasilan</td>
+                <td class="table-secondary"> {{ userDetailsPenghasilan }}</td>
+              </tr>
 
-            <tr>
-              <td class="table-info">Email Verifikasi</td>
-              <td class="table-secondary">{{ ((userDetails.emailverified==0)?'Belum':'Sudah') }}</td>
-            </tr>
-          </table>
+            </table>
 
-          <div id="iframe-preloader" v-if="spinner"><img src="/assets/img/spinner.svg" alt=""></div>
-          <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" @load="loadCaptcha" v-show="!spinner"></iframe>
-          
+            <div id="iframe-preloader" v-if="spinner"><img src="/assets/img/spinner.svg" alt=""></div>
+            <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" @load="loadCaptcha" v-show="!spinner"></iframe>
+            
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <figure class="figure m-0">
+                  <img
+                    :src="userImageProfile"
+                    class="figure-img img-fluid rounded"
+                    alt="profile picture"
+                  >
+                  <figcaption class="figure-caption">Profile Picture</figcaption>
+                </figure>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <figure class="figure m-0">
+                  <img :src="userImageKtp" class="figure-img img-fluid rounded" alt="ktp">
+                  <figcaption class="figure-caption">KTP</figcaption>
+                </figure>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <figure class="figure m-0">
+                  <img
+                    :src="userDetails.selfie"
+                    class="figure-img img-fluid rounded"
+                    alt="selfie with ktp"
+                  >
+                  <figcaption class="figure-caption">Selfie with KTP</figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <figure class="figure m-0">
-                <img
-                  :src="userImageProfile"
-                  class="figure-img img-fluid rounded"
-                  alt="profile picture"
-                >
-                <figcaption class="figure-caption">Profile Picture</figcaption>
-              </figure>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <figure class="figure m-0">
-                <img :src="userImageKtp" class="figure-img img-fluid rounded" alt="ktp">
-                <figcaption class="figure-caption">KTP</figcaption>
-              </figure>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <figure class="figure m-0">
-                <img
-                  :src="userDetails.selfie"
-                  class="figure-img img-fluid rounded"
-                  alt="selfie with ktp"
-                >
-                <figcaption class="figure-caption">Selfie with KTP</figcaption>
-              </figure>
-            </div>
-          </div>
+        <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
+          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
+          <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
         </div>
       </div>
-      <div slot="modal-footer">
-        <button class="btn btn-lg btn-secondary" @click="modalUserShow = false">Close</button>
+
+      <p><b>Proses Verifikasi</b></p>
+      <div class="card">
+        <div class="row" style="margin: 10px">
+          <div class="col-md-8">
+             <table class="table table-hover table-striped table-sm">
+              <tr>
+                <td >Verified Step One</td>
+                <td style="color: red" >Rejected X</td>
+                <td style="color: green" >Verified V</td>
+              </tr>
+              <tr>
+                <td >Emergency Number</td>
+                <td style="color: red" >Don't Receive SMS</td>
+                <td style="color: green" >Receive SMS</td>
+              </tr>
+              <tr>
+                <td >Email Verifikasi</td>
+                <td colspan="2" >{{ ((userDetails.emailverified==0)?'Belum Melakukan Verifikasi':'Sudah Melakukan Verifikasi') }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
+          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
+          <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
+        </div>
+      </div>
+
+      <p><b>Phone Analytic</b></p>
+      <div class="card">
+        <div class="row" style="margin: 10px">
+          <div class="col-md-8">
+             <table class="table table-hover table-striped table-sm">
+              <tr>
+                <td >Call Logs Incoming Call</td>
+                <td style="color: red" >120 call</td>
+              </tr>
+              <tr>
+                <td >Call Logs Outcoming Call</td>
+                <td style="color: green" >50 call</td>
+              </tr>
+              <tr>
+                <td >Accept User Permision</td>
+                <td colspan="2" >Call Permision, Contact, Camera</td>
+<!-- {{ ((userDetails.emailverified==0)?'Belum Melakukan Verifikasi':'Sudah Melakukan Verifikasi') }} -->
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
+          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
+          <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
+        </div>
+      </div>
+      <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: center; margin: 10px">
+          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
+        <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
       </div>
     </b-modal>
   </div>

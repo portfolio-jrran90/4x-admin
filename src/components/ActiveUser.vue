@@ -16,7 +16,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in users">
+            <tr v-for="(data, index) in users" v-if="data.activated != 0 && data.activated != 1">
               <td>
                 {{ `${data.fname} ${data.lname}` }}
               </td>

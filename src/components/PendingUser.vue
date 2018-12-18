@@ -366,17 +366,34 @@ export default {
      * @param  int index
      */
     activate(hp, index) {
-      let vm = this;
-      if (confirm("Activate this account?")) {
-        axios
-          .post(`${process.env.VUE_APP_API_URL}/users/${hp}/activated`, {
-            activated: 2
-          })
-          .then(res => {
-            alert("Successfully Activated!");
-            vm.users.splice(index, 1);
-          });
-      }
+      let vm = this
+
+      vm.$swal({
+        title: 'Are you sure?',
+        html: `Do you really want to approve <strong style="text-decoration: underline">${hp}</strong>?`,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Approve',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          axios.post(`${process.env.VUE_APP_API_URL}/users/${hp}/activated`, { activated: 2 })
+            .then(response => {})
+            .catch(error => {
+              vm.$swal.showValidationMessage(`Request failed: ${error}`)
+            })
+        },
+        allowOutsideClick: () => !vm.$swal.isLoading()
+      }).then((result) => {
+        if (result.value) {
+          vm.$swal(
+            'Success!',
+            'User has been approved!.',
+            'success'
+          )
+          vm.users.splice(index, 1)
+        }
+      })
     },
 
     loadCaptcha() {

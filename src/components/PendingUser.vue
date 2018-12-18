@@ -15,9 +15,6 @@
               <td class="text-right">
                 <ul class="list-inline m-0">
                   <li class="list-inline-item">
-                    <a href @click.prevent="activate(data.Hp, index)">Approve</a>
-                  </li>
-                  <li class="list-inline-item">
                     <a href @click.prevent="openModalUserDetails(data)">View details</a>
                   </li>
                 </ul>
@@ -31,162 +28,164 @@
       </div>
     </div>
 
-    <b-modal v-model="modalUserShow" size="lg">
-      <div slot="modal-header">
-        <h4>User Detail</h4>
-      </div>
-      <p><b>Data App EmpatKali</b></p>
-      <div class="card">
-        <div class="row" style="margin: 10px">
-          <div class="col-md-8">
-            <table class="table table-bordered table-sm">
-              <tr>
-                <td class="table-info">Nama</td>
-                <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">Tempat, Tanggal Lahir</td>
-                <td
-                  class="table-secondary"
-                >{{ `${userDetails.birthplace}, ${userDetails.birthdate}` }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">E-mail</td>
-                <td class="table-secondary">{{ userDetails.email }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">No. KTP</td>
-                <td class="table-secondary">{{ userDetails.idcard }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">No. NPWP</td>
-                <td class="table-secondary">{{ userDetails.npwp }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">Alamat</td>
-                <td class="table-secondary">{{ userDetails.alamat }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">Pendidikan Terakhir</td>
-                <td class="table-secondary">{{ userDetails.pendidikan }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">Pekerjaan</td>
-                <td class="table-secondary">{{ userDetailsPekerjaan }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">Bidang Kerja</td>
-                <td class="table-secondary">{{ userdetailsBidangKerja }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">Penghasilan</td>
-                <td class="table-secondary"> {{ userDetailsPenghasilan }}</td>
-              </tr>
+    <b-modal v-model="modalUserShow" size="70" title="User Detail">
+      <b-card no-body>
+        <b-tabs pills card vertical>
+          <!-- Data App -->
+          <b-tab title="Data App" active>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <figure class="figure m-0">
+                      <img
+                        :src="userImageProfile || '/assets/img/default-photo.svg'"
+                        class="figure-img img-fluid rounded"
+                        alt="profile picture"
+                      >
+                      <figcaption class="figure-caption text-center">Profile Picture</figcaption>
+                    </figure>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <figure class="figure m-0">
+                      <img :src="userImageKtp || '/assets/img/default-photo.svg'" class="figure-img img-fluid rounded" alt="ktp">
+                      <figcaption class="figure-caption text-center">KTP</figcaption>
+                    </figure>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <figure class="figure m-0">
+                      <img
+                        :src="userDetails.selfie || '/assets/img/default-photo.svg'"
+                        class="figure-img img-fluid rounded"
+                        alt="selfie with ktp"
+                      >
+                      <figcaption class="figure-caption text-center">Selfie with KTP</figcaption>
+                    </figure>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <table class="table table-bordered table-sm">
+                  <tr>
+                    <td class="table-info">Nama</td>
+                    <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">Tempat, Tanggal Lahir</td>
+                    <td
+                      class="table-secondary"
+                    >{{ `${userDetails.birthplace}, ${userDetails.birthdate}` }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">E-mail</td>
+                    <td class="table-secondary">{{ userDetails.email }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">No. KTP</td>
+                    <td class="table-secondary">{{ userDetails.idcard }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">No. NPWP</td>
+                    <td class="table-secondary">{{ userDetails.npwp }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">Alamat</td>
+                    <td class="table-secondary">{{ userDetails.alamat }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">Pendidikan Terakhir</td>
+                    <td class="table-secondary">{{ userDetails.pendidikan }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">Pekerjaan</td>
+                    <td class="table-secondary">{{ userDetailsPekerjaan }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">Bidang Kerja</td>
+                    <td class="table-secondary">{{ userdetailsBidangKerja }}</td>
+                  </tr>
+                  <tr>
+                    <td class="table-info">Penghasilan</td>
+                    <td class="table-secondary"> {{ userDetailsPenghasilan }}</td>
+                  </tr>
 
-            </table>
+                </table>
 
-            <div id="iframe-preloader" v-if="spinner"><img src="/assets/img/spinner.svg" alt=""></div>
-            <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" @load="loadCaptcha" v-show="!spinner"></iframe>
-            
-          </div>
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <figure class="figure m-0">
-                  <img
-                    :src="userImageProfile"
-                    class="figure-img img-fluid rounded"
-                    alt="profile picture"
-                  >
-                  <figcaption class="figure-caption">Profile Picture</figcaption>
-                </figure>
+                <div id="iframe-preloader" v-if="spinner"><img src="/assets/img/spinner.svg" alt=""></div>
+                <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" @load="loadCaptcha" v-show="!spinner"></iframe>
               </div>
             </div>
-            <div class="card">
-              <div class="card-body">
-                <figure class="figure m-0">
-                  <img :src="userImageKtp" class="figure-img img-fluid rounded" alt="ktp">
-                  <figcaption class="figure-caption">KTP</figcaption>
-                </figure>
+          </b-tab>
+          <!-- ./Data App -->
+
+          <!-- Proses Verifikasi -->
+          <b-tab title="Proses Verifikasi">
+            <div class="row">
+              <div class="col">
+                <table class="table table-striped table-sm">
+                  <tr>
+                    <td>Verified Step One</td>
+                    <td class="text-danger">Rejected X</td>
+                    <td class="text-success">Verified V</td>
+                  </tr>
+                  <tr>
+                    <td>Emergency Number</td>
+                    <td class="text-danger">Don't Receive SMS</td>
+                    <td class="text-success">Receive SMS</td>
+                  </tr>
+                  <tr>
+                    <td>Email Verifikasi</td>
+                    <td colspan="2" :class="emailVerificationStatus">
+                      {{ ((userDetails.emailverified==0)?'Belum Melakukan Verifikasi':'Sudah Melakukan Verifikasi') }}
+                    </td>
+                  </tr>
+                </table>
               </div>
             </div>
-            <div class="card">
-              <div class="card-body">
-                <figure class="figure m-0">
-                  <img
-                    :src="userDetails.selfie"
-                    class="figure-img img-fluid rounded"
-                    alt="selfie with ktp"
-                  >
-                  <figcaption class="figure-caption">Selfie with KTP</figcaption>
-                </figure>
+            <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
+              <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
+              <button class="btn btn-success" @click="modalUserShow = false">Approve</button>
+            </div>
+          </b-tab>
+          <!-- ./Proses Verifikasi -->
+
+          <!-- Phone Analytic -->
+          <b-tab title="Phone Analytic">
+            <div class="row">
+              <div class="col">
+                 <table class="table table-hover table-striped table-sm">
+                  <tr>
+                    <td>Call Logs Incoming Call</td>
+                    <td class="text-danger">120 call</td>
+                  </tr>
+                  <tr>
+                    <td>Call Logs Outcoming Call</td>
+                    <td class="text-success">50 call</td>
+                  </tr>
+                  <tr>
+                    <td>Accept User Permision</td>
+                    <td colspan="2">Call Permision, Contact, Camera</td>
+                  </tr>
+                </table>
               </div>
             </div>
-          </div>
-        </div>
-        <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
-          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
-          <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
-        </div>
-      </div>
+            <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
+              <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
+              <button class="btn btn-success" @click="modalUserShow = false">Approve</button>
+            </div>
+          </b-tab>
+          <!-- ./Phone Analytic -->
 
-      <p><b>Proses Verifikasi</b></p>
-      <div class="card">
-        <div class="row" style="margin: 10px">
-          <div class="col-md-8">
-             <table class="table table-hover table-striped table-sm">
-              <tr>
-                <td >Verified Step One</td>
-                <td style="color: red" >Rejected X</td>
-                <td style="color: green" >Verified V</td>
-              </tr>
-              <tr>
-                <td >Emergency Number</td>
-                <td style="color: red" >Don't Receive SMS</td>
-                <td style="color: green" >Receive SMS</td>
-              </tr>
-              <tr>
-                <td >Email Verifikasi</td>
-                <td colspan="2" >{{ ((userDetails.emailverified==0)?'Belum Melakukan Verifikasi':'Sudah Melakukan Verifikasi') }}</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-        <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
-          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
-          <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
-        </div>
-      </div>
+        </b-tabs>
+      </b-card>
 
-      <p><b>Phone Analytic</b></p>
-      <div class="card">
-        <div class="row" style="margin: 10px">
-          <div class="col-md-8">
-             <table class="table table-hover table-striped table-sm">
-              <tr>
-                <td >Call Logs Incoming Call</td>
-                <td style="color: red" >120 call</td>
-              </tr>
-              <tr>
-                <td >Call Logs Outcoming Call</td>
-                <td style="color: green" >50 call</td>
-              </tr>
-              <tr>
-                <td >Accept User Permision</td>
-                <td colspan="2" >Call Permision, Contact, Camera</td>
-<!-- {{ ((userDetails.emailverified==0)?'Belum Melakukan Verifikasi':'Sudah Melakukan Verifikasi') }} -->
-              </tr>
-            </table>
-          </div>
-        </div>
-        <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; margin: 10px">
+      <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: center;">
           <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
-          <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
-        </div>
-      </div>
-      <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: center; margin: 10px">
-          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
-        <button class="btn btn-success" @click="modalUserShow = false">Aprrove</button>
+        <button class="btn btn-success" @click="modalUserShow = false">Approve</button>
       </div>
     </b-modal>
   </div>
@@ -196,6 +195,14 @@
 import axios from "axios";
 
 export default {
+  computed: {
+    emailVerificationStatus() {
+      return {
+        'text-danger': this.userDetails.emailverified == 0,
+        'text-success': this.userDetails.emailverified == 1,
+      }
+    }
+  },
   data() {
     return {
       modalUserShow: false,
@@ -358,44 +365,6 @@ export default {
           vm.userDetailsPenghasilan = penghasilanValue;
         });
     },
-
-    /**
-     * Activate user
-     *
-     * @param  int hp Phone Number
-     * @param  int index
-     */
-    activate(hp, index) {
-      let vm = this
-
-      vm.$swal({
-        title: 'Are you sure?',
-        html: `Do you really want to approve <strong style="text-decoration: underline">${hp}</strong>?`,
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Approve',
-        showLoaderOnConfirm: true,
-        preConfirm: () => {
-          axios.post(`${process.env.VUE_APP_API_URL}/users/${hp}/activated`, { activated: 2 })
-            .then(response => {})
-            .catch(error => {
-              vm.$swal.showValidationMessage(`Request failed: ${error}`)
-            })
-        },
-        allowOutsideClick: () => !vm.$swal.isLoading()
-      }).then((result) => {
-        if (result.value) {
-          vm.$swal(
-            'Success!',
-            'User has been approved!.',
-            'success'
-          )
-          vm.users.splice(index, 1)
-        }
-      })
-    },
-
     loadCaptcha() {
       this.spinner = false
     }
@@ -407,4 +376,11 @@ export default {
   #iframe-preloader {
     /*display:table-cell;width:200px;height:200px;background:#fff;text-align:center;vertical-align:middle;*/
   }
+  
+  .modal-80 figure {
+    text-align: center; width: 100%;
+  }
+  /*.modal-80 figure > img {
+    height: 175px;
+  }*/
 </style>

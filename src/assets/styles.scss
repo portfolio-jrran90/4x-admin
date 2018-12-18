@@ -1,9 +1,17 @@
-// Custom modal size
-.modal-transactions .modal-dialog.modal-90 {
-	max-width: 95% !important;
+// Generic style
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+	background-color: #007bff !important;
+}
 
+// Custom modal size
+.modal-dialog.modal-90 {
+	max-width: 90% !important;
 	.table .text-right {
 		// override since in the header part this is just being ignored
 		text-align: right !important;
 	}
+}
+
+.modal-70 {
+	max-width: 70% !important;
 }

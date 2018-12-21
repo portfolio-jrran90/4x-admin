@@ -184,8 +184,8 @@
       </b-card>
 
       <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: center;">
-          <button class="btn btn-danger" @click="modalUserShow = false">Reject</button>&nbsp
-        <button class="btn btn-success" @click="modalUserShow = false">Approve</button>
+        <button class="btn btn-danger" @click="actionBtn('reject', 'dataApp')">Reject</button>&nbsp
+        <button class="btn btn-success" @click="actionBtn('approve','dataApp')">Approve</button>
       </div>
     </b-modal>
   </div>
@@ -367,6 +367,59 @@ export default {
     },
     loadCaptcha() {
       this.spinner = false
+    },
+    /**
+     * Action button whether "activate" or "reject"
+     * 
+     * @param  String action    "activate" | "reject"
+     * @param  String reqFrom   where the request came from
+     * @param  Object data      object of data
+     */
+    actionBtn(action, reqFrom, data) {
+      let vm = this
+
+      if (action == 'approve') {
+        if (reqFrom == 'dataApp') {
+          vm.$swal({
+            title: 'Are you sure?',
+            text: "You are going to approve this user.",
+            type: 'warning',
+            showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            confirmButtonText: 'Approve'
+          }).then((result) => {
+            if (result.value) {
+              vm.$swal(
+                'Approved!',
+                'User successfully approved.',
+                'success'
+              )
+            }
+          })
+        }
+      } else {
+        if (reqFrom == 'dataApp') {
+          vm.$swal({
+            title: 'Are you sure?',
+            text: "You are going to reject this user.",
+            type: 'warning',
+            showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            confirmButtonText: 'Reject'
+          }).then((result) => {
+            if (result.value) {
+              vm.$swal(
+                'Rejected!',
+                'User successfully rejected.',
+                'success'
+              )
+            }
+          })
+        }
+      }
+
     }
   }
 };
@@ -380,7 +433,4 @@ export default {
   .modal-80 figure {
     text-align: center; width: 100%;
   }
-  /*.modal-80 figure > img {
-    height: 175px;
-  }*/
 </style>

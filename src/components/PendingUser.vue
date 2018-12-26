@@ -331,10 +331,10 @@ export default {
           }).then((result) => {
             if (result.value) {
               let dataInput = {
-                credit: 0,
+                // credit: 0,
                 activated: 2
               }
-              axios.post(`${process.env.VUE_APP_API_URL}/users/${data.hp}/assign-credit`, dataInput).then(res => {
+              axios.post(`${process.env.VUE_APP_API_URL}/users/${data.hp}/activated`, dataInput).then(res => {
                 vm.$swal(
                   'Approved!',
                   'User successfully approved!',

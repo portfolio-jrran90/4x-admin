@@ -15,7 +15,7 @@
               <td class="text-right">
                 <ul class="list-inline m-0">
                   <li class="list-inline-item">
-                    <a href @click.prevent="openModalUserDetails(data)">View details</a>
+                    <a href @click.prevent="openModalUserDetails(data, index)">View details</a>
                   </li>
                 </ul>
               </td>
@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <b-modal v-model="modalUserShow" size="70" title="User Detail">
+    <b-modal v-model="modalUserShow" size="70" title="User Detail" hide-footer="false">
       <b-card no-body>
         <b-tabs pills card vertical>
           <!-- Data App -->
@@ -119,6 +119,10 @@
                 <iframe :src="userDetails.captchaSrc" style="height: 350px" class="w-100 border" @load="loadCaptcha" v-show="!spinner"></iframe>
               </div>
             </div>
+            <div>
+              <button class="btn btn-success btn-lg mr-2" @click="actionBtn('approve', 'dataApp', {hp: userDetails.Hp, index: userDetails.index})">Approve</button>
+              <button class="btn btn-danger btn-lg" @click="actionBtn('reject', 'dataApp', userDetails.Hp)">Reject</button>
+            </div>
           </b-tab>
           <!-- ./Data App -->
 
@@ -182,11 +186,6 @@
 
         </b-tabs>
       </b-card>
-
-      <div slot="modal-footer" style="display: flex; flex-direction: row; justify-content: center;">
-        <button class="btn btn-danger" @click="actionBtn('reject', 'dataApp')">Reject</button>&nbsp
-        <button class="btn btn-success" @click="actionBtn('approve','dataApp')">Approve</button>
-      </div>
     </b-modal>
   </div>
 </template>
@@ -221,13 +220,11 @@ export default {
   },
   created() {
     let vm = this;
-    axios
-      .get(`${process.env.VUE_APP_API_URL}/users/pending`, {
+    axios.get(`${process.env.VUE_APP_API_URL}/users/pending`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("auth_token")
         }
-      })
-      .then(res => (vm.users = res.data));
+      }).then(res => (vm.users = res.data))
   },
   methods: {
     openModalUserDetails(user, index) {
@@ -247,7 +244,8 @@ export default {
           }
         })
         .then(res => {
-          vm.userDetails = res.data[0];
+          vm.userDetails = res.data[0]
+          Object.assign(vm.userDetails, {index: index})
 
           vm.spinner = true
 
@@ -264,103 +262,47 @@ export default {
           // extract value for Bidang Kerja
           let nameIndustri = "";
           switch (res.data[0].industri) {
-            case "industri1":
-              nameIndustri = "Angkasa & Pertahanan";
-              break;
-            case "industri2":
-              nameIndustri = "Angkutan Udara & Logistik";
-              break;
-            case "industri3":
-              nameIndustri = "Asuransi";
-              break;
-            case "industri4":
-              nameIndustri = "Bahan Kimia";
-              break;
-            case "industri5":
-              nameIndustri = "Bahan Konstruksi";
-              break;
-            case "industri6":
-              nameIndustri = "Konstruksi & Teknik";
-              break;
-            case "industri7":
-              nameIndustri = "Media";
-              break;
-            case "industri8":
-              nameIndustri = "Jasa IT";
-              break;
-            case "industri9":
-              nameIndustri = "Jasa Telekomunikasi Nirkabel";
-              break;
-            case "industri10":
-              nameIndustri = "Kelautan";
-              break;
-            case "industri11":
-              nameIndustri = "Oil, Gas & Bahan Bakar";
-              break;
-            case "":
-              nameIndustri = "-";
-              break;
-            default:
+            case "industri1":   nameIndustri = "Angkasa & Pertahanan";          break;
+            case "industri2":   nameIndustri = "Angkutan Udara & Logistik";     break;
+            case "industri3":   nameIndustri = "Asuransi";                      break;
+            case "industri4":   nameIndustri = "Bahan Kimia";                   break;
+            case "industri5":   nameIndustri = "Bahan Konstruksi";              break;
+            case "industri6":   nameIndustri = "Konstruksi & Teknik";           break;
+            case "industri7":   nameIndustri = "Media";                         break;
+            case "industri8":   nameIndustri = "Jasa IT";                       break;
+            case "industri9":   nameIndustri = "Jasa Telekomunikasi Nirkabel";  break;
+            case "industri10":  nameIndustri = "Kelautan";                      break;
+            case "industri11":  nameIndustri = "Oil, Gas & Bahan Bakar";        break;
+            case "":            nameIndustri = "-";                             break; // ???
+            default: //
           }
           vm.userdetailsBidangKerja = nameIndustri;
 
           // extract value for pekerjaan
           let pekerjaanValue = "";
           switch (res.data[0].pekerjaan) {
-            case "negeri":
-              pekerjaanValue = "Pegawai Negeri Sipil";
-              break;
-            case "swasta":
-              pekerjaanValue = "Karyawan Swasta";
-              break;
-            case "bumn":
-              pekerjaanValue = "Karyawan BUMN";
-              break;
-            case "bumd":
-              pekerjaanValue = "Karyawan BUMD";
-              break;
-            case "konstruksi":
-              pekerjaanValue = "Karyawan Jasa Konstruksi";
-              break;
-            case "POLRI":
-              pekerjaanValue = "Kepolisian RI";
-              break;
-            case "TNI":
-              pekerjaanValue = "Tentara Nasional Indonesia";
-              break;
-            case "wiraswasta":
-              pekerjaanValue = "Wiraswasta";
-              break;
-            default:
-              alert("Pekerjaan not found!");
-              break;
+            case "negeri":      pekerjaanValue = "Pegawai Negeri Sipil";        break;
+            case "swasta":      pekerjaanValue = "Karyawan Swasta";             break;
+            case "bumn":        pekerjaanValue = "Karyawan BUMN";               break;
+            case "bumd":        pekerjaanValue = "Karyawan BUMD";               break;
+            case "konstruksi":  pekerjaanValue = "Karyawan Jasa Konstruksi";    break;
+            case "POLRI":       pekerjaanValue = "Kepolisian RI";               break;
+            case "TNI":         pekerjaanValue = "Tentara Nasional Indonesia";  break;
+            case "wiraswasta":  pekerjaanValue = "Wiraswasta";                  break;
+            default:            alert("Pekerjaan not found!");
           }
           vm.userDetailsPekerjaan = pekerjaanValue;
 
           // extract value for penghasilan
           let penghasilanValue = "";
           switch (res.data[0].penghasilan) {
-            case "gol1":
-              penghasilanValue = "< Rp. 3.500.000";
-              break;
-            case "gol2":
-              penghasilanValue = "Rp. 3.500.000 - Rp 6.000.000";
-              break;
-            case "gol3":
-              penghasilanValue = "Rp. 6.000.000 - Rp 8.000.000";
-              break;
-            case "gol4":
-              penghasilanValue = "Rp. 8.000.000 - Rp 10.000.000";
-              break;
-            case "gol5":
-              penghasilanValue = "Rp. 10.000.000 - Rp 12.000.000";
-              break;
-            case "gol6":
-              penghasilanValue = "> Rp. 12.000.000";
-              break;
-            default:
-              alert("Penghasilan not found!");
-              break;
+            case "gol1":    penghasilanValue = "< Rp. 3.500.000";                 break;
+            case "gol2":    penghasilanValue = "Rp. 3.500.000 - Rp 6.000.000";    break;
+            case "gol3":    penghasilanValue = "Rp. 6.000.000 - Rp 8.000.000";    break;
+            case "gol4":    penghasilanValue = "Rp. 8.000.000 - Rp 10.000.000";   break;
+            case "gol5":    penghasilanValue = "Rp. 10.000.000 - Rp 12.000.000";  break;
+            case "gol6":    penghasilanValue = "> Rp. 12.000.000";                break;
+            default:        alert("Penghasilan not found!");
           }
           vm.userDetailsPenghasilan = penghasilanValue;
         });
@@ -385,16 +327,22 @@ export default {
             text: "You are going to approve this user.",
             type: 'warning',
             showCancelButton: true,
-            // confirmButtonColor: '#3085d6',
-            // cancelButtonColor: '#d33',
             confirmButtonText: 'Approve'
           }).then((result) => {
             if (result.value) {
-              vm.$swal(
-                'Approved!',
-                'User successfully approved.',
-                'success'
-              )
+              let dataInput = {
+                credit: 0,
+                activated: 2
+              }
+              axios.post(`${process.env.VUE_APP_API_URL}/users/${data.hp}/assign-credit`, dataInput).then(res => {
+                vm.$swal(
+                  'Approved!',
+                  'User successfully approved!',
+                  'success'
+                )
+                vm.users.splice(data.index, 1)
+                vm.modalUserShow = false
+              })
             }
           })
         }
@@ -405,14 +353,12 @@ export default {
             text: "You are going to reject this user.",
             type: 'warning',
             showCancelButton: true,
-            // confirmButtonColor: '#3085d6',
-            // cancelButtonColor: '#d33',
             confirmButtonText: 'Reject'
           }).then((result) => {
             if (result.value) {
               vm.$swal(
                 'Rejected!',
-                'User successfully rejected.',
+                'User successfully rejected!',
                 'success'
               )
             }

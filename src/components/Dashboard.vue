@@ -10,24 +10,10 @@
         <ul class="nav">
           <router-link tag="li" :to="`/users`">
             <a class="nav-link" href="#">
-              <i class="nc-icon nc-single-02"></i>
+              <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" />
               <p>Users</p>
             </a>
           </router-link>
-
-          <!-- <router-link tag="li" :to="`/users/active`">User</router-link> -->
-          <!-- <b-nav-item-dropdown text="User" right class="m-3">
-            <b-dropdown-item href="#">
-              <router-link tag="li" :to="`/users/active`">
-                <i class="nc-icon nc-single-02"></i>Active User
-              </router-link>
-            </b-dropdown-item>
-            <b-dropdown-item href="#">
-              <router-link tag="li" :to="`/users/pending`">
-                <i class="nc-icon nc-single-02"></i>Pending User
-              </router-link>
-            </b-dropdown-item>
-          </b-nav-item-dropdown> -->
 
           <b-nav-item-dropdown text="Promo" right class="m-3">
             <b-dropdown-item href="#">
@@ -91,7 +77,7 @@
             <ul class="navbar-nav ml-auto">
               <li class="nav-item">
                 <a class="nav-link" href @click.prevent="logout()">
-                  <span class="no-icon">Log out</span>
+                  <font-awesome-icon icon="sign-in-alt" class="mr-2" /> Log out
                 </a>
               </li>
             </ul>
@@ -111,8 +97,7 @@
         <div class="container">
           <nav>
             <p class="copyright text-center">
-              &copy;
-              <a href="https://empatkali.co.id/">EmpatKali</a>
+              &copy; <a href="#">EmpatKali</a>
             </p>
           </nav>
         </div>
@@ -127,13 +112,8 @@ export default {
     logout() {
       this.$auth.logout({
         // makeRequest: true,
-        success() {
-          // console.log(res.data)
-          console.log("success");
-        },
-        error() {
-          console.log("error");
-        },
+        success() {},
+        error() {},
         redirect: "/login"
       });
     }

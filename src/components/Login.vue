@@ -70,7 +70,7 @@ export default {
         .login({
           data: vm.data.body, // Axios
           rememberMe: true,
-          redirect: "/users/active",
+          redirect: "/users",
           fetchUser: false
         })
         .then(

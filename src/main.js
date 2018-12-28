@@ -56,7 +56,7 @@ const routes = [
   {
     path: '/',
     component: Dashboard,
-    redirect: '/users/active',
+    redirect: '/users',
     name: 'dashboard',
     meta: { auth: true },
     children: [

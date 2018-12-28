@@ -35,14 +35,20 @@ Vue.axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 
 import Login from './components/Login.vue'
 import Dashboard from './components/Dashboard.vue'
-import ActiveUser from './components/ActiveUser.vue'
-import PendingUser from './components/PendingUser.vue'
+
 import Transaction from './components/Transaction.vue'
 import ApprovePromo from './components/ApprovePromo.vue'
 import AddMerchantUser from './components/AddMerchantUser.vue'
 import AllPromotion from './components/AllPromotion.vue'
 import AddCategory from './components/AddCategory.vue'
 import AssignCategory from './components/AssignCategory.vue'
+
+// User
+import User from './components/users/Index.vue'
+import ActiveUser from './components/users/ActiveUser.vue'
+import PendingUser from './components/users/PendingUser.vue'
+Vue.component('active-user', ActiveUser)
+Vue.component('pending-user', PendingUser)
 
 const routes = [
   { path: '*', redirect: '/login' },
@@ -54,9 +60,7 @@ const routes = [
     name: 'dashboard',
     meta: { auth: true },
     children: [
-      // { path: '/users/:status', component: User },
-      { path: '/users/active', component: ActiveUser },
-      { path: '/users/pending', component: PendingUser },
+      { path: '/users', component: User },
       { path: '/transactions', component: Transaction },
       { path: '/approvepromo', component: ApprovePromo },
       { path: '/addmerchantuser', component: AddMerchantUser },

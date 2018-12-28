@@ -8,7 +8,15 @@
           </a>
         </div>
         <ul class="nav">
-          <b-nav-item-dropdown text="User" right class="m-3">
+          <router-link tag="li" :to="`/users`">
+            <a class="nav-link" href="#">
+              <i class="nc-icon nc-single-02"></i>
+              <p>Users</p>
+            </a>
+          </router-link>
+
+          <!-- <router-link tag="li" :to="`/users/active`">User</router-link> -->
+          <!-- <b-nav-item-dropdown text="User" right class="m-3">
             <b-dropdown-item href="#">
               <router-link tag="li" :to="`/users/active`">
                 <i class="nc-icon nc-single-02"></i>Active User
@@ -19,7 +27,7 @@
                 <i class="nc-icon nc-single-02"></i>Pending User
               </router-link>
             </b-dropdown-item>
-          </b-nav-item-dropdown>
+          </b-nav-item-dropdown> -->
 
           <b-nav-item-dropdown text="Promo" right class="m-3">
             <b-dropdown-item href="#">

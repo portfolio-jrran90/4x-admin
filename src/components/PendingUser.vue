@@ -72,7 +72,8 @@
                 <table class="table table-bordered table-sm">
                   <tr>
                     <td class="table-info">Nama</td>
-                    <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td>
+                    <!-- <td class="table-secondary">{{ `${userDetails.fname} ${userDetails.lname}` }}</td> -->
+                    <td class="table-secondary">{{ userDetails.Name }}</td>
                   </tr>
                   <tr>
                     <td class="table-info">Tempat, Tanggal Lahir</td>
@@ -219,7 +220,8 @@ export default {
     };
   },
   created() {
-    let vm = this;
+    let vm = this
+
     axios.get(`${process.env.VUE_APP_API_URL}/users/pending`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("auth_token")
@@ -249,8 +251,9 @@ export default {
 
           vm.spinner = true
 
-          // refer to issue #6 under comment section
-          vm.userDetails['captchaSrc'] = 'https://sandbox2.empatkali.co.id/captcha.php?nama=dhonald%20johannes&nik=1671071103940019'
+          // vm.userDetails['captchaSrc'] = 'https://sandbox2.empatkali.co.id/captcha.php?nama=dhonald%20johannes&nik=1671071103940019'
+          vm.userDetails['captchaSrc'] = `https://sandbox2.empatkali.co.id/captcha.php?nama=${vm.userDetails.Name}&nik=${vm.userDetails.idcard}`
+          console.log('captchaSrc', vm.userDetails.captchaSrc)
 
           // extract image
           let parseImage = JSON.parse(res.data[0].ktp); // lol this, I need to parse???

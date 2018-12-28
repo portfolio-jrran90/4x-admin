@@ -382,4 +382,8 @@ export default {
   .modal-80 figure {
     text-align: center; width: 100%;
   }
+  .figure-img {
+    width: 180px; height: 180px;
+    object-fit: cover;
+  }
 </style>

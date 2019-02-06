@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<div class="row mb-3">
+		User here
+		<!-- <div class="row mb-3">
 			<div class="col">
 				<div class="form-inline">
 				  <label class="my-1 mr-2" for="labelUserStatus">List of </label>
@@ -15,7 +16,7 @@
 			<div class="col">
 				<component :is="currentUserStatus"></component>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </template>
 

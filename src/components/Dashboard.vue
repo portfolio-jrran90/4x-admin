@@ -4,10 +4,17 @@
       <div class="sidebar-wrapper">
         <div class="logo">
           <a href class="simple-text">
-            <img src="https://empatkali.co.id/img/logo.svg" alt="empatkali logo">
+            <img src="https://empatkali.co.id/assets/img/logo-final.png" alt="empatkali logo" style="width: 60px">
           </a>
         </div>
         <ul class="nav">
+          <router-link tag="li" :to="{ name: 'merchant' }">
+            <a class="nav-link" href="#">
+              <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" />
+              <p>Merchants</p>
+            </a>
+          </router-link>
+
           <router-link tag="li" :to="`/users`">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" />

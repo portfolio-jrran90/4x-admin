@@ -16,10 +16,10 @@ import VueSweetalert2 from 'vue-sweetalert2'
 
 // Font awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSignInAlt, faStore } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faSignInAlt, faUser)
+library.add(faSignInAlt, faUser, faStore)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 import App from './App.vue'
@@ -51,6 +51,9 @@ import PendingUser from './components/users/PendingUser.vue'
 Vue.component('active-user', ActiveUser)
 Vue.component('pending-user', PendingUser)
 
+// Merchants
+import Merchant from './components/merchants/Index.vue'
+
 const routes = [
   { path: '*', redirect: '/login' },
   { path: '/login', component: Login, meta: { auth: false } },
@@ -61,6 +64,7 @@ const routes = [
     name: 'dashboard',
     meta: { auth: true },
     children: [
+      { path: '/merchants', component: Merchant, name: 'merchant' },
       { path: '/users', component: User },
       { path: '/transactions', component: Transaction },
       { path: '/approvepromo', component: ApprovePromo },
@@ -73,8 +77,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  // hashbang: false,
-  linkActiveClass: 'active', // set as default value for active links
+  linkActiveClass: 'active',
   mode: 'history',
   routes,
 })
@@ -89,22 +92,21 @@ Vue.use(require('@websanova/vue-auth'), {
       })
     },
     response(res) {
-      var token = res.data.jwt
+      var token = res.data.token
       if (token) {
         token = token.split(/Bearer\:?\s?/i)
         return token[token.length > 1 ? 1 : 0].trim()
       }
     },
   },
-  // auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
   loginData: {
-    url: `${process.env.VUE_APP_API_URL}/auth`,
+    url: `${process.env.VUE_APP_API_URL}/api/auth/login`,
     method: 'POST',
     redirect: '/login',
   },
-  authRedirect: { path: `${process.env.VUE_APP_API_URL}/auth` },
+  authRedirect: { path: `${process.env.VUE_APP_API_URL}/api/auth/login` },
   tokenDefaultName: 'auth_token',
   refreshData: { enabled: false },
   fetchData: { enabled: false },

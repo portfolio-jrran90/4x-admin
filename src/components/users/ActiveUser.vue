@@ -1,40 +1,38 @@
 <template>
   <div>
-    <h2>User Aktif</h2>
+    <h2>Active User</h2>
     <div class="row">
       <div class="col">
         <table class="table table-hover table-striped">
           <thead>
             <tr>
-              <th>Nama</th>
+              <th>Name</th>
               <th>Status</th>
-              <th>Handphone</th>
-              <th style="text-align: right !important">Kredit Dimiliki</th>
-              <th style="text-align: right !important">Kredit Terpakai</th>
+              <th>Mobile #</th>
+              <th style="text-align: right !important">Credit</th>
+              <th style="text-align: right !important">Used Credit</th>
               <th style="text-align: center !important">Transaksi</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in users" v-if="data.activated != 0 && data.activated != 1">
-              <td>
-                {{ `${data.fname} ${data.lname}` }}
-              </td>
+            <tr v-for="(data, index) in users">
+              <td>{{ data.detail?data.detail.name:'--' }}</td>
               <td>
                   <span
                     class="badge badge-success"
-                    v-if="data.activated == 2 && data.credit != 0"
+                    v-if="data.status == 2 && data.credit != 0"
                   >Approve User</span>
                   <span
                     class="badge badge-warning"
-                    v-if="data.activated == 2 && data.credit == 0"
+                    v-if="data.status == 2 && data.credit == 0"
                   >Pending User</span>
                   <span
                     class="badge badge-danger"
-                    v-if="data.activated == 3"
+                    v-if="data.status == 3"
                   >Red User</span>
               </td>
-              <td>{{ data.Hp }}</td>
+              <td>{{ data.mobileNumber }}</td>
               <td class="text-right">
                 {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit) }}
                 <a
@@ -46,7 +44,7 @@
               </td>
               <td
                 class="text-right"
-              >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingcredit) }}</td>
+              >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingCredit) }}</td>
               <td class="text-right">
                 <a href @click.prevent="openModal('ViewTransactions', data)">
                   <small>Lihat Transaksi</small>
@@ -76,7 +74,9 @@
     | =============================================================================-->
     <b-modal v-model="modalAssignCredit" size="sm">
       <div slot="modal-header">
-        <h4>Tetapkan Kredit Limit {{ modalUserInfo.data.Name }}</h4>
+        <h4>
+          Tetapkan Kredit Limit<br>{{ modalUserInfo.data.detail?modalUserInfo.data.detail.name:'--' }}
+        </h4>
       </div>
       <div class="row">
         <div class="col">
@@ -109,6 +109,7 @@
               placeholder="0.00"
               v-model="inputCredit"
             >
+            <small>Note: credit minimum of 100</small>
           </div>
         </div>
       </div>
@@ -137,7 +138,7 @@
           <table class="table table-sm">
             <thead>
               <tr>
-                <th>No Invoice</th>
+                <th>Transaction #</th>
                 <th>Merchant</th>
                 <th>Waktu Pembelian</th>
                 <th>Waktu Expire </th>
@@ -147,12 +148,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="data in modalUserTransactionInfo.data">
-                <td>{{ data.No }}</td>
-                <td>{{ data.merchant }}</td>
-                <td>{{ data.date | moment("YYYY-MM-DD hh-mm-ss") }}</td>
+              <tr v-for="data in modalUserTransactionInfo">
+                <td>{{ data.transactionNumber }}</td>
+                <td>{{ data.store.merchant.name }}</td>
+                <td>{{ data.createdAt | moment("YYYY-MM-DD hh:mm A") }}</td>
                 <td>{{ data.expire | moment("YYYY-MM-DD hh-mm-ss") }}</td>
                 <td class="text-right">
+                  {{ data.status }}
                   <span
                     class="badge badge-pill badge-danger"
                     v-if="data.status==0"
@@ -165,7 +167,7 @@
                 </td>
                 <td
                   class="text-right"
-                >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.Total) }}</td>
+                >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.total) }}</td>
                 <!-- <td class="text-right">
 									view
                 </td>-->
@@ -203,13 +205,12 @@ export default {
   },
   created() {
     let vm = this;
-    axios
-      .get(`${process.env.VUE_APP_API_URL}/users`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("auth_token")
-        }
-      })
-      .then(res => (vm.users = res.data));
+    axios.get(`${process.env.VUE_APP_API_URL}/api/users?limit=50&skip=0&status=2`, {
+      headers: {
+        'Authorization': process.env.VUE_APP_AUTHORIZATION,
+        'x-access-token': localStorage.getItem("auth_token")
+      }
+    }).then(res => vm.users = res.data)
   },
   methods: {
     openModal(type, user, index) {
@@ -224,23 +225,22 @@ export default {
           break;
         case "ViewTransactions":
           // clear all fields
-          vm.modalUserTransactionInfo = {};
-          vm.modalShowViewTransactions = true;
-          axios
-            .get(
-              `${process.env.VUE_APP_API_URL}/users/${user.Hp}/transactions`,
-              {
-                headers: {
-                  Authorization: "Bearer " + localStorage.getItem("auth_token")
-                }
-              }
-            )
-            .then(res => {
-              vm.modalUserTransactionInfo = {
-                data: res.data,
-                user: user
-              };
-            });
+          vm.modalUserTransactionInfo = {}
+          vm.modalShowViewTransactions = true
+
+          axios.get(`${process.env.VUE_APP_API_URL}/api/approvedtransactions`, {
+            headers: {
+              'Authorization': process.env.VUE_APP_AUTHORIZATION,
+              'x-access-token': localStorage.getItem("auth_token")
+            }
+          },
+          {
+            params: {
+              skip: 0,
+              limit: 0,
+              user: user._id
+            }
+          }).then(res => vm.modalUserTransactionInfo = res.data)
           break;
         default:
           alert("error!, contact administrator");
@@ -254,37 +254,40 @@ export default {
      * @param  var @todo the values accepted are 'increase' and 'decrease'
      */
     topUpCredit(userData, todo) {
-      let vm = this;
-      let dataInput = {
-        credit: todo == "Assign" ? vm.inputCredit : -vm.inputCredit,
-        activated: "2"
-      };
+      let vm = this
+      // let todo = "Assign" ? vm.inputCredit : -vm.inputCredit
+      let dataInput = { user: userData.data._id }
+
+      // Note: simplify
+      if (todo == "Assign") {
+        Object.assign(dataInput, { add: parseFloat(vm.inputCredit) })
+      } else {
+        Object.assign(dataInput, { subtract: parseFloat(vm.inputCredit) })
+      }
 
       if (confirm(`${todo} ${vm.inputCredit} credit?`)) {
-        axios
-          .post(
-            `${process.env.VUE_APP_API_URL}/users/${
-              userData.data.Hp
-            }/assign-credit`,
-            dataInput,
-            {
-              headers: {
-                Authorization: "Bearer " + localStorage.getItem("auth_token")
-              }
-            }
-          )
-          .then(() => {
+        axios.post(`${process.env.VUE_APP_API_URL}/api/users/updatecredit`, dataInput, {
+          headers: {
+            'Authorization': process.env.VUE_APP_AUTHORIZATION,
+            'x-access-token': localStorage.getItem("auth_token")
+          }
+        }).then(() => {
             alert("Credit Balance Updated!");
-            vm.users[userData.index].credit =
-              parseFloat(vm.users[userData.index].credit) +
-              parseFloat(dataInput.credit);
-            vm.inputCredit = 0;
-            vm.modalAssignCredit = false;
+            // vm.users[userData.index].credit = parseFloat(vm.users[userData.index].credit) + parseFloat(dataInput.credit)
+            axios.get(`${process.env.VUE_APP_API_URL}/api/users?limit=50&skip=0&status=2`, {
+              headers: {
+                'Authorization': process.env.VUE_APP_AUTHORIZATION,
+                'x-access-token': localStorage.getItem("auth_token")
+              }
+            }).then(res2 => vm.users = res2.data)
+
+            vm.inputCredit = 0
+            vm.modalAssignCredit = false
           });
       }
     },
     /**
-     * Unba / Ban User
+     * Unban / Ban User
      *
      * @param var toDo  value: ban || unban
      * @param object user  contains all user details

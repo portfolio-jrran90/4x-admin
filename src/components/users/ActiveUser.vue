@@ -221,17 +221,10 @@ export default {
           vm.modalUserTransactionInfo = {}
           vm.modalShowViewTransactions = true
 
-          axios.get(`${process.env.VUE_APP_API_URL}/api/approvedtransactions`, {
+          axios.get(`${process.env.VUE_APP_API_URL}/api/approvedtransactions?skip=0&limit=0&user=${user._id}`,{
             headers: {
               'Authorization': process.env.VUE_APP_AUTHORIZATION,
               'x-access-token': localStorage.getItem("auth_token")
-            }
-          },
-          {
-            params: {
-              skip: 0,
-              limit: 0,
-              user: user._id
             }
           }).then(res => {
             vm.modalUserTransactionInfo = res.data

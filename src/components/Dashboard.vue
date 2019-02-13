@@ -8,13 +8,6 @@
           </a>
         </div>
         <ul class="nav">
-          <router-link tag="li" :to="{ name: 'merchant' }">
-            <a class="nav-link" href="#">
-              <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" />
-              <p>Merchants</p>
-            </a>
-          </router-link>
-
           <router-link tag="li" :to="`/users`">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" />
@@ -22,7 +15,14 @@
             </a>
           </router-link>
 
-          <b-nav-item-dropdown text="Promo" right class="m-3">
+          <router-link tag="li" :to="{ name: 'merchant' }">
+            <a class="nav-link" href="#">
+              <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" />
+              <p>Merchants</p>
+            </a>
+          </router-link>
+
+          <!-- <b-nav-item-dropdown text="Promo" right class="m-3">
             <b-dropdown-item href="#">
               <router-link tag="li" :to="`/approvepromo`">
                 <i class="nc-icon nc-check-2"></i>
@@ -47,9 +47,9 @@
                 <p>Assign Category</p>
               </router-link>
             </b-dropdown-item>
-          </b-nav-item-dropdown>
+          </b-nav-item-dropdown> -->
 
-          <router-link tag="li" :to="`/transactions`" class="m-3">
+          <!-- <router-link tag="li" :to="`/transactions`" class="m-3">
             <a class="nav-link" href="#">
               <p>Transaction</p>
             </a>
@@ -59,7 +59,7 @@
             <a class="nav-link" href="#">
               <p>Add Merchant User</p>
             </a>
-          </router-link>
+          </router-link> -->
         </ul>
       </div>
     </div>

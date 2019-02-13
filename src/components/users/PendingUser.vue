@@ -58,15 +58,15 @@
                 <td class="table-info">Tanggal Lahir</td>
                 <td
                   class="table-secondary"
-                >{{ (userDetails.detail)?userDetails.detail.birthdate:'---' }}</td>
-                <td colspan="2">----------</td>
+                >{{ (userDetails.detail)?(new Date(userDetails.detail.birthdate).toLocaleDateString("en-US")):'---' }}</td>
+                <td colspan="2">{{ processVerificationSystem.age }}</td>
               </tr>
               <tr>
                 <td class="table-info">Email</td>
                 <td
                   class="table-secondary"
                 >{{ (userDetails.detail)?userDetails.detail.email:'---' }}</td>
-                <td colspan="2">----------</td>
+                <td colspan="2">{{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}</td>
               </tr>
             </table>
           </div>
@@ -105,7 +105,7 @@
               <tr>
                 <td class="table-info">Penghasilan</td>
                 <td class="table-secondary"> {{ (userDetails.detail)?userDetailsPenghasilan:'---' }}</td>
-                <td colspan="2">----------</td>
+                <td colspan="2">rekomendasi limit dari sistem <strong>{{ processVerificationSystem.penghasilan }}</strong></td>
               </tr>
               <tr>
                 <td class="table-info">No. NPWP</td>
@@ -246,8 +246,9 @@ export default {
       userdetailsBidangKerja: "",
       userDetailsPekerjaan: "",
       userDetailsPenghasilan: "",
+      spinner: false,
 
-      spinner: false
+      processVerificationSystem: {}
     };
   },
   created() {
@@ -314,15 +315,41 @@ export default {
       // extract value for penghasilan
       let penghasilanValue = "";
       switch (user.detail.penghasilan) {
-        case "gol1":    penghasilanValue = "< Rp. 3.500.000";                 break;
-        case "gol2":    penghasilanValue = "Rp. 3.500.000 - Rp 6.000.000";    break;
-        case "gol3":    penghasilanValue = "Rp. 6.000.000 - Rp 8.000.000";    break;
-        case "gol4":    penghasilanValue = "Rp. 8.000.000 - Rp 10.000.000";   break;
-        case "gol5":    penghasilanValue = "Rp. 10.000.000 - Rp 12.000.000";  break;
-        case "gol6":    penghasilanValue = "> Rp. 12.000.000";                break;
-        default:        alert("Penghasilan not found!");
+        case "gol1":
+          penghasilanValue = "< Rp. 3.500.000";
+          vm.processVerificationSystem.penghasilan = 'rejected';
+          break;
+        case "gol2":
+          penghasilanValue = "Rp. 3.500.000 - Rp 6.000.000";
+          vm.processVerificationSystem.penghasilan = "Rp. 1.000.000";
+          break;
+        case "gol3":
+          penghasilanValue = "Rp. 6.000.000 - Rp 8.000.000";
+          vm.processVerificationSystem.penghasilan = "Rp. 2.000.000";
+          break;
+        case "gol4":
+          penghasilanValue = "Rp. 8.000.000 - Rp 10.000.000";
+          vm.processVerificationSystem.penghasilan = "Rp. 2.500.000";
+          break;
+        case "gol5":
+          penghasilanValue = "Rp. 10.000.000 - Rp 12.000.000";
+          vm.processVerificationSystem.penghasilan = "Rp. 3.000.000";
+          break;
+        case "gol6":
+          penghasilanValue = "> Rp. 12.000.000";
+          vm.processVerificationSystem.penghasilan = "Rp. 3.500.000";
+          break;
+
+        default: vm.processVerificationSystem.penghasilan = "No data found!";
       }
       vm.userDetailsPenghasilan = penghasilanValue;
+
+      // caculate age
+      // Note: just moment
+      let ageDiff = new Date(Date.now() - new Date(user.detail.birthdate).getTime())
+      vm.processVerificationSystem.age = Math.abs(ageDiff.getUTCFullYear() - 1970)
+
+      
     },
     loadCaptcha() {
       this.spinner = false

@@ -6,7 +6,7 @@
 		</h2>
 		<div class="row">
 			<div class="col">
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero ut vel earum eaque doloremque, delectus eum rem ex, quam quae quos suscipit nostrum mollitia iste corrupti cumque voluptate labore dolor!
+				<!-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero ut vel earum eaque doloremque, delectus eum rem ex, quam quae quos suscipit nostrum mollitia iste corrupti cumque voluptate labore dolor! -->
 			</div>
 		</div>
 

@@ -139,22 +139,20 @@
             <thead>
               <tr>
                 <th>Transaction #</th>
-                <th>Merchant</th>
+                <th>Store</th>
                 <th>Waktu Pembelian</th>
                 <th>Waktu Expire </th>
                 <th class="text-right">Status</th>
                 <th class="text-right">Total</th>
-                <!-- <th></th> -->
               </tr>
             </thead>
             <tbody>
               <tr v-for="data in modalUserTransactionInfo">
                 <td>{{ data.transactionNumber }}</td>
-                <td>{{ data.store.merchant.name }}</td>
+                <td>{{ data.store.name }}</td>
                 <td>{{ data.createdAt | moment("YYYY-MM-DD hh:mm A") }}</td>
-                <td>{{ data.expire | moment("YYYY-MM-DD hh-mm-ss") }}</td>
+                <td>{{ data.termins[3].dueDate | moment("YYYY-MM-DD hh:mm A") }}</td>
                 <td class="text-right">
-                  {{ data.status }}
                   <span
                     class="badge badge-pill badge-danger"
                     v-if="data.status==0"
@@ -168,9 +166,6 @@
                 <td
                   class="text-right"
                 >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.total) }}</td>
-                <!-- <td class="text-right">
-									view
-                </td>-->
               </tr>
             </tbody>
           </table>
@@ -187,9 +182,6 @@
 import axios from "axios";
 
 export default {
-  computed: {
-
-  },
   data() {
     return {
       modalAssignCredit: false,
@@ -200,7 +192,8 @@ export default {
       },
       modalUserTransactionInfo: {},
       inputCredit: 0,
-      selectAssignCredit: ""
+      selectAssignCredit: "",
+      userCurrentTerms: 1 // default is one, meaning he has paid the downpayment
     };
   },
   created() {
@@ -240,7 +233,19 @@ export default {
               limit: 0,
               user: user._id
             }
-          }).then(res => vm.modalUserTransactionInfo = res.data)
+          }).then(res => {
+            vm.modalUserTransactionInfo = res.data
+
+            // get the users current terms
+            // awts
+            // vm.userCurrentTerms = res.data.termins
+
+              /*(res.data).forEach(item => {
+                console.log(item)
+              })*/
+
+            // console.log('termins', res.data)
+          })
           break;
         default:
           alert("error!, contact administrator");
@@ -309,6 +314,7 @@ export default {
           });
       }
     }
+
   }
 };
 </script>

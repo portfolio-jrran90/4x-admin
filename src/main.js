@@ -22,6 +22,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faSignInAlt, faUser, faStore)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+import VeeValidate from 'vee-validate';
+
+
 import App from './App.vue'
 
 Vue.config.productionTip = false
@@ -31,6 +34,7 @@ Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
 Vue.use(VueMoment)
 Vue.use(VueSweetalert2)
+Vue.use(VeeValidate)
 
 Vue.axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 

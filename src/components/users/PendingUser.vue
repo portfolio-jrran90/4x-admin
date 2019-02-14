@@ -30,175 +30,175 @@
 
     <b-modal v-model="modalUserShow" size="70" title="User Detail" hide-footer="false">
       <!-- Step 1 -->
-      <div class="card card-body">
-        <div class="row">
-          <div class="col-md-2">
-            <h2 class="text-center">Step 1</h2>
-          </div>
-          <div class="col">
-            <table class="table table-hover table-striped table-sm table-bordered mb-0">
-              <tr>
-                <td>Field</td>
-                <td>Input User in App</td>
-                <td>Proses Verifikasi Sistem</td>
-              </tr>
-              <tr>
-                <td class="table-info">Nama</td>
-                <td class="table-secondary">{{ (userDetails.detail)?userDetails.detail.name:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-              <tr>
-                <td class="table-info">Tempat Lahir</td>
-                <td
-                  class="table-secondary"
-                >{{ (userDetails.detail)?userDetails.detail.birthplace:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-              <tr>
-                <td class="table-info">Tanggal Lahir</td>
-                <td
-                  class="table-secondary"
-                >{{ (userDetails.detail)?(new Date(userDetails.detail.birthdate).toLocaleDateString("en-US")):'---' }}</td>
-                <td colspan="2">{{ processVerificationSystem.age }}</td>
-              </tr>
-              <tr>
-                <td class="table-info">Email</td>
-                <td
-                  class="table-secondary"
-                >{{ (userDetails.detail)?userDetails.detail.email:'---' }}</td>
-                <td colspan="2">{{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}</td>
-              </tr>
-            </table>
+      <div class="card">
+        <div class="card-body">
+          <h2 class="mb-3">Step 1</h2>
+          <div class="row">
+            <div class="col">
+              <table class="table table-hover table-striped table-sm table-bordered mb-0">
+                <tr>
+                  <td>Field</td>
+                  <td>Input User in App</td>
+                  <td>Proses Verifikasi Sistem</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Nama</td>
+                  <td class="table-secondary">{{ (userDetails.detail)?userDetails.detail.name:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Tempat Lahir</td>
+                  <td
+                    class="table-secondary"
+                  >{{ (userDetails.detail)?userDetails.detail.birthplace:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Tanggal Lahir</td>
+                  <td
+                    class="table-secondary"
+                  >{{ (userDetails.detail)?(new Date(userDetails.detail.birthdate).toLocaleDateString("en-US")):'---' }}</td>
+                  <td colspan="2">{{ processVerificationSystem.age }}</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Email</td>
+                  <td
+                    class="table-secondary"
+                  >{{ (userDetails.detail)?userDetails.detail.email:'---' }}</td>
+                  <td colspan="2">{{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
       <!-- ./Step 1 -->
 
       <!-- Step 2 -->
-      <div class="card card-body">
-        <div class="row">
-          <div class="col-md-2">
-            <h2 class="text-center">Step 2</h2>
-          </div>
-          <div class="col">
-            <table class="table table-hover table-striped table-sm table-bordered mb-0">
-              <tr>
-                <td>Field</td>
-                <td>Input User in App</td>
-                <td>Proses Verifikasi Sistem</td>
-              </tr>
-              <tr>
-                <td class="table-info">Bidang Kerja</td>
-                <td class="table-secondary">{{ (userDetails.detail)?userdetailsBidangKerja:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-              <tr>
-                <td class="table-info">Pekerjaan</td>
-                <td class="table-secondary">{{ (userDetails.detail)?userDetails.detail.pekerjaan:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-              <tr>
-                <td class="table-info">Pendidikan Terakhir</td>
-                <td class="table-secondary">{{ (userDetails.detail)?userDetails.detail.pendidikan:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-              <tr>
-                <td class="table-info">Penghasilan</td>
-                <td class="table-secondary"> {{ (userDetails.detail)?userDetailsPenghasilan:'---' }}</td>
-                <td colspan="2">rekomendasi limit dari sistem <strong>{{ processVerificationSystem.penghasilan }}</strong></td>
-              </tr>
-              <tr>
-                <td class="table-info">No. NPWP</td>
-                <td class="table-secondary">{{ userDetails.npwp || '---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-            </table>
+      <div class="card">
+        <div class="card-body">
+          <h2 class="mb-3">Step 2</h2>
+          <div class="row">
+            <div class="col">
+              <table class="table table-hover table-striped table-sm table-bordered mb-0">
+                <tr>
+                  <td>Field</td>
+                  <td>Input User in App</td>
+                  <td>Proses Verifikasi Sistem</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Bidang Kerja</td>
+                  <td class="table-secondary">{{ (userDetails.detail)?userdetailsBidangKerja:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Pekerjaan</td>
+                  <td class="table-secondary">{{ (userDetails.detail)?userDetails.detail.pekerjaan:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Pendidikan Terakhir</td>
+                  <td class="table-secondary">{{ (userDetails.detail)?userDetails.detail.pendidikan:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Penghasilan</td>
+                  <td class="table-secondary"> {{ (userDetails.detail)?userDetailsPenghasilan:'---' }}</td>
+                  <td colspan="2">rekomendasi limit dari sistem <strong>{{ processVerificationSystem.penghasilan }}</strong></td>
+                </tr>
+                <tr>
+                  <td class="table-info">No. NPWP</td>
+                  <td class="table-secondary">{{ userDetails.npwp || '---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
       <!-- ./Step 2 -->
 
       <!-- Step 3 -->
-      <div class="card card-body">
-        <div class="row">
-          <div class="col-md-2">
-            <h2 class="text-center">Step 3</h2>
-          </div>
-          <div class="col-md-2">
-            <div class="card mb-0">
-              <div class="card-body">
-                <figure class="figure m-0">
-                  <img :src="((userDetails.ktp)?userDetails.ktp.image:'') || '/assets/img/default-photo.svg'" class="figure-img img-fluid rounded" alt="ktp">
-                  <figcaption class="figure-caption text-center">KTP</figcaption>
-                </figure>
+      <div class="card">
+        <div class="card-body">
+          <h2 class="mb-3">Step 3</h2>
+          <div class="row">
+            <div class="col">
+              <div class="card mb-0">
+                <div class="card-body">
+                  <figure class="figure m-0">
+                    <img :src="((userDetails.ktp)?userDetails.ktp.image:'') || '/assets/img/default-photo.svg'" class="figure-img img-fluid rounded" alt="ktp">
+                    <figcaption class="figure-caption text-center">KTP</figcaption>
+                  </figure>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-2">
-            <div class="card mb-0">
-              <div class="card-body">
-                <figure class="figure m-0">
-                  <img
-                    :src="userDetails.selfie || '/assets/img/default-photo.svg'"
-                    class="figure-img img-fluid rounded"
-                    alt="selfie with ktp"
-                  >
-                  <figcaption class="figure-caption text-center">Selfie with KTP</figcaption>
-                </figure>
-              </div>
-            </div>            
-          </div>
-          <div class="col-md-6">
-            <table class="table table-bordered table-sm">
-              <tr>
-                <td>Field</td>
-                <td>Input User in App</td>
-                <td>Proses Verifikasi Sistem</td>
-              </tr>
-              <tr>
-                <td class="table-info">No. KTP</td>
-                <td class="table-secondary">{{ (userDetails.detail)?userDetails.ktp.number:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-            </table>
+            <div class="col">
+              <div class="card mb-0">
+                <div class="card-body">
+                  <figure class="figure m-0">
+                    <img
+                      :src="userDetails.selfie || '/assets/img/default-photo.svg'"
+                      class="figure-img img-fluid rounded"
+                      alt="selfie with ktp"
+                    >
+                    <figcaption class="figure-caption text-center">Selfie with KTP</figcaption>
+                  </figure>
+                </div>
+              </div>            
+            </div>
+            <div class="col-md-6">
+              <table class="table table-bordered table-sm">
+                <tr>
+                  <td>Field</td>
+                  <td>Input User in App</td>
+                  <td>Proses Verifikasi Sistem</td>
+                </tr>
+                <tr>
+                  <td class="table-info">No. KTP</td>
+                  <td class="table-secondary">{{ (userDetails.detail)?userDetails.ktp.number:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
       <!-- ./Step 3 -->
 
       <!-- Step 4 -->
-      <div class="card card-body">
-        <div class="row">
-          <div class="col-md-2">
-            <h2 class="text-center">Step 4</h2>
-          </div>
-          <div class="col">
-            <table class="table table-hover table-striped table-sm table-bordered mb-0">
-              <tr>
-                <td>Field</td>
-                <td>Input User in App</td>
-                <td>Proses Verifikasi Sistem</td>
-              </tr>
-              <tr>
-                <td class="table-info">Nama Kontak Darurat</td>
-                <td class="table-secondary">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.name:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-              <tr>
-                <td class="table-info">Hubungan</td>
-                <td
-                  class="table-secondary"
-                >{{ (userDetails.emergencyContact)?userDetails.emergencyContact.type:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-              <tr>
-                <td class="table-info">Nomor Kontak Darurat</td>
-                <td
-                  class="table-secondary"
-                >{{ (userDetails.emergencyContact)?userDetails.emergencyContact.mobileNumber:'---' }}</td>
-                <td colspan="2">----------</td>
-              </tr>
-            </table>
+      <div class="card">
+        <div class="card-body">
+          <h2 class="mb-3">Step 4</h2>
+          <div class="row">
+            <div class="col">
+              <table class="table table-hover table-striped table-sm table-bordered mb-0">
+                <tr>
+                  <td>Field</td>
+                  <td>Input User in App</td>
+                  <td>Proses Verifikasi Sistem</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Nama Kontak Darurat</td>
+                  <td class="table-secondary">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.name:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Hubungan</td>
+                  <td
+                    class="table-secondary"
+                  >{{ (userDetails.emergencyContact)?userDetails.emergencyContact.type:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+                <tr>
+                  <td class="table-info">Nomor Kontak Darurat</td>
+                  <td
+                    class="table-secondary"
+                  >{{ (userDetails.emergencyContact)?userDetails.emergencyContact.mobileNumber:'---' }}</td>
+                  <td colspan="2">----------</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -208,7 +208,9 @@
       <div class="card">
         <div class="card-body">
           <h2>Note</h2>
-          <textarea class="form-control" rows="10" cols="15"></textarea>
+          <textarea class="form-control" rows="10" cols="15" v-validate="'required'" name="note"
+            :class="{'is-invalid': errors.first('note')}"></textarea>
+          <small :class="{'invalid-feedback': errors.first('note')}" v-show="errors.first('note')">{{ errors.first('note') }}</small>
         </div>
       </div>
       <!-- ./Note -->
@@ -366,30 +368,36 @@ export default {
 
       if (action == 'approve') {
         if (reqFrom == 'dataApp') {
-          vm.$swal({
-            title: 'Are you sure?',
-            text: "You are going to approve this user.",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Approve'
-          }).then((result) => {
-            if (result.value) {
-              axios.post(`${process.env.VUE_APP_API_URL}/api/users/activatinguser`, data, {
-                headers: {
-                  'Authorization': process.env.VUE_APP_AUTHORIZATION,
-                  'x-access-token': localStorage.getItem("auth_token"),
-                  'Content-Type': 'application/json'
+          vm.$validator.validateAll().then((resultValidator) => {
+            if (resultValidator) {
+              vm.$swal({
+                title: 'Are you sure?',
+                text: "You are going to approve this user.",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Approve'
+              }).then((result) => {
+                if (result.value) {
+                  axios.post(`${process.env.VUE_APP_API_URL}/api/users/activatinguser`, data, {
+                    headers: {
+                      'Authorization': process.env.VUE_APP_AUTHORIZATION,
+                      'x-access-token': localStorage.getItem("auth_token"),
+                      'Content-Type': 'application/json'
+                    }
+                  }).then(res => {
+                    vm.$swal(
+                      'Success!',
+                      'Email verification has been sent to the user!',
+                      'success'
+                    )
+                    // vm.users.splice(data.index, 1)
+                    vm.modalUserShow = false
+                  })
                 }
-              }).then(res => {
-                vm.$swal(
-                  'Success!',
-                  'Email verification has been sent to the user!',
-                  'success'
-                )
-                // vm.users.splice(data.index, 1)
-                vm.modalUserShow = false
               })
+              return;
             }
+            // alert('Correct them errors!');
           })
         }
       } else {

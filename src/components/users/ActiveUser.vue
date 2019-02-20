@@ -154,15 +154,10 @@
                 <td>{{ data.createdAt | moment("YYYY-MM-DD hh:mm A") }}</td>
                 <td>{{ data.termins[3].dueDate | moment("YYYY-MM-DD hh:mm A") }}</td>
                 <td class="text-right">
-                  <span
-                    class="badge badge-pill badge-danger"
-                    v-if="data.status==0"
-                  >havent paid at all</span>
-                  <span
-                    class="badge badge-pill badge-warning"
-                    v-if="data.status==1"
-                  >paid initial amount</span>
-                  <span class="badge badge-pill badge-success" v-if="data.status==2">paid</span>
+                  <span class="badge badge-primary" v-if="data.terms_paid === 1">paid initial amount</span>
+                  <span class="badge badge-secondary" v-if="data.terms_paid === 2">paid cicilan kedua</span>
+                  <span class="badge badge-warning" v-if="data.terms_paid === 3">paid cicilan ketiga</span>
+                  <span class="badge badge-success" v-if="data.terms_paid === 4">paid cicilan keempat</span>
                 </td>
                 <td
                   class="text-right"
@@ -194,7 +189,7 @@ export default {
       modalUserTransactionInfo: {},
       inputCredit: 0,
       selectAssignCredit: "",
-      userCurrentTerms: 1 // default is one, meaning he has paid the downpayment
+      userCurrentTerms: [] // default is one, meaning he has paid the downpayment
     };
   },
   created() {
@@ -230,15 +225,17 @@ export default {
           }).then(res => {
             vm.modalUserTransactionInfo = res.data
 
-            // get the users current terms
-            // awts
-            // vm.userCurrentTerms = res.data.termins
+            // check reverse i.e. from the last terms down to the downpayment (4-1)
+            // check status if its paid, if so, check the number field, that'll be the total terms
+            vm.modalUserTransactionInfo.forEach(item => {
+              for (let i=item.termins.length-1; i>=0; i--) {
+                if (item.termins[i].paid.status === true) {
+                  item.terms_paid = item.termins[i].number
+                  return
+                }
+              }
+            })
 
-              /*(res.data).forEach(item => {
-                console.log(item)
-              })*/
-
-            // console.log('termins', res.data)
           })
           break;
         default:

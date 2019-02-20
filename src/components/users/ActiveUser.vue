@@ -42,23 +42,24 @@
                   @click.prevent="openModal('AssignCredit', data, index)"
                 >&plusmn;</a>
               </td>
-              <td
-                class="text-right"
-              >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingCredit) }}</td>
               <td class="text-right">
-                <a href @click.prevent="openModal('ViewTransactions', data)">
-                  <small>Lihat Transaksi</small>
-                </a>
+                {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingCredit) }}
               </td>
-              <!-- <td class="text-right">0</td> -->
-              <td class="text-center">
-                <a href @click.prevent="unbanBan('ban', data, index)" v-if="data.activated==2">
-                  <small>Ban User</small>
-                </a>
-                <a href @click.prevent="unbanBan('unban', data, index)" v-if="data.activated==3">
-                  <small>Unban User</small>
-                </a>
+              <td class="text-right">
+                <ul class="list-inline mb-0">
+                  <li class="list-inline-item">
+                    <a href @click.prevent="openModal('ViewTransactions', data)">
+                      <small>Lihat Transaksi</small>
+                    </a>                    
+                  </li>
+                  <li class="list-inline-item">
+                    <a href @click.prevent="banUser(data, index)" class="text-danger">
+                      <small>Ban</small>
+                    </a>
+                  </li>
+                </ul>
               </td>
+
             </tr>
             <tr v-if="users.length==0">
               <td colspan="7">No active user(s) found!</td>
@@ -284,28 +285,42 @@ export default {
           });
       }
     },
-    /**
-     * Unban / Ban User
-     *
-     * @param var toDo  value: ban || unban
-     * @param object user  contains all user details
-     * @param int index
-     */
-    unbanBan(toDo, user, index) {
-      let vm = this;
-      let activated = toDo === "ban" ? 3 : 2;
 
-      if (confirm(`You really want to ${toDo} ${user.fname} ${user.lname}?`)) {
-        axios
-          .post(`${process.env.VUE_APP_API_URL}/users/${user.Hp}/activated`, {
-            activated: activated
+    /**
+     * Ban a user
+     * 
+     * @param  ObjectId userObj
+     * @param  Integer index
+     */
+    banUser(userObj, index) {
+      let vm = this
+
+      vm.$swal({
+        title: 'Are you sure?',
+        text: `You will be banning ${userObj.detail.name}`,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Ban user!'
+      }).then((result) => {
+        if (result.value) {
+          axios.post(`${process.env.VUE_APP_API_URL}/api/users/banninguser`, { user: userObj._id }, {
+            headers: {
+              'Authorization': process.env.VUE_APP_AUTHORIZATION,
+              'x-access-token': localStorage.getItem("auth_token"),
+              'Content-Type': 'application/json'
+            }
+          }).then(res => {
+            vm.users.splice(index, 1)
+            vm.$swal.fire(
+              'Banned!',
+              `The user ${userObj.detail.name} has been banned from the system.`,
+              'success'
+            )            
           })
-          .then(res => {
-            alert(`Successfully ${toDo}ned!`);
-            vm.users.splice(index, 1);
-            location.reload();
-          });
-      }
+        }
+      })
+      
     }
 
   }

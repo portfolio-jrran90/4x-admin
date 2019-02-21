@@ -16,10 +16,10 @@ import VueSweetalert2 from 'vue-sweetalert2'
 
 // Font awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSignInAlt, faStore } from '@fortawesome/free-solid-svg-icons'
+import { faSignInAlt, faStore, faHandshake, faBullhorn, faUserFriends } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faSignInAlt, faUser, faStore)
+library.add(faSignInAlt, faUser, faStore, faHandshake, faBullhorn, faUserFriends)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 import VeeValidate from 'vee-validate';
@@ -58,6 +58,15 @@ Vue.component('pending-user', PendingUser)
 // Merchants
 import Merchant from './components/merchants/Index.vue'
 
+// Promotions
+import Promotion from './components/promotions/Index.vue'
+
+// Help Desk
+import HelpDesk from './components/helpdesk/Index.vue'
+
+// Management User
+import ManagementUser from './components/management-users/Index.vue'
+
 const routes = [
   { path: '*', redirect: '/login' },
   { path: '/login', component: Login, meta: { auth: false } },
@@ -76,6 +85,10 @@ const routes = [
       { path: '/allpromotion', component: AllPromotion },
       { path: '/addcategory', component: AddCategory },
       { path: '/assigncategory', component: AssignCategory },
+
+      { path: '/promotions', component: Promotion, name: 'promotion' },
+      { path: '/help-desk', component: HelpDesk, name: 'helpdesk' },
+      { path: '/management-users', component: ManagementUser, name: 'management-user' },
     ],
   },
 ]

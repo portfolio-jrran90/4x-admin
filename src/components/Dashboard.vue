@@ -8,6 +8,7 @@
           </a>
         </div>
         <ul class="nav">
+
           <router-link tag="li" :to="`/users`">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" />
@@ -22,44 +23,27 @@
             </a>
           </router-link>
 
-          <!-- <b-nav-item-dropdown text="Promo" right class="m-3">
-            <b-dropdown-item href="#">
-              <router-link tag="li" :to="`/approvepromo`">
-                <i class="nc-icon nc-check-2"></i>
-                <p>Approve Promo</p>
-              </router-link>
-            </b-dropdown-item>
-            <b-dropdown-item href="#">
-              <router-link tag="li" :to="`/allpromotion`">
-                <i class="nc-icon nc-paper-2"></i>
-                <p>All Promotion</p>
-              </router-link>
-            </b-dropdown-item>
-            <b-dropdown-item href="#">
-              <router-link tag="li" :to="`/addcategory`">
-                <i class="nc-icon nc-simple-add"></i>
-                <p>Add Category</p>
-              </router-link>
-            </b-dropdown-item>
-            <b-dropdown-item href="#">
-              <router-link tag="li" :to="`/assigncategory`">
-                <i class="nc-icon nc-check-2"></i>
-                <p>Assign Category</p>
-              </router-link>
-            </b-dropdown-item>
-          </b-nav-item-dropdown> -->
-
-          <!-- <router-link tag="li" :to="`/transactions`" class="m-3">
+          <router-link tag="li" :to="{ name: 'management-user' }">
             <a class="nav-link" href="#">
-              <p>Transaction</p>
+              <font-awesome-icon :icon="['fas', 'user-friends']" class="mr-2" size="lg" />
+              <p>Management User</p>
             </a>
           </router-link>
 
-          <router-link tag="li" :to="`/addmerchantuser`" class="m-3">
+          <router-link tag="li" :to="{ name: 'helpdesk' }">
             <a class="nav-link" href="#">
-              <p>Add Merchant User</p>
+              <font-awesome-icon :icon="['fas', 'handshake']" class="mr-2" size="lg" />
+              <p>Helpdesk</p>
             </a>
-          </router-link> -->
+          </router-link>
+
+          <router-link tag="li" :to="{ name: 'promotion' }">
+            <a class="nav-link" href="#">
+              <font-awesome-icon :icon="['fas', 'bullhorn']" class="mr-2" size="lg" />
+              <p>Promotions</p>
+            </a>
+          </router-link>
+
         </ul>
       </div>
     </div>

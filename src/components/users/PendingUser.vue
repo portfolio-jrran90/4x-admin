@@ -35,7 +35,7 @@
           <h2 class="mb-3">Step 1</h2>
           <div class="row">
             <div class="col">
-              <table class="table table-hover table-striped table-sm table-bordered mb-0">
+              <table class="table table-striped table-sm table-bordered mb-0">
                 <tr>
                   <td>Field</td>
                   <td>Input User in App</td>
@@ -80,7 +80,7 @@
           <h2 class="mb-3">Step 2</h2>
           <div class="row">
             <div class="col">
-              <table class="table table-hover table-striped table-sm table-bordered mb-0">
+              <table class="table table-striped table-sm table-bordered mb-0">
                 <tr>
                   <td>Field</td>
                   <td>Input User in App</td>
@@ -109,7 +109,8 @@
                 <tr>
                   <td class="table-info">No. NPWP</td>
                   <td class="table-secondary">{{ userDetails.npwp || '---' }}</td>
-                  <td colspan="2">----------</td>
+                  <td colspan="2">
+                    <span class="text-danger">TBA</span></td>
                 </tr>
               </table>
             </div>
@@ -157,7 +158,8 @@
                 <tr>
                   <td class="table-info">No. KTP</td>
                   <td class="table-secondary">{{ (userDetails.detail)?userDetails.ktp.number:'---' }}</td>
-                  <td colspan="2">----------</td>
+                  <td colspan="2">
+                    <span class="text-danger">TBA</span></td>
                 </tr>
               </table>
             </div>
@@ -172,7 +174,7 @@
           <h2 class="mb-3">Step 4</h2>
           <div class="row">
             <div class="col">
-              <table class="table table-hover table-striped table-sm table-bordered mb-0">
+              <table class="table table-striped table-sm table-bordered mb-0">
                 <tr>
                   <td>Field</td>
                   <td>Input User in App</td>

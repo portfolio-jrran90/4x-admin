@@ -2,33 +2,37 @@
   <div>
     <h2>Pending Users</h2>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-3">
         <table class="table table-hover table-striped">
           <thead>
             <tr>
               <th colspan="2">Phone Number</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="users.length===0">
+            <tr>
+              <td colspan="2">No record found!</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
             <tr v-for="(data, index) in users">
               <td>{{ data.mobileNumber }}</td>
               <td class="text-right">
                 <ul class="list-inline m-0">
                   <li class="list-inline-item">
-                    <a href @click.prevent="openModalUserDetails(data, index)">View details</a>
+                    <a href @click.prevent="openModalUserDetails(data, index)" v-b-tooltip.hover title="View details">
+                      <font-awesome-icon icon="search" size="sm" />
+                    </a>
                   </li>
                 </ul>
               </td>
-            </tr>
-            <tr v-if="users.length===0">
-              <td colspan="2">No Record found!</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <b-modal v-model="modalUserShow" size="70" title="User Detail" hide-footer="false">
+    <b-modal v-model="modalUserShow" size="70" title="User Detail" hide-footer>
       <!-- Step 1 -->
       <div class="card">
         <div class="card-body">
@@ -263,10 +267,7 @@ export default {
         'Authorization': process.env.VUE_APP_AUTHORIZATION,
         'x-access-token': localStorage.getItem("auth_token")
       }
-    }).then(res => {
-      vm.users = res.data
-      console.log('aw', res.data)
-    })
+    }).then(res => vm.users = res.data)
   },
   methods: {
     openModalUserDetails(user, index) {

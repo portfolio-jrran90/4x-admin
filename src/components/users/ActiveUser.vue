@@ -11,7 +11,6 @@
               <th>Mobile #</th>
               <th style="text-align: right !important">Credit</th>
               <th style="text-align: right !important">Used Credit</th>
-              <th style="text-align: center !important">Transaksi</th>
               <th></th>
             </tr>
           </thead>
@@ -48,13 +47,13 @@
               <td class="text-right">
                 <ul class="list-inline mb-0">
                   <li class="list-inline-item">
-                    <a href @click.prevent="openModal('ViewTransactions', data)">
-                      <small>Lihat Transaksi</small>
-                    </a>                    
+                    <a href @click.prevent="openModal('ViewTransactions', data)" v-b-tooltip.hover title="View transaction">
+                      <font-awesome-icon icon="search" size="sm" />
+                    </a>
                   </li>
                   <li class="list-inline-item">
-                    <a href @click.prevent="banUser(data, index)" class="text-danger">
-                      <small>Ban</small>
+                    <a href @click.prevent="banUser(data, index)" class="text-danger" v-b-tooltip.hover title="Ban user">
+                      <font-awesome-icon icon="user-slash" size="sm" />
                     </a>
                   </li>
                 </ul>
@@ -131,8 +130,7 @@
 
     <b-modal v-model="modalShowViewTransactions" size="90" class="modal-transactions">
       <div slot="modal-header">
-        <h4>Transaksi</h4>
-        <!-- <h4>Transactions - {{ `${modalUserTransactionInfo.user.Name} (${modalUserTransactionInfo.user.Hp})` }}</h4> -->
+        <h4>Transaksi - {{ (modalUserInfo.data.detail)?modalUserInfo.data.detail.name: '' }}</h4>
       </div>
       <div class="row">
         <div class="col">
@@ -147,7 +145,12 @@
                 <th class="text-right">Total</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-if="modalUserTransactionInfo.length == 0">
+              <tr>
+                <td colspan="6">No records found!</td>
+              </tr>
+            </tbody>
+            <tbody v-else>
               <tr v-for="data in modalUserTransactionInfo">
                 <td>{{ data.transactionNumber }}</td>
                 <td>{{ data.store.name }}</td>
@@ -204,13 +207,14 @@ export default {
   methods: {
     openModal(type, user, index) {
       let vm = this;
+
+      vm.modalUserInfo = {
+        data: user,
+        index: index
+      };
       switch (type) {
         case "AssignCredit":
           vm.modalAssignCredit = true;
-          vm.modalUserInfo = {
-            data: user,
-            index: index
-          };
           break;
         case "ViewTransactions":
           // clear all fields

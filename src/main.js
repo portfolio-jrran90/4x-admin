@@ -16,10 +16,27 @@ import VueSweetalert2 from 'vue-sweetalert2'
 
 // Font awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSignInAlt, faStore, faHandshake, faBullhorn, faUserFriends } from '@fortawesome/free-solid-svg-icons'
+import {
+  faSignInAlt,
+  faStore,
+  faHandshake,
+  faBullhorn,
+  faUserFriends,
+  faSearch,
+  faUserSlash
+} from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faSignInAlt, faUser, faStore, faHandshake, faBullhorn, faUserFriends)
+library.add(
+  faSignInAlt,
+  faUser,
+  faStore,
+  faHandshake,
+  faBullhorn,
+  faUserFriends,
+  faSearch,
+  faUserSlash
+  )
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 import VeeValidate from 'vee-validate';

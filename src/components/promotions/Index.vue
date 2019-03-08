@@ -222,7 +222,7 @@ export default {
 			let vm = this
 			e.preventDefault()
 
-      vm.$validator.validateAll().then((result) => {
+      vm.$validator.validate('vm.modalInputAddCategory.*').then((result) => {
         if (result) {
         	axios.post(`${process.env.VUE_APP_API_URL}/api/promotioncategories`, vm.modalInputAddCategory, {
 			      headers: {

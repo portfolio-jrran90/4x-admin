@@ -23,7 +23,8 @@ import {
   faBullhorn,
   faUserFriends,
   faSearch,
-  faUserSlash
+  faUserSlash,
+  faPlusSquare
 } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -35,11 +36,14 @@ library.add(
   faBullhorn,
   faUserFriends,
   faSearch,
-  faUserSlash
+  faUserSlash,
+  faPlusSquare
   )
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 import VeeValidate from 'vee-validate';
+// Filters
+import './filters/index'
 
 
 import App from './App.vue'

@@ -24,7 +24,11 @@ import {
   faUserFriends,
   faSearch,
   faUserSlash,
-  faPlusSquare
+  faPlusSquare,
+  faCog,
+  faEnvelope,
+  faCoins,
+  faEdit
 } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -37,7 +41,11 @@ library.add(
   faUserFriends,
   faSearch,
   faUserSlash,
-  faPlusSquare
+  faPlusSquare,
+  faCog,
+  faEnvelope,
+  faCoins,
+  faEdit
   )
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
@@ -85,8 +93,12 @@ import Promotion from './components/promotions/Index.vue'
 // Help Desk
 import HelpDesk from './components/helpdesk/Index.vue'
 
-// Management User
-import ManagementUser from './components/management-users/Index.vue'
+// Settings
+import Settings from './components/settings/__Main.vue'
+import SettingsIndex from './components/settings/Index.vue'
+import SettingsEmailTemplate from './components/settings/EmailTemplate.vue'
+import SettingsFee from './components/settings/Fee.vue'
+import SettingsUserManagement from './components/settings/UserManagement.vue'
 
 const routes = [
   { path: '*', redirect: '/login' },
@@ -109,7 +121,17 @@ const routes = [
 
       { path: '/promotions', component: Promotion, name: 'promotion' },
       { path: '/help-desk', component: HelpDesk, name: 'helpdesk' },
-      { path: '/management-users', component: ManagementUser, name: 'management-user' },
+
+      // Settings
+      {
+        path: '/settings/', component: Settings, name: 'settings', redirect: '/settings/',
+        children: [
+          { path: '/', component: SettingsIndex, name: 'settings-index' },
+          { path: 'email-template', component: SettingsEmailTemplate, name: 'settings-email-template' },
+          { path: 'fee', component: SettingsFee, name: 'settings-fee' },
+          { path: 'user-management', component: SettingsUserManagement, name: 'settings-user-management' },
+        ],
+      },
     ],
   },
 ]

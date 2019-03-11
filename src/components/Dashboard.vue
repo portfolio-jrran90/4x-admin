@@ -23,13 +23,6 @@
             </a>
           </router-link>
 
-          <router-link tag="li" :to="{ name: 'management-user' }">
-            <a class="nav-link" href="#">
-              <font-awesome-icon :icon="['fas', 'user-friends']" class="mr-2" size="lg" />
-              <p>Management User</p>
-            </a>
-          </router-link>
-
           <router-link tag="li" :to="{ name: 'helpdesk' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'handshake']" class="mr-2" size="lg" />
@@ -41,6 +34,13 @@
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'bullhorn']" class="mr-2" size="lg" />
               <p>Promotions</p>
+            </a>
+          </router-link>
+
+          <router-link tag="li" :to="{ name: 'settings' }">
+            <a class="nav-link" href="#">
+              <font-awesome-icon icon="cog" class="mr-2" size="lg" />
+              <p>Settings</p>
             </a>
           </router-link>
 

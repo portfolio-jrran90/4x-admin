@@ -6,4 +6,9 @@ Vue.filter('date', date => {
   return Intl.DateTimeFormat('en-US', options).format(date)
 })
 
-// Indonesian Rupiah Format
+/**
+ * Format currency
+ */
+Vue.filter('currency', amount => {
+	return Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(amount)
+})

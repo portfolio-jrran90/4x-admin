@@ -214,7 +214,7 @@
       <div class="card">
         <div class="card-body">
           <h2>Note</h2>
-          <textarea class="form-control" rows="10" cols="15" v-validate="'required'" name="note"
+          <textarea class="form-control" rows="5" v-validate="'required'" name="note"
             :class="{'is-invalid': errors.first('note')}"></textarea>
           <small :class="{'invalid-feedback': errors.first('note')}" v-show="errors.first('note')">{{ errors.first('note') }}</small>
         </div>
@@ -372,7 +372,7 @@ export default {
       if (action == 'approve') {
         if (reqFrom == 'dataApp') {
           vm.$validator.validateAll().then((resultValidator) => {
-            if (resultValidator) {
+            /*if (resultValidator) {
               vm.$swal({
                 title: 'Are you sure?',
                 text: "You are going to approve this user.",
@@ -399,8 +399,30 @@ export default {
                 }
               })
               return;
+            }*/
+
+            if (resultValidator) {
+              if (confirm("Approve this user?")) {
+
+                axios.post(`${process.env.VUE_APP_API_URL}/api/users/activatinguser`, data, {
+                  headers: {
+                    'Authorization': process.env.VUE_APP_AUTHORIZATION,
+                    'x-access-token': localStorage.getItem("auth_token"),
+                    'Content-Type': 'application/json'
+                  }
+                }).then(res => {
+                  vm.$swal(
+                    'Success!',
+                    'Email verification has been sent to the user!',
+                    'success'
+                  )
+                  vm.modalUserShow = false
+                })
+
+              }
+              return;
             }
-            // alert('Correct them errors!');
+
           })
         }
       } else {
@@ -418,6 +440,7 @@ export default {
                 'User successfully rejected!',
                 'success'
               )
+              vm.modalUserShow = false
             }
           })
         }

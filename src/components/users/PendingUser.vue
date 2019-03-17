@@ -113,8 +113,14 @@
                 <tr>
                   <td class="table-info">No. NPWP</td>
                   <td class="table-secondary">{{ userDetails.npwp || '---' }}</td>
-                  <td colspan="2">
-                    <span class="text-danger">TBA</span></td>
+                  <td colspan="2"
+                      :class="{
+                        'table-warning': processVerificationSystem.ktpStatus == 0,
+                        'table-success': processVerificationSystem.ktpStatus == 1,
+                        'table-danger': processVerificationSystem.ktpStatus == 2,
+                      }">
+                    {{ npwpStatus(processVerificationSystem.ktpStatus) }}
+                  </td>
                 </tr>
               </table>
             </div>
@@ -469,7 +475,24 @@ export default {
           status = '---'
       }
       return status
-    }
+    },
+
+    /**
+     * Display the descriptive value based on the NPWP status
+     * 
+     * @param  Integer value
+     */
+    npwpStatus(value) {
+      let status
+      switch(value) {
+        case 0: status = 'Nama pada inputan user dan nama pada NPWP tidak 100% valid'; break
+        case 1: status = 'Nama pada inputan user dan nama pada NPWP 100% valid'; break
+        case 2: status = 'Nama pada inputan user dan nama pada NPWP tidak valid'; break
+        default:
+          status = '---'
+      }
+      return status
+    },
   }
 };
 </script>

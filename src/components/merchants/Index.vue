@@ -6,8 +6,29 @@
 		</h2>
 		<div class="row">
 			<div class="col">
-				<!-- Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero ut vel earum eaque doloremque, delectus eum rem ex, quam quae quos suscipit nostrum mollitia iste corrupti cumque voluptate labore dolor! -->
-			</div>
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+							<th>Merchant Name</th>
+              <th>Username</th>
+              <th>Mobile Number</th>
+							<th>Webiste</th>
+							<th>Email</th>
+            </tr>
+          </thead>
+					<tbody>
+						<tr v-for="(data, index) in merchant">
+							<td>{{ data._id }}</td>
+							<td>{{ data.name }}</td>
+							<td>{{ data.username }}</td>
+							<td>{{ data.mobileNumber }}</td>
+							<td><a v-bind:href="data.website" target="_blank"> {{ data.website }}</a></td>
+							<td>{{ data.email }}</td>
+						</tr>
+					</tbody>
+        </table>
+      </div>
 		</div>
 
 		<!-- modal -->
@@ -52,9 +73,19 @@ export default {
 		return {
 			// Merchant registration
 			modalAddMerchant: false,
-			addMerchant: {}
+			addMerchant: {},
+			merchant: {}
 		}
 	},
+	created() {
+    let vm = this;
+    axios.get(`${process.env.VUE_APP_API_URL}/api/merchants`, {
+      headers: {
+        'Authorization': process.env.VUE_APP_AUTHORIZATION,
+        'x-access-token': localStorage.getItem("auth_token")
+      }
+    }).then(res => vm.merchant = res.data)
+  },
 	methods: {
 		/**
 		 * Open a modal

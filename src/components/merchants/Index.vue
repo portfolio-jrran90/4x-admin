@@ -9,8 +9,7 @@
         <table class="table table-hover table-striped">
           <thead>
             <tr>
-              <th>ID</th>
-							<th>Merchant Name</th>
+							<th>Name</th>
               <th>Username</th>
               <th>Mobile Number</th>
 							<th>Webiste</th>
@@ -19,7 +18,6 @@
           </thead>
 					<tbody>
 						<tr v-for="(data, index) in merchant">
-							<td>{{ data._id }}</td>
 							<td>{{ data.name }}</td>
 							<td>{{ data.username }}</td>
 							<td>{{ data.mobileNumber }}</td>

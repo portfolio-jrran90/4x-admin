@@ -12,10 +12,10 @@
               <div class="form-group row mb-0">
                 <div class="col-sm-12">
                   <input
-                    type="email"
+                    type="text"
                     class="form-control"
                     id="inputEmail"
-                    placeholder="Email"
+                    placeholder="Email/Username"
                     v-model="data.body.identity"
                   >
                 </div>

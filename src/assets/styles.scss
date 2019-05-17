@@ -1,3 +1,10 @@
+// Variables
+// $primary: #38424b;
+// $secondary: #98A2AB;
+
+// @import 'bootstrap/scss/bootstrap.scss';
+// @import 'bootstrap-vue/dist/bootstrap-vue.css';
+
 // Generic style
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
 	background-color: #007bff !important;
@@ -12,9 +19,12 @@
 	}
 }
 
-.modal-70 {
-	max-width: 70% !important;
+.modal-80 {
+	max-width: 80% !important;
 }
 .modal-90 {
 	max-width: 90% !important;
+}
+.modal-95 {
+	max-width: 95% !important;
 }

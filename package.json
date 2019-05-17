@@ -15,9 +15,10 @@
     "@johmun/vue-tags-input": "^1.6.0",
     "@websanova/vue-auth": "^2.21.14-beta",
     "axios": "^0.18.0",
-    "bootstrap-vue": "^2.0.0-rc.11",
+    "bootstrap-vue": "^2.0.0-rc.20",
     "i": "^0.3.6",
-    "npm": "^6.5.0",
+    "npm": "^6.9.0",
+    "v-viewer": "^1.4.0",
     "vee-validate": "^2.1.7",
     "vue": "^2.5.16",
     "vue-axios": "^2.1.2",
@@ -26,10 +27,10 @@
     "vue-sweetalert2": "^1.6.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.0-beta.15",
-    "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
-    "@vue/cli-service": "^3.0.0-beta.15",
-    "node-sass": "^4.9.4",
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-plugin-eslint": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.16"
   },

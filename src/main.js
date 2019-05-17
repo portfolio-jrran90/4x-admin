@@ -14,6 +14,10 @@ import VueAxios from 'vue-axios'
 import VueMoment from 'vue-moment'
 import VueSweetalert2 from 'vue-sweetalert2'
 
+// Viewer
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+
 // Font awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -68,6 +72,7 @@ Vue.use(VueAxios, axios)
 Vue.use(VueMoment)
 Vue.use(VueSweetalert2)
 Vue.use(VeeValidate)
+Vue.use(Viewer)
 
 Vue.axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 

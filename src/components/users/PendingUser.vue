@@ -1,6 +1,15 @@
 <template>
   <div>
+
+    <!-- create mixin or global component -->
+    <div class="global-loader" v-if="isLoader">
+      <img src="@/assets/logo.png" alt="">
+      Processing ...
+    </div>
+    <!--  -->
+
     <h2>Pending Users</h2>
+    <h5>Total: {{ users.length }}</h5>
     <div class="row">
       <div class="col-md-8">
         <table class="table table-hover table-striped">
@@ -34,7 +43,11 @@
       </div>
     </div>
 
-    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="User Detail" hide-footer no-close-on-esc>
+    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="User Detail"
+      hide-footer
+      no-close-on-esc
+      no-close-on-backdrop>
+
       <!-- Step 1 -->
       <div class="card">
         <div class="card-body">
@@ -158,7 +171,7 @@
                 <tr>
                   <th class="table-secondary">OCR Result</th>
                   <td colspan="2">
-                    <!-- {{ OCRResult(userDetails.ktp) }} -->
+                    {{ OCRResult(userDetails.ktp) }}
                   </td>
                 </tr>
               </table>
@@ -286,9 +299,13 @@
           @click="actionBtn('approve', 'dataApp', {user: userDetails, index: userDetails.index})">
           Approve
         </button>
-        <button class="btn btn-danger btn-lg px-5 mx-2" @click="actionBtn('reject', 'dataApp', userDetails._id)">Reject</button>
+        <button class="btn btn-danger btn-lg px-5 mx-2"
+          @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})">
+          Reject
+        </button>
         <button class="btn btn-outline-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
       </div>
+
     </b-modal>
   </div>
 </template>
@@ -307,6 +324,13 @@ export default {
   },
   data() {
     return {
+      isLoader: false,
+      requestedHeaders: {
+        headers: {
+          'Authorization': process.env.VUE_APP_AUTHORIZATION,
+          'x-access-token': localStorage.getItem("auth_token")
+        }
+      },
       modalUserShow: false,
       users: {},
       inputCredit: 0,
@@ -329,15 +353,25 @@ export default {
   },
   created() {
     let vm = this
-
-    axios.get(`${process.env.VUE_APP_API_URL}/api/users?limit=50&skip=0&status=1`, {
-      headers: {
-        'Authorization': process.env.VUE_APP_AUTHORIZATION,
-        'x-access-token': localStorage.getItem("auth_token")
-      }
-    }).then(res => vm.users = res.data)
+    vm.index()
   },
   methods: {
+    /**
+     * Show pending users
+     */
+    index() {
+      let vm = this
+
+      vm.isLoader = true
+
+      axios
+        .get('/api/users?limit=50&skip=0&status=1', vm.requestedHeaders)
+        .then(res => {
+          vm.users = res.data
+          vm.isLoader = false
+        })
+    },
+
     openModalUserDetails(user, index) {
       let vm = this;
 
@@ -346,6 +380,7 @@ export default {
       vm.userImageKtp = "";
       vm.userImageProfile = "";
       vm.userImageSelfieWithKtp = "";
+      vm.note = ''
 
       vm.modalUserShow = true
 
@@ -413,7 +448,6 @@ export default {
         navbar: false, title: false, movable: false, fullscreen: false
       }
 
-      
     },
     loadCaptcha() {
       this.spinner = false
@@ -428,64 +462,60 @@ export default {
     actionBtn(action, reqFrom, data) {
       let vm = this
 
+      let activateUserBodyInput = {
+        user: data.user._id,
+        description: vm.note
+      }
+
       if (action == 'approve') {
         if (reqFrom == 'dataApp') {
 
-          // awts
-          console.log('logs', data)
-          console.log(vm.processVerificationSystem.age)
-
-          // if ( vm.processVerificationSystem.age < 25 )
-
-          let activateUserBodyInput = {
-            user: data.user._id,
-            description: vm.note
-          }
-
           vm.$validator.validateAll().then((resultValidator) => {
             if (resultValidator) {
-              if (confirm("Approve this user?")) {
-                axios.post(`${process.env.VUE_APP_API_URL}/api/users/activatinguser`, activateUserBodyInput, {
-                  headers: {
-                    'Authorization': process.env.VUE_APP_AUTHORIZATION,
-                    'x-access-token': localStorage.getItem("auth_token"),
-                    'Content-Type': 'application/json'
-                  }
-                }).then(res => {
-                  vm.$swal(
-                    'Success!',
-                    'Email verification has been sent to the user!',
-                    'success'
-                  )
-                  vm.modalUserShow = false
-                })
 
+              if (confirm( 'Approve user?' )) {
+                vm.isLoader = true
+                axios
+                  .post('/api/users/activatinguser', activateUserBodyInput, vm.requestedHeaders)
+                  .then(res => {
+                    vm.$swal('Success!', 'Email verification has been sent to the user!', 'success')
+                    vm.modalUserShow = false
+                    vm.index() // refresh list
+                  })
               }
-              return;
+              return
+
             }
           })
 
         }
       } else {
         if (reqFrom == 'dataApp') {
-          vm.$swal({
-            title: 'Are you sure?',
-            text: "You are going to reject this user.",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Reject'
-          }).then((result) => {
-            if (result.value) {
-              vm.$swal(
-                'Rejected!',
-                'User successfully rejected!',
-                'success'
-              )
-              vm.modalUserShow = false
+
+          vm.$validator.validateAll().then((resultValidator) => {
+            if (resultValidator) {
+
+              if (confirm ( 'Reject user?' )) {
+                vm.isLoader = true
+                axios
+                  .post('/api/users/reject', activateUserBodyInput, vm.requestedHeaders)
+                  .then(res => {
+                    vm.$swal('Success!', "User's application has been rejected!", 'success')
+                    vm.modalUserShow = false
+                    vm.index() // refresh list
+                  })
+                  .catch(err => {
+                    vm.isLoader = false
+                    vm.$swal('Error!', err.response.data.message, 'error')
+                  })
+              }
+
             }
           })
+
         }
       }
+
     },
 
     /**
@@ -528,34 +558,45 @@ export default {
      * https://docs.iluma.ai/#id-card-image-processing
      */
     OCRResult(ktp) {
-      let img = (ktp)?ktp.image:'No image to process'
+      // let img = (ktp)?ktp.image:'No image to process'
 
-      let base64Img = btoa(img)
+      // let base64Img = btoa(img)
 
-      axios.post('https://docs.iluma.ai/#id-card-image-processing', { image: base64Img, type: 'KTP' }, {
+      // problem is forbidden
+      /*if (ktp) {
+        axios
+          .get(ktp.image, { responseType: 'blob' })
+          .then(res => {
+            console.log(res.data)
+          })
+      }*/
+
+      /*axios.post('https://docs.iluma.ai/#id-card-image-processing', { image: base64Img, type: 'KTP' }, {
         auth: {
           username: 'iluma_production_czOIY8s5aKh1iQguG05Eq5Hb7wRMyCxBO3JNengTdU9ep8n9YKXKkRyJOGw8:',
           password: ''
         }
       }).then(res => {
         console.log(res.data)
-        // return res.data
-      })
-
-      // aWx1bWFfcHJvZHVjdGlvbl9jek9JWThzNWFLaDFpUWd1RzA1RXE1SGI3d1JNeUN4Qk8zSk5lbmdUZFU5ZXA4bjlZS1hLa1J5Sk9Hdzg6
+      })*/
 
 
-      // aHR0cHM6Ly9lbXBhdGthbGkuczMuYW1hem9uYXdzLmNvbS9rdHAlMkZrdHBfcGljdF8wODEyNTMyNTEyNTQuanBn
     }
   }
 };
 </script>
 
-<style scoped>
-  #iframe-preloader {
-    /*display:table-cell;width:200px;height:200px;background:#fff;text-align:center;vertical-align:middle;*/
+<style lang="scss" scoped>
+  .global-loader {
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    position: fixed; top: 0; left: 0; z-index: 999999;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, .5); color: #000;
+    font-size: 25px;
+
+    img { width: 150px; margin-bottom: 10px }
   }
- 
+
   .modal-80 figure {
     text-align: center; width: 100%;
   }
@@ -582,6 +623,4 @@ export default {
     margin-right: 10px !important;
   }
   .c-step-3 .c-images figure:last-child { margin-right: 0 !important }
-
-
 </style>

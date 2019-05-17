@@ -74,7 +74,7 @@ Vue.use(VueSweetalert2)
 Vue.use(VeeValidate)
 Vue.use(Viewer)
 
-Vue.axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
+Vue.axios.defaults.baseURL = process.env.VUE_APP_API_URL
 
 import Login from './components/Login.vue'
 import Dashboard from './components/Dashboard.vue'
@@ -171,11 +171,11 @@ Vue.use(require('@websanova/vue-auth'), {
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
   loginData: {
-    url: `${process.env.VUE_APP_API_URL}/api/auth/login`,
+    url: '/api/auth/login',
     method: 'POST',
     redirect: '/login',
   },
-  authRedirect: { path: `${process.env.VUE_APP_API_URL}/api/auth/login` },
+  authRedirect: { path: '/api/auth/login' },
   tokenDefaultName: 'auth_token',
   refreshData: { enabled: false },
   fetchData: { enabled: false },

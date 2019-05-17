@@ -2,21 +2,23 @@
   <div>
     <h2>Pending Users</h2>
     <div class="row">
-      <div class="col-md-3">
+      <div class="col-md-8">
         <table class="table table-hover table-striped">
           <thead>
             <tr>
-              <th colspan="2">Phone Number</th>
+              <th class="w-50">Name</th>
+              <th>Phone Number</th>
+              <th colspan="2">Date registered</th>
             </tr>
           </thead>
           <tbody v-if="users.length===0">
-            <tr>
-              <td colspan="2">No record found!</td>
-            </tr>
+            <tr><td colspan="4">No record found!</td></tr>
           </tbody>
           <tbody v-else>
             <tr v-for="(data, index) in users">
+              <td>{{ data.detail.name }}</td>
               <td>{{ data.mobileNumber }}</td>
+              <td>{{ new Date(data.createdAt) | date }}</td>
               <td class="text-right">
                 <ul class="list-inline m-0">
                   <li class="list-inline-item">
@@ -287,7 +289,6 @@
         <button class="btn btn-danger btn-lg px-5 mx-2" @click="actionBtn('reject', 'dataApp', userDetails._id)">Reject</button>
         <button class="btn btn-outline-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
       </div>
-
     </b-modal>
   </div>
 </template>

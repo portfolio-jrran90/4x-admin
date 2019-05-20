@@ -34,16 +34,6 @@
 						<tr>
 							<td class="w-25 text-info">Name</td>
 							<td>{{ catDtl.name }}</td>
-							<!-- <td rowspan="5" class="w-50">
-								<h5 class="text-info">Merchants</h5>
-								<ul>
-									<li>123</li>
-									<li>123</li>
-									<li>123</li>
-									<li>123</li>
-									<li>123</li>
-								</ul>
-							</td> -->
 						</tr>
 						<tr>
 							<td class="text-info">Description</td>
@@ -75,56 +65,69 @@
 		</div>
 
 		<!-- Modal -->
-		<b-modal v-model="modalAddCategory" title="Add Category" @ok="addCategory" size="sm" ok-title="Add" ref="frmAddCategory">
-			<div>
-			  <div class="form-group">
-			    <input type="text" class="form-control" placeholder="Enter name" name="name" 
-			    			 v-model="modalInputAddCategory.name"
-			    			 :class="{ 'is-invalid': errors.first('name') }"
-			    			 v-validate="'required'">
-		      <small class="invalid-feedback">{{ errors.first('name') }}</small>
-			  </div>
-			  <div class="form-group">
-			    <input type="text" class="form-control" placeholder="Enter type" name="type" 
-			    			 v-model="modalInputAddCategory.type"
-			    			 :class="{ 'is-invalid': errors.first('type') }"
-								 v-validate="'required'">
-					<small class="invalid-feedback">{{ errors.first('type') }}</small>
-			  </div>
-			  <div class="form-group mb-0">
-			  	<textarea class="form-control" placeholder="Enter description" style="height: 150px" name="description" 
-			  						v-model="modalInputAddCategory.description"
-			    			 		:class="{ 'is-invalid': errors.first('description') }"
-								 		v-validate="'required'"></textarea>
-					<small class="invalid-feedback">{{ errors.first('description') }}</small>
-			  </div>
-			</div>
+		<b-modal v-model="modalAddCategory" title="Add Category" size="sm" ref="frmAddCategory" hide-footer>
+			<form @submit.prevent="formValidator('frmAddCategory')" id="frmAddCategory" data-vv-scope="frmAddCategory">
+				<div class="mb-1">
+				  <div class="form-group">
+				    <input type="text" class="form-control" placeholder="Enter name" name="name" 
+				    			 v-model="modalInputAddCategory.name"
+				    			 :class="{ 'is-invalid': errors.first('frmAddCategory.name') }"
+				    			 v-validate="'required'">
+			      <small class="invalid-feedback">{{ errors.first('frmAddCategory.name') }}</small>
+				  </div>
+				  <div class="form-group">
+				    <input type="text" class="form-control" placeholder="Enter type" name="type" 
+				    			 v-model="modalInputAddCategory.type"
+				    			 :class="{ 'is-invalid': errors.first('frmAddCategory.type') }"
+									 v-validate="'required'">
+						<small class="invalid-feedback">{{ errors.first('frmAddCategory.type') }}</small>
+				  </div>
+				  <div class="form-group">
+				  	<textarea class="form-control" placeholder="Enter description" style="height: 150px" name="description" 
+				  						v-model="modalInputAddCategory.description"
+				    			 		:class="{ 'is-invalid': errors.first('frmAddCategory.description') }"
+									 		v-validate="'required'"></textarea>
+						<small class="invalid-feedback">{{ errors.first('frmAddCategory.description') }}</small>
+				  </div>
+				</div>
+				<div slot="modal-footer" class="w-100 text-center">
+				 	<button type="submit" class="btn btn-primary px-4 mr-2">Add</button>
+				 	<button type="button" class="btn btn-default px-4" @click="modalAddCategory=false">Cancel</button>
+				</div>
+			</form>
 		</b-modal>
 
-		<b-modal v-model="modalEditCategory" title="Update Category" @ok="updateCategory" size="sm" ok-title="Update">
-			<div>
-			  <div class="form-group">
-			    <input type="text" class="form-control" placeholder="Enter name" name="name" 
-			    			 v-model="modalInputEditCategory.name"
-			    			 :class="{ 'is-invalid': errors.first('name') }"
-			    			 v-validate="'required'">
-		      <small class="invalid-feedback">{{ errors.first('name') }}</small>
-			  </div>
-			  <div class="form-group">
-			    <input type="text" class="form-control" placeholder="Enter type" name="type" 
-			    			 v-model="modalInputEditCategory.type"
-			    			 :class="{ 'is-invalid': errors.first('type') }"
-								 v-validate="'required'">
-					<small class="invalid-feedback">{{ errors.first('type') }}</small>
-			  </div>
-			  <div class="form-group mb-0">
-			  	<textarea class="form-control" placeholder="Enter description" style="height: 150px" name="description" 
-			  						v-model="modalInputEditCategory.description"
-			    			 		:class="{ 'is-invalid': errors.first('description') }"
-								 		v-validate="'required'"></textarea>
-					<small class="invalid-feedback">{{ errors.first('description') }}</small>
-			  </div>
-			</div>
+
+		<b-modal v-model="modalEditCategory" title="Update Category" @ok="updateCategory" size="sm" hide-footer>
+			<form @submit.prevent="formValidator('frmEditCategory')" id="frmEditCategory" data-vv-scope="frmEditCategory">
+				<div class="mb-1">
+				  <div class="form-group">
+				    <input type="text" class="form-control" placeholder="Enter name" name="name" 
+				    			 v-model="modalInputEditCategory.name"
+				    			 :class="{ 'is-invalid': errors.first('frmEditCategory.name') }"
+				    			 v-validate="'required'">
+			      <small class="invalid-feedback">{{ errors.first('frmEditCategory.name') }}</small>
+				  </div>
+				  <div class="form-group">
+				    <input type="text" class="form-control" placeholder="Enter type" name="type" 
+				    			 v-model="modalInputEditCategory.type"
+				    			 :class="{ 'is-invalid': errors.first('frmEditCategory.type') }"
+									 v-validate="'required'">
+						<small class="invalid-feedback">{{ errors.first('frmEditCategory.type') }}</small>
+				  </div>
+				  <div class="form-group">
+				  	<textarea class="form-control" placeholder="Enter description" style="height: 150px" name="description" 
+				  						v-model="modalInputEditCategory.description"
+				    			 		:class="{ 'is-invalid': errors.first('frmEditCategory.description') }"
+									 		v-validate="'required'"></textarea>
+						<small class="invalid-feedback">{{ errors.first('frmEditCategory.description') }}</small>
+				  </div>
+				</div>
+				<div slot="modal-footer" class="w-100 text-center">
+				 	<button type="submit" class="btn btn-primary px-4 mr-2">Update</button>
+				 	<button type="button" class="btn btn-default px-4" @click="modalEditCategory=false">Cancel</button>
+				</div>
+			</form>
 		</b-modal>
 
 	</div>
@@ -136,6 +139,12 @@ import axios from 'axios'
 export default {
 	data() {
 		return {
+			requestedHeaders: {
+	      headers: {
+	        Authorization: process.env.VUE_APP_AUTHORIZATION,
+	        'x-access-token': localStorage.getItem("auth_token")
+	      }
+			},
 			categories: {},
 			catDtl: {},
 			catClassActive: 0, // get id; this is just for setting the active class
@@ -151,20 +160,36 @@ export default {
 		this.getCategories()
 	},
 	methods: {
+    /**
+     * Form Validator
+     * This will validate multiple forms
+     * 
+     * @param  String scope
+     */
+    formValidator(scope) {
+      let vm = this
+      vm.$validator.validateAll(scope).then(result => {
+        if (result) {
+          switch (scope) {
+            case 'frmAddCategory':   vm.addCategory();      	break
+            case 'frmEditCategory':  vm.updateCategory();			break
+            default: //
+          }
+        }
+      })
+    },
+
 		/**
 		 * Get all categories
 		 */
 		getCategories() {
 			let vm = this
-			axios.get(`${process.env.VUE_APP_API_URL}/api/promotioncategories`, {
-	      headers: {
-	        'Authorization': process.env.VUE_APP_AUTHORIZATION,
-	        'x-access-token': localStorage.getItem("auth_token")
-	      }
-			}).then(res => {
-				vm.categories = res.data
-				vm.getCategoryDetails(res.data[0]._id)
-			})
+			axios
+				.get('/api/promotioncategories', vm.requestedHeaders)
+				.then(res => {
+					vm.categories = res.data
+					vm.getCategoryDetails(res.data[0]._id)
+				})
 		},
 
 		/**
@@ -174,15 +199,12 @@ export default {
 		 */
 		getCategoryDetails(catId) {
 			let vm = this
-			axios.get(`${process.env.VUE_APP_API_URL}/api/promotioncategories/${catId}`, {
-	      headers: {
-	        'Authorization': process.env.VUE_APP_AUTHORIZATION,
-	        'x-access-token': localStorage.getItem("auth_token")
-	      }
-			}).then(res => {
-				vm.catDtl = res.data
-				vm.catClassActive = catId
-			})
+			axios
+				.get(`/api/promotioncategories/${catId}`, vm.requestedHeaders)
+				.then(res => {
+					vm.catDtl = res.data
+					vm.catClassActive = catId
+				})
 		},
 
 		/**
@@ -218,51 +240,32 @@ export default {
 		/**
 		 * Add Category
 		 */
-		addCategory(e) {
+		addCategory() {
 			let vm = this
-			e.preventDefault()
 
-      vm.$validator.validate('vm.modalInputAddCategory.*').then((result) => {
-        if (result) {
-        	axios.post(`${process.env.VUE_APP_API_URL}/api/promotioncategories`, vm.modalInputAddCategory, {
-			      headers: {
-			        'Authorization': process.env.VUE_APP_AUTHORIZATION,
-			        'x-access-token': localStorage.getItem("auth_token")
-			      }
-        	}).then(res => {
-						alert('Category Added!')
-						vm.categories.unshift(res.data)
-						vm.modalAddCategory = false
-        		vm.modalInputAddCategory = {}
-        	})
-          return;
-        }
-      })
+    	axios
+    		.post('/api/promotioncategories', vm.modalInputAddCategory, vm.requestedHeaders)
+    		.then(res => {
+					vm.$swal('Success!', 'New category added!', 'success')
+					vm.categories.unshift(res.data)
+					vm.modalAddCategory = false
+	    		vm.modalInputAddCategory = {}
+	    	})
 		},
 
 		/**
 		 * Update specific category
 		 */
-		updateCategory(e) {
+		updateCategory() {
 			let vm = this;
-			e.preventDefault();
-
-      vm.$validator.validate('vm.modalInputEditCategory.*').then((result) => {
-        if (result) {
-        	axios.put(`${process.env.VUE_APP_API_URL}/api/promotioncategories/${vm.modalInputEditCategory._id}`, vm.modalInputEditCategory, {
-			      headers: {
-			        'Authorization': process.env.VUE_APP_AUTHORIZATION,
-			        'x-access-token': localStorage.getItem("auth_token")
-			      }
-        	}).then(res => {
-						alert('Category Updated!')
-						vm.getCategories()
-						vm.modalEditCategory = false
-        		vm.modalInputAddCategory = {}
-        	})
-          return
-        }
-      })
+    	axios
+    		.put(`/api/promotioncategories/${vm.modalInputEditCategory._id}`, vm.modalInputEditCategory, vm.requestedHeaders)
+    		.then(res => {
+					vm.$swal('Success!', 'Category updated!', 'success')
+					vm.getCategories()
+					vm.modalEditCategory = false
+	    		vm.modalInputAddCategory = {}
+	    	})
 		},
 
 		/**
@@ -271,22 +274,16 @@ export default {
 		 * @param  Integer catId
 		 */
 		removeCategory(catId) {
+			let vm = this
 			if(confirm('You sure you want to remove this category?')) {
-				axios.delete(`${process.env.VUE_APP_API_URL}/api/promotioncategories/${catId}`, {
-		      headers: {
-		        'Authorization': process.env.VUE_APP_AUTHORIZATION,
-		        'x-access-token': localStorage.getItem("auth_token")
-		      }
-				}).then(res => {
-					alert('Successfully removed!')
-					this.getCategories()
-				})
+				axios
+					.delete(`/api/promotioncategories/${catId}`, vm.requestedHeaders)
+					.then(res => {
+						vm.$swal('Success!', 'Category successfully removed!', 'success')
+						vm.getCategories()
+					})
 			}
 		}
 	}
 }
 </script>
-
-<style scoped>
-	/*Note: use splice*/
-</style>

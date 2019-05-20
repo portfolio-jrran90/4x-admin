@@ -51,7 +51,7 @@
       <!-- Step 1 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 1</h2>
+          <h2 class="mb-3">Step 1 - Registration</h2>
           <div class="row">
             <div class="col">
               <table class="table table-striped table-sm table-bordered mb-0">
@@ -96,7 +96,7 @@
       <!-- Step 2 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 2</h2>
+          <h2 class="mb-3">Step 2 - Verification - Income</h2>
           <div class="row">
             <div class="col">
               <table class="table table-striped table-sm table-bordered mb-0">
@@ -147,7 +147,7 @@
       <!-- Step 3 -->
       <div class="card c-step-3">
         <div class="card-body">
-          <h2 class="mb-3">Step 3</h2>
+          <h2 class="mb-3">Step 3 - Verification Identity</h2>
           <div class="row">
             <div class="col">
               <table class="table table-bordered table-sm">
@@ -200,7 +200,7 @@
       <!-- Step 4 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 4 - Call applicant</h2>
+          <h2 class="mb-3">Step 4 - Verification Call</h2>
           <div class="row">
             <div class="col-md-6">
 
@@ -230,7 +230,7 @@
       <!-- Step 5 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 5 - Call emergency contact</h2>
+          <h2 class="mb-3">Step 5 - Verification emergency</h2>
           <div class="row">
             <div class="col">
               <table class="table table-striped table-sm table-bordered">
@@ -286,54 +286,16 @@
       <!-- Step 6 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 5 - Call emergency contact</h2>
-          <div class="row">
-            <div class="col">
-              <table class="table table-striped table-sm table-bordered">
-                <tr class="bg-dark text-white">
-                  <th class="w-25">Field</th>
-                  <th class="w-25">Input User in App</th>
-                  <th>Proses Verifikasi Sistem</th>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Nama Kontak Darurat</th>
-                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.name:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Hubungan</th>
-                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.type:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Nomor Kontak Darurat</th>
-                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.mobileNumber:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-
+          <h2 class="mb-3">Step 6 - Verification Payment</h2>
           <div class="row">
             <div class="col-md-6">
-              <form>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="step-5-options-yes" value="yes">
-                  <label class="form-check-label" for="step-5-options-yes">Yes</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="step-5-options-no" value="no">
-                  <label class="form-check-label" for="step-5-options-no">No</label>
-                </div>
-
+              <form class="form-inline">
                 <div class="form-group mb-2">
-                  <label>Notes</label>
-                  <textarea name="" id="" cols="30" rows="5" class="form-control"></textarea>
+                  <input type="text" readonly class="form-control-plaintext" value="">
                 </div>
-                <button type="submit" class="btn btn-primary px-5">Confirm</button>
               </form>
             </div>
-          </div>           
+          </div>
           
         </div>
       </div>

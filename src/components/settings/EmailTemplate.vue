@@ -1,5 +1,6 @@
 <template>
 	<div>
+
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 		    <li class="breadcrumb-item">
@@ -8,12 +9,13 @@
 		    <li class="breadcrumb-item active" aria-current="page">Email Template</li>
 		  </ol>
 		</nav>
+
 		<div class="row">
 			<div class="col-md-4">
-				<table class="table table-hover">
+				<table class="table table-hover tbl-template">
 					<thead>
 						<tr>
-							<th>
+							<th colspan="2">
 								Type
 								<a href="#" @click.prevent="openModal('AddTemplate')" class="float-right">
 									<font-awesome-icon icon="plus-square" size="lg" /> Add
@@ -22,28 +24,41 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="data in templates" :class="{'table-active': data._id == activeTemplateId }">
-							<td @click="viewTemplateContent(data)">{{ data.type }}</td>
+						<tr v-for="(data, index) in templates" :class="{'table-active': data._id == activeTemplateId }">
+							<td>
+								<a href="#" @click.prevent="viewTemplateContent(data)" class="text-dark">{{ data.type }}</a>
+							</td>
+							<td class="text-right">
+								<ul class="list-inline mb-0">
+									<li class="list-inline-item">
+										<a href="#"
+											@click.prevent="openModal('EditTemplate', data, index)"
+											v-b-tooltip.hover
+											title="Edit">
+											<font-awesome-icon icon="edit" />
+										</a>
+									</li>
+									<li class="list-inline-item">
+										<a href="#"
+											@click.prevent="removeTemplate"
+											v-b-tooltip.hover
+											title="Delete"
+											class="text-danger">
+											<font-awesome-icon icon="trash-alt" />
+										</a>
+									</li>
+								</ul>
+							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			<div class="col-md-8">
-				<h4 class="text-center mb-3">
-					Preview
-					<span class="float-right">
-						<a href="#"
-							@click.prevent="openModal('EditTemplate')"
-							v-b-tooltip.hover title="Edit template">
-							<font-awesome-icon icon="edit" class="mr-2" />
-						</a>
-						<a href="#"
-							@click.prevent="removeTemplate"
-							v-b-tooltip.hover title="Delete template" class="text-danger">
-							<font-awesome-icon icon="trash-alt" />
-						</a>
-					</span>
-				</h4>
+			<div class="col">
+				<h4 class="text-center mb-3">Preview</h4>
+				<ul class="list-unstyled">
+					<li><strong>Subject:</strong> {{ template.subject }}</li>
+					<li><strong>Image Url:</strong> {{ template.image_url }}</li>
+				</ul>
 				<div v-html="template.content"></div>
 			</div>
 		</div>
@@ -94,13 +109,6 @@
 			<form @submit.prevent="formValidator('frmEditTemplate')" data-vv-scope="frmEditTemplate">
 				<div class="row">
 					<div class="col">
-					  <!-- <div class="form-group">
-					    <input type="text" class="form-control" placeholder="Enter type" name="type" 
-					    			 v-model="modalEditTemplateInput.type"
-					    			 :class="{ 'is-invalid': errors.first('frmEditTemplate.type') }"
-					    			 v-validate="'required'">
-					    <small class="invalid-feedback">{{ errors.first('frmEditTemplate.type') }}</small>
-					  </div> -->
 					  <div class="form-group">
 					    <input type="text" class="form-control" placeholder="Enter subject" name="subject" 
 					    			 v-model="modalEditTemplateInput.subject"
@@ -110,10 +118,7 @@
 					  </div>
 					  <div class="form-group">
 					    <input type="url" class="form-control" placeholder="Enter image URL" name="image_url" 
-					    			 v-model="modalEditTemplateInput.image_url"
-					    			 :class="{ 'is-invalid': errors.first('frmEditTemplate.image_url') }"
-					    			 v-validate="'required|url'">
-					    <small class="invalid-feedback">{{ errors.first('frmEditTemplate.image_url') }}</small>
+					    			 v-model="modalEditTemplateInput.image_url">
 					  </div>
 					  <div class="form-group">
 					    <textarea cols="30" rows="10" class="form-control" placeholder="Enter content" style="height: 300px" name="content" 
@@ -186,7 +191,7 @@ export default {
 		 * @param  {[type]} type
 		 * @param  {[type]} data 'Object of data'
 		 */
-		openModal(type, data) {
+		openModal(type, data, index) {
 			let vm = this
 
 			vm.$validator.reset()
@@ -198,10 +203,11 @@ export default {
 					break
 				case 'EditTemplate':
 					vm.modalEditTemplateInput = {
-						type: vm.template.type,
-						content: vm.template.content,
-						subject: vm.template.subject,
-						image_url: vm.template.image_url
+						type: data.type,
+						content: data.content,
+						subject: data.subject,
+						image_url: data.image_url,
+						__index: index
 					}
 					vm.modalEditTemplate = true
 					break
@@ -216,12 +222,7 @@ export default {
 		 */
 		viewTemplateContent(data) {
 			let vm = this
-			vm.template = {
-				type: data.type,
-				content: data.content,
-				image_url: data.image_url,
-				subject: data.subject
-			}
+			vm.template = data
 			vm.activeTemplateId = data._id
 		},
 
@@ -269,8 +270,8 @@ export default {
     		.put('/api/templates', vm.modalEditTemplateInput, vm.requestedHeaders)
     		.then(res => {
 					vm.$swal('Success!', 'Template updated!', 'success')
-					// vm.templates.push(res.data)
-					vm.indexTemplate()
+					vm.templates[vm.modalEditTemplateInput.__index] = res.data
+					vm.template = res.data
 					vm.modalEditTemplate = false
 	    	})
 		},
@@ -293,8 +294,10 @@ export default {
 }
 </script>
 
-<style scoped>
-	textarea {
-		resize: none
-	}	
+<style lang="scss" scoped>
+	textarea { resize: none }
+	.tbl-template {
+		ul { display: none }
+		.table-active ul { display: block }
+	}
 </style>

@@ -108,6 +108,7 @@ import SettingsIndex from './components/settings/Index.vue'
 import SettingsEmailTemplate from './components/settings/EmailTemplate.vue'
 import SettingsFee from './components/settings/Fee.vue'
 import SettingsUserManagement from './components/settings/UserManagement.vue'
+import SettingsSalary from './components/settings/Salary.vue'
 
 const routes = [
   { path: '*', redirect: '/login' },
@@ -139,6 +140,7 @@ const routes = [
           { path: 'email-template', component: SettingsEmailTemplate, name: 'settings-email-template' },
           { path: 'fee', component: SettingsFee, name: 'settings-fee' },
           { path: 'user-management', component: SettingsUserManagement, name: 'settings-user-management' },
+          { path: 'salary', component: SettingsSalary, name: 'settings-salary' },
         ],
       },
     ],

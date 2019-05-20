@@ -51,7 +51,7 @@
       <!-- Step 1 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 1</h2>
+          <h2 class="mb-3">Step 1 - Registration</h2>
           <div class="row">
             <div class="col">
               <table class="table table-striped table-sm table-bordered mb-0">
@@ -96,7 +96,7 @@
       <!-- Step 2 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 2</h2>
+          <h2 class="mb-3">Step 2 - Verification - Income</h2>
           <div class="row">
             <div class="col">
               <table class="table table-striped table-sm table-bordered mb-0">
@@ -147,7 +147,7 @@
       <!-- Step 3 -->
       <div class="card c-step-3">
         <div class="card-body">
-          <h2 class="mb-3">Step 3</h2>
+          <h2 class="mb-3">Step 3 - Verification Identity</h2>
           <div class="row">
             <div class="col">
               <table class="table table-bordered table-sm">
@@ -200,7 +200,7 @@
       <!-- Step 4 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 4 - Call applicant</h2>
+          <h2 class="mb-3">Step 4 - Verification Call</h2>
           <div class="row">
             <div class="col-md-6">
 
@@ -230,7 +230,7 @@
       <!-- Step 5 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 5 - Call emergency contact</h2>
+          <h2 class="mb-3">Step 5 - Verification emergency</h2>
           <div class="row">
             <div class="col">
               <table class="table table-striped table-sm table-bordered">
@@ -282,6 +282,24 @@
         </div>
       </div>
       <!-- ./Step 5 -->
+
+      <!-- Step 6 -->
+      <div class="card">
+        <div class="card-body">
+          <h2 class="mb-3">Step 6 - Verification Payment</h2>
+          <div class="row">
+            <div class="col-md-6">
+              <form class="form-inline">
+                <div class="form-group mb-2">
+                  <input type="text" readonly class="form-control-plaintext" value="">
+                </div>
+              </form>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <!-- ./Step 6 -->
 
       <!-- Note -->
       <div class="mb-4">
@@ -441,11 +459,11 @@ export default {
       vm.processVerificationSystem.age = Math.abs(ageDiff.getUTCFullYear() - 1970)
 
       vm.ktpViewerOption = {
-        navbar: false, title: false, movable: false, fullscreen: false
+        navbar: false, title: false, fullscreen: false
       }
 
       vm.selfieKtpViewerOption = {
-        navbar: false, title: false, movable: false, fullscreen: false
+        navbar: false, title: false, fullscreen: false
       }
 
     },

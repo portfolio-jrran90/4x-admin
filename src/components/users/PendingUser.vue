@@ -283,6 +283,62 @@
       </div>
       <!-- ./Step 5 -->
 
+      <!-- Step 6 -->
+      <div class="card">
+        <div class="card-body">
+          <h2 class="mb-3">Step 5 - Call emergency contact</h2>
+          <div class="row">
+            <div class="col">
+              <table class="table table-striped table-sm table-bordered">
+                <tr class="bg-dark text-white">
+                  <th class="w-25">Field</th>
+                  <th class="w-25">Input User in App</th>
+                  <th>Proses Verifikasi Sistem</th>
+                </tr>
+                <tr>
+                  <th class="table-secondary">Nama Kontak Darurat</th>
+                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.name:'---' }}</td>
+                  <td colspan="2"><em>Cannot be provided by the system</em></td>
+                </tr>
+                <tr>
+                  <th class="table-secondary">Hubungan</th>
+                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.type:'---' }}</td>
+                  <td colspan="2"><em>Cannot be provided by the system</em></td>
+                </tr>
+                <tr>
+                  <th class="table-secondary">Nomor Kontak Darurat</th>
+                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.mobileNumber:'---' }}</td>
+                  <td colspan="2"><em>Cannot be provided by the system</em></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <form>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="step-5-options-yes" value="yes">
+                  <label class="form-check-label" for="step-5-options-yes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="step-5-options-no" value="no">
+                  <label class="form-check-label" for="step-5-options-no">No</label>
+                </div>
+
+                <div class="form-group mb-2">
+                  <label>Notes</label>
+                  <textarea name="" id="" cols="30" rows="5" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary px-5">Confirm</button>
+              </form>
+            </div>
+          </div>           
+          
+        </div>
+      </div>
+      <!-- ./Step 6 -->
+
       <!-- Note -->
       <div class="mb-4">
         <h2>Summary</h2>
@@ -441,11 +497,11 @@ export default {
       vm.processVerificationSystem.age = Math.abs(ageDiff.getUTCFullYear() - 1970)
 
       vm.ktpViewerOption = {
-        navbar: false, title: false, movable: false, fullscreen: false
+        navbar: false, title: false, fullscreen: false
       }
 
       vm.selfieKtpViewerOption = {
-        navbar: false, title: false, movable: false, fullscreen: false
+        navbar: false, title: false, fullscreen: false
       }
 
     },

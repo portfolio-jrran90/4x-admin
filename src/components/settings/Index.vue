@@ -19,6 +19,12 @@
 					User Management
 				</router-link>
 			</div>
+			<div class="col">
+				<router-link :to="{ name: 'settings-salary' }" class="btn btn-block py-4 btn-outline-primary">
+					<font-awesome-icon :icon="['fas', 'coins']" class="mr-2" size="lg" />
+					Salary
+				</router-link>
+			</div>
 		</div>
 	</div>
 </template>

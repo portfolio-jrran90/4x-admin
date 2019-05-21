@@ -8,6 +8,7 @@
 				    <option value="active">Active users</option>
 				    <option value="pending">Pending users</option>
 				    <option value="incomplete">Incomplete users</option>
+				    <option value="banned">Banned users</option>
 				  </select>
 				</div>
 			</div>

@@ -90,8 +90,10 @@ import AssignCategory from './components/AssignCategory.vue'
 import User from './components/users/Index.vue'
 import ActiveUser from './components/users/ActiveUser.vue'
 import PendingUser from './components/users/PendingUser.vue'
+import IncompleteUser from './components/users/Incomplete.vue'
 Vue.component('active-user', ActiveUser)
 Vue.component('pending-user', PendingUser)
+Vue.component('incomplete-user', IncompleteUser)
 
 // Merchants
 import Merchant from './components/merchants/Index.vue'

@@ -76,6 +76,11 @@
                   <td colspan="2">{{ processVerificationSystem.age }}</td>
                 </tr>
                 <tr>
+                  <th class="table-secondary">Alamat</th>
+                  <td class="table-active">{{ (userDetails.detail)?userDetails.detail.address:'---' }}</td>
+                  <td colspan="2"><em>Cannot be provided by the system</em></td>
+                </tr>
+                <tr>
                   <th class="table-secondary">E-mail</th>
                   <td class="table-active">{{ (userDetails.detail)?userDetails.detail.email:'---' }}</td>
                   <td colspan="2"
@@ -289,11 +294,24 @@
           <h2 class="mb-3">Step 6 - Verification Payment</h2>
           <div class="row">
             <div class="col-md-6">
-              <form class="form-inline">
-                <div class="form-group mb-2">
-                  <input type="text" readonly class="form-control-plaintext" value="">
-                </div>
-              </form>
+              
+              <table class="table table-sm table-bordered">
+                <tr>
+                  <th class="w-25 table-dark">Card #</th>
+                  <td class="table-secondary">
+                    {{ (userDetails.card)?(userDetails.card[0].masked.replace('-', '').replace(/\d(?=\d{4})/g, '*')):'---' }}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="table-dark">Bank</th>
+                  <td class="table-secondary">{{ (userDetails.card)?userDetails.card[0].bank:'---' }}</td>
+                </tr>
+                <tr>
+                  <th class="table-dark">Type</th>
+                  <td class="table-secondary">{{ (userDetails.card)?userDetails.card[0].type:'---' }}</td>
+                </tr>
+              </table>
+
             </div>
           </div>
           

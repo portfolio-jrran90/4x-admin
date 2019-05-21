@@ -300,6 +300,7 @@
                   <th class="w-25 table-dark">Card #</th>
                   <td class="table-secondary">
                     {{ (userDetails.card)?(userDetails.card[0].masked.replace('-', '').replace(/\d(?=\d{4})/g, '*')):'---' }}
+                    <span class="badge badge-success ml-2 px-3">Valid</span>
                   </td>
                 </tr>
                 <tr>

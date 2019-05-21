@@ -209,6 +209,8 @@
           <div class="row">
             <div class="col-md-6">
 
+              <h4 class="mb-3">{{ userDetails.mobileNumber }}</h4>
+
               <form>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">

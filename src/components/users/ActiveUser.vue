@@ -1,6 +1,7 @@
 <template>
   <div>
     <h2>Active User</h2>
+    <h5>Total: {{ users.length }}</h5>
     <div class="row">
       <div class="col">
         <table class="table table-hover table-striped">

@@ -7,6 +7,7 @@
 				  <select class="custom-select my-1 mr-sm-2" id="labelUserStatus" v-model="selectedUserStatus">
 				    <option value="active">Active users</option>
 				    <option value="pending">Pending users</option>
+				    <option value="incomplete">Incomplete users</option>
 				  </select>
 				</div>
 			</div>

@@ -501,11 +501,6 @@ export default {
     actionBtn(action, reqFrom, data) {
       let vm = this
 
-      let activateUserBodyInput = {
-        user: data.user._id,
-        description: vm.note
-      }
-
       if (action == 'approve') {
         if (reqFrom == 'dataApp') {
 
@@ -514,6 +509,12 @@ export default {
 
               if (confirm( 'Approve user?' )) {
                 vm.isLoader = true
+
+                let activateUserBodyInput = {
+                  user: data.user._id,
+                  description: vm.note
+                }
+
                 axios
                   .post('/api/users/activatinguser', activateUserBodyInput, vm.requestedHeaders)
                   .then(res => {
@@ -536,8 +537,14 @@ export default {
 
               if (confirm ( 'Reject user?' )) {
                 vm.isLoader = true
+
+                let rejectUserBodyInput = {
+                  user: data.user.mobileNumber,
+                  description: vm.note
+                }
+                
                 axios
-                  .post('/api/users/reject', activateUserBodyInput, vm.requestedHeaders)
+                  .post('/api/users/reject', rejectUserBodyInput, vm.requestedHeaders)
                   .then(res => {
                     vm.$swal('Success!', "User's application has been rejected!", 'success')
                     vm.modalUserShow = false

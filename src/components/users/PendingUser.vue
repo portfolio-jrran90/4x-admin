@@ -12,12 +12,12 @@
     <h5>Total: {{ users.length }}</h5>
     <div class="row">
       <div class="col-md-8">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped tbl-users">
           <thead>
             <tr>
               <th class="w-50">Name</th>
               <th>Phone Number</th>
-              <th colspan="2">Date registered</th>
+              <th>Date registered</th>
             </tr>
           </thead>
           <tbody v-if="users.length===0">
@@ -25,18 +25,12 @@
           </tbody>
           <tbody v-else>
             <tr v-for="(data, index) in users">
-              <td>{{ data.detail.name }}</td>
+              <td>
+                <a href="#" @click.prevent="openModalUserDetails(data, index)"
+                  v-b-tooltip.hover title="View details">{{ data.detail?data.detail.name:'--' }}</a>
+              </td>
               <td>{{ data.mobileNumber }}</td>
               <td>{{ new Date(data.createdAt) | date }}</td>
-              <td class="text-right">
-                <ul class="list-inline m-0">
-                  <li class="list-inline-item">
-                    <a href @click.prevent="openModalUserDetails(data, index)" v-b-tooltip.hover title="View details">
-                      <font-awesome-icon icon="search" size="sm" />
-                    </a>
-                  </li>
-                </ul>
-              </td>
             </tr>
           </tbody>
         </table>
@@ -641,6 +635,12 @@ export default {
     font-size: 25px;
 
     img { width: 150px; margin-bottom: 10px }
+  }
+
+  .tbl-users {
+    td:first-child a {
+      color: #369;
+    }
   }
 
   .modal-80 figure {

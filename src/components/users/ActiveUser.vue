@@ -38,12 +38,12 @@
               <td>{{ data.mobileNumber }}</td>
               <td class="text-right">
                 {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit) }}
-                <a
+                <!-- <a
                   href="#"
                   v-b-tooltip
                   title="Tingkatkan/Turunkan Kredit"
                   @click.prevent="openModal('AssignCredit', data, index)"
-                >&plusmn;</a>
+                >&plusmn;</a> -->
               </td>
               <td class="text-right">
                 {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingCredit) }}
@@ -92,7 +92,7 @@
           <div class="mb-1">
             <select class="form-control" v-model="selectAssignCredit">
               <option value>-- Select action --</option>
-              <!-- <option value="increase">Tingkatkan Kredit Limit</option> -->
+              <option value="increase">Tingkatkan Kredit Limit</option>
               <option value="decrease">Turunkan Kredit Limit</option>
             </select>
           </div>

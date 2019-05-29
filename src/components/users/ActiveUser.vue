@@ -92,7 +92,7 @@
           <div class="mb-1">
             <select class="form-control" v-model="selectAssignCredit">
               <option value>-- Select action --</option>
-              <option value="increase">Tingkatkan Kredit Limit</option>
+              <!-- <option value="increase">Tingkatkan Kredit Limit</option> -->
               <option value="decrease">Turunkan Kredit Limit</option>
             </select>
           </div>

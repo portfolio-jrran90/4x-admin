@@ -67,7 +67,9 @@
                 <tr>
                   <th class="table-secondary">Tanggal Lahir</th>
                   <td class="table-active">{{ (userDetails.detail)?(new Date(userDetails.detail.birthdate).toLocaleDateString("en-US")):'---' }}</td>
-                  <td colspan="2">{{ processVerificationSystem.age }}</td>
+                  <td colspan="2">
+                    <em>{{ processVerificationSystem.age }} years old</em>
+                  </td>
                 </tr>
                 <tr>
                   <th class="table-secondary">Alamat</th>
@@ -82,7 +84,7 @@
                         'table-danger': !userDetails.emailVerified,
                         'table-success': userDetails.emailVerified,
                       }">
-                    {{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}
+                    <em>{{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}</em>
                   </td>
                 </tr>
               </table>
@@ -122,7 +124,9 @@
                 <tr>
                   <th class="table-secondary">Penghasilan</th>
                   <td class="table-active"> {{ (userDetails.detail)?userDetailsPenghasilan:'---' }}</td>
-                  <td colspan="2">rekomendasi limit dari sistem <strong>{{ processVerificationSystem.penghasilan | currency }}</strong></td>
+                  <td colspan="2">
+                    <em>rekomendasi limit dari sistem <strong>{{ processVerificationSystem.penghasilan | currency }}</strong></em>
+                  </td>
                 </tr>
                 <tr>
                   <th class="table-secondary">No. NPWP</th>
@@ -205,19 +209,21 @@
 
               <h4 class="mb-3">{{ userDetails.mobileNumber }}</h4>
 
-              <form>
+              <form @submit.prevent="verifyDetail('applicant', userDetails._id)">
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                  <label class="form-check-label" for="inlineRadio1">Yes</label>
+                  <input class="form-check-input" type="radio" name="rdOptVerifyApplicant" id="rdOptVerifyApplicantOption1" value="true"
+                    v-model="verify.applicant.passed">
+                  <label class="form-check-label" for="rdOptVerifyApplicantOption1">Yes</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                  <label class="form-check-label" for="inlineRadio2">No</label>
+                  <input class="form-check-input" type="radio" name="rdOptVerifyApplicant" id="rdOptVerifyApplicantOption2" value="false"
+                    v-model="verify.applicant.passed">
+                  <label class="form-check-label" for="rdOptVerifyApplicantOption2">No</label>
                 </div>
-
                 <div class="form-group mb-2">
                   <label>Notes</label>
-                  <textarea rows="5" class="form-control"></textarea>
+                  <textarea rows="5" class="form-control"
+                    v-model="verify.applicant.notes"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary px-5">Confirm</button>
               </form>
@@ -261,22 +267,26 @@
 
           <div class="row">
             <div class="col-md-6">
-              <form>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="step-5-options-yes" value="yes">
-                  <label class="form-check-label" for="step-5-options-yes">Yes</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="step-5-options-no" value="no">
-                  <label class="form-check-label" for="step-5-options-no">No</label>
-                </div>
 
+              <form @submit.prevent="verifyDetail('emergency', userDetails._id)">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="rdOptVerifyEmergency" id="rdOptVerifyEmergencyOption1" value="true"
+                    v-model="verify.emergency.passed">
+                  <label class="form-check-label" for="rdOptVerifyEmergencyOption1">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="rdOptVerifyEmergency" id="rdOptVerifyEmergencyOption2" value="false"
+                    v-model="verify.emergency.passed">
+                  <label class="form-check-label" for="rdOptVerifyEmergencyOption2">No</label>
+                </div>
                 <div class="form-group mb-2">
                   <label>Notes</label>
-                  <textarea name="" id="" cols="30" rows="5" class="form-control"></textarea>
+                  <textarea name="" id="" cols="30" rows="5" class="form-control"
+                    v-model="verify.emergency.notes"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary px-5">Confirm</button>
               </form>
+
             </div>
           </div>           
           
@@ -360,7 +370,7 @@ export default {
       isLoader: false,
       requestedHeaders: {
         headers: {
-          'Authorization': process.env.VUE_APP_AUTHORIZATION,
+          Authorization: process.env.VUE_APP_AUTHORIZATION,
           'x-access-token': localStorage.getItem("auth_token")
         }
       },
@@ -376,6 +386,11 @@ export default {
       userDetailsPenghasilan: "",
       spinner: false,
       note: '',
+
+      verify: {
+        applicant: {},
+        emergency: {}
+      },
 
       processVerificationSystem: {},
 
@@ -394,9 +409,7 @@ export default {
      */
     index() {
       let vm = this
-
       vm.isLoader = true
-
       axios
         .get('/api/users?limit=50&skip=0&status=1', vm.requestedHeaders)
         .then(res => {
@@ -555,7 +568,6 @@ export default {
 
         }
       }
-
     },
 
     /**
@@ -619,8 +631,45 @@ export default {
       }).then(res => {
         console.log(res.data)
       })*/
+    },
 
+    /**
+     * Verify detail
+     *
+     * This function will just verify applicants credentials i.e.
+     * contacting him/her for some verification that includes emergency
+     * 
+     * @param  String type
+     * @param  ObjectId userId
+     */
+    verifyDetail(type, userId) {
+      let vm = this
 
+      let url, requestBody
+      switch(type) {
+        case 'applicant':
+          url = '/api/users/verify-applicant'
+          requestBody = {
+            passed: vm.verify.applicant.passed,
+            notes: vm.verify.applicant.notes
+          }
+          break
+        case 'emergency':
+          url = '/api/users/verify-emergency-contact'
+          requestBody = {
+            passed: vm.verify.emergency.passed,
+            notes: vm.verify.emergency.notes
+          }
+          break
+      }
+
+      Object.assign(requestBody, { user: userId })
+
+      axios
+        .post(url, requestBody, vm.requestedHeaders)
+        .then(res => {
+          consol
+        })
     }
   }
 };

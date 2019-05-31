@@ -307,7 +307,7 @@ export default {
     index() {
       let vm = this
       axios
-        .get('/api/users?status=0', vm.requestedHeaders)
+        .get('/api/users?status=0&limit=2000', vm.requestedHeaders)
         .then(res => vm.users = res.data)
     },
 

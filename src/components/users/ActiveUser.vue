@@ -666,7 +666,6 @@ export default {
         // vm.currentPage = oldPage
         vm.loader.has = false
       }
-
     },
 
     openModal(type, user, index) {

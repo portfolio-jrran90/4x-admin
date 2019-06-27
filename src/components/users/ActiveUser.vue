@@ -947,26 +947,25 @@ export default {
      * @param  Object dat
      */
     mapTransactionTerms(dat) {
-      if ( dat.number !== 1 ) {
-        if ( dat.paid.status_code == 200 ) {
-          return {
-            msg: 'Va telah dibayar',
-            payment_id: dat.paid.payment_id,
-            paid_date: dat.paid.date
-          }
-        }
-        return {
-          msg: 'VA telah di buat',
-          payment_id: dat.paid.payment_id,
-          paid_date: dat.paid.date
-        }
-      } else {
-        return {
-          msg: 'Paid',
-          payment_id: dat.paid.payment_id,
-          paid_date: dat.paid.date
-        }
+      let responseObj = {
+        payment_id: dat.paid.payment_id,
+        paid_date: dat.paid.date 
       }
+
+      if ( dat.number !== 1 ) {
+
+        if ( dat.paid.method == 'vabni' ) {
+          if ( dat.paid.status_code == 200 ) { responseObj.msg = 'Va telah dibayar' }
+            else { responseObj.msg = 'VA telah di buat' }
+        } else {
+          responseObj.msg = 'VA belum di buat'
+        }
+
+      } else {
+        responseObj.msg = 'Paid'
+      }
+
+      return responseObj
     }
 
   }

@@ -12,3 +12,10 @@ Vue.filter('date', date => {
 Vue.filter('currency', amount => {
 	return Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(amount)
 })
+
+/**
+ * Capitalize first word
+ */
+Vue.filter('ucfirst', string => {
+	return string.charAt(0).toUpperCase() + string.slice(1)
+})

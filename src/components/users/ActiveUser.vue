@@ -395,7 +395,9 @@
 
               <div class="form-group mb-2">
                 <label>Notes</label>
-                <textarea rows="5" class="form-control"></textarea>
+                <textarea rows="5" class="form-control"
+                  :value="userDetails.verify?((userDetails.verify.applicant.notes)?userDetails.verify.applicant.notes:'no notes') : ''"
+                  disabled></textarea>
               </div>
 
             </div>
@@ -439,7 +441,9 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label>Notes</label>
-                <textarea name="" id="" cols="30" rows="5" class="form-control"></textarea>
+                <textarea rows="5" class="form-control"
+                  :value="userDetails.verify?((userDetails.verify.emergencyContact.notes)?userDetails.verify.emergencyContact.notes:'no notes') : ''"
+                  disabled></textarea>
               </div>
             </div>
           </div>           
@@ -867,6 +871,8 @@ export default {
       vm.selfieKtpViewerOption = {
         navbar: false, title: false, fullscreen: false
       }
+
+      vm.userDetails.verify = user.verify
     },
 
     /**

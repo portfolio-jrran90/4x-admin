@@ -181,37 +181,42 @@
       </div>
       <div class="row">
         <div class="col">
-          <table class="table table-sm">
+          <table class="table table-sm table-bordered">
             <thead>
               <tr>
-                <th>Transaction #</th>
-                <th>Store</th>
-                <th>Waktu Pembelian</th>
-                <th>Waktu Expire </th>
-                <th class="text-right">Status</th>
-                <th class="text-right">Total</th>
+                <th rowspan="2">Transaction #</th>
+                <th rowspan="2">Store</th>
+                <th colspan="4" style="text-align: center !important">Status</th>
+                <th rowspan="2" class="text-right">Total</th>
+              </tr>
+              <tr class="border-top">
+                <th style="text-align: center !important">1st</th>
+                <th style="text-align: center !important">2nd</th>
+                <th style="text-align: center !important">3rd</th>
+                <th style="text-align: center !important">4th</th>
               </tr>
             </thead>
             <tbody v-if="modalUserTransactionInfo.length == 0">
               <tr>
-                <td colspan="6">No records found!</td>
+                <td colspan="7">No records found!</td>
               </tr>
             </tbody>
             <tbody v-else>
               <tr v-for="data in modalUserTransactionInfo">
                 <td>{{ data.transactionNumber }}</td>
                 <td>{{ data.store.name }}</td>
-                <td>{{ data.createdAt | moment("YYYY-MM-DD hh:mm A") }}</td>
-                <td>{{ data.termins[3].dueDate | moment("YYYY-MM-DD hh:mm A") }}</td>
-                <td class="text-right">
-                  <span class="badge badge-primary" v-if="data.terms_paid === 1">paid initial amount</span>
-                  <span class="badge badge-secondary" v-if="data.terms_paid === 2">paid cicilan kedua</span>
-                  <span class="badge badge-warning" v-if="data.terms_paid === 3">paid cicilan ketiga</span>
-                  <span class="badge badge-success" v-if="data.terms_paid === 4">paid cicilan keempat</span>
+                <td v-for="terms in data.termins" class="text-center"
+                    :class="{
+                      'table-success': mapTransactionTerms(terms).paid_date
+                    }">
+                  {{ mapTransactionTerms(terms).msg }}<br>
+                  <small v-if="mapTransactionTerms(terms).paid_date" class="text-success">
+                    Paid: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
+                  </small>
                 </td>
-                <td
-                  class="text-right"
-                >{{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.total) }}</td>
+                <td class="text-right" style="font-size: 1.2em">
+                  <strong>{{ data.total | currency }}</strong>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -933,6 +938,35 @@ export default {
       vm.search.showResult = false
       vm.search.query = ''
       vm.showUsersPerPage(1)
+    },
+
+    /**
+     * Map transaction terms
+     *
+     * This will just display the necessary info and filter it
+     * @param  Object dat
+     */
+    mapTransactionTerms(dat) {
+      if ( dat.number !== 1 ) {
+        if ( dat.paid.status_code == 200 ) {
+          return {
+            msg: 'Va telah dibayar',
+            payment_id: dat.paid.payment_id,
+            paid_date: dat.paid.date
+          }
+        }
+        return {
+          msg: 'VA telah di buat',
+          payment_id: dat.paid.payment_id,
+          paid_date: dat.paid.date
+        }
+      } else {
+        return {
+          msg: 'Paid',
+          payment_id: dat.paid.payment_id,
+          paid_date: dat.paid.date
+        }
+      }
     }
 
   }

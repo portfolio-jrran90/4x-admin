@@ -2,11 +2,13 @@
   <div>
 
     <!-- create mixin or global component -->
-    <div class="global-loader" v-if="isLoader">
+    <!-- <div class="global-loader" v-if="isLoader">
       <img src="@/assets/logo.png" alt="">
       Processing ...
-    </div>
+    </div> -->
     <!--  -->
+
+    <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Pending Users</h2>
     <h5>Total: {{ users.length }}</h5>
@@ -213,6 +215,8 @@
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="rdOptVerifyApplicant" id="rdOptVerifyApplicantOption1" value="true"
                     v-model="verify.applicant.passed">
+                    <!-- vm.userDetails.verify = user.verify -->
+                    <!-- verify.applicant.passed -->
                   <label class="form-check-label" for="rdOptVerifyApplicantOption1">Yes</label>
                 </div>
                 <div class="form-check form-check-inline">
@@ -348,15 +352,18 @@
         </button>
         <button class="btn btn-outline-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
       </div>
-
     </b-modal>
   </div>
 </template>
 
 <script>
-import axios from "axios"
+import axios from 'axios'
+import loader from '@/components/__shared/Loader.vue'
 
 export default {
+  components: {
+    loader
+  },
   computed: {
     emailVerificationStatus() {
       return {
@@ -397,6 +404,11 @@ export default {
       // Viewer
       ktpViewerOption: {},
       selfieKtpViewerOption: {},
+
+      loader: {
+        has: true,
+        message: ''
+      },
     };
   },
   created() {
@@ -410,11 +422,17 @@ export default {
     index() {
       let vm = this
       vm.isLoader = true
+      vm.loader = {
+        has: true,
+        message: 'Loading data'
+      }
+
       axios
         .get('/api/users?limit=50&skip=0&status=1', vm.requestedHeaders)
         .then(res => {
           vm.users = res.data
           vm.isLoader = false
+          vm.loader.has = false
         })
     },
 
@@ -492,6 +510,17 @@ export default {
 
       vm.selfieKtpViewerOption = {
         navbar: false, title: false, fullscreen: false
+      }
+
+      vm.verify = {
+        applicant: {
+          passed: user.verify.applicant.passed,
+          notes: user.verify.applicant.notes || ''
+        },
+        emergency: {
+          passed: user.verify.emergencyContact.passed,
+          notes: user.verify.emergencyContact.notes || ''
+        }
       }
 
     },
@@ -665,10 +694,20 @@ export default {
 
       Object.assign(requestBody, { user: userId })
 
+      vm.loader = {
+        has: true,
+        message: 'Processing request'
+      }
+
       axios
         .post(url, requestBody, vm.requestedHeaders)
         .then(res => {
-          console.log(res.data)
+          vm.loader.has = false
+          vm.$swal(
+            'Success!',
+            'Verification for ' + (type.charAt(0).toUpperCase() + type.slice(1)) + '.',
+            'success'
+          )
         })
     }
   }

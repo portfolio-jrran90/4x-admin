@@ -14,13 +14,20 @@
 export default {
   props: {
     message: { type: String }
+  },
+  created() {
+    // Note: if destroyed? should make it able again
+    /*// disable tab function
+    window.onkeydown = function(e) {
+      if (e.keyCode == 9) return false
+    }*/
   }
 }
 </script>
 
 <style lang="scss" scoped>
 div {
-  position: fixed; left: 0; top: 0; z-index: 99;
+  position: fixed; left: 0; top: 0; z-index: 999999;
   width: 100%; height: 100%;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;

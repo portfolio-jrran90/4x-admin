@@ -668,7 +668,7 @@ export default {
       axios
         .post(url, requestBody, vm.requestedHeaders)
         .then(res => {
-          consol
+          console.log(res.data)
         })
     }
   }

@@ -211,7 +211,7 @@
                     }">
                   {{ mapTransactionTerms(terms).msg }}<br>
                   <small v-if="mapTransactionTerms(terms).paid_date" class="text-success">
-                    Paid: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
+                    Di buat pada: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
                   </small>
                 </td>
                 <td class="text-right" style="font-size: 1.2em">

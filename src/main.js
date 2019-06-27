@@ -92,10 +92,12 @@ import ActiveUser from './components/users/ActiveUser.vue'
 import PendingUser from './components/users/PendingUser.vue'
 import IncompleteUser from './components/users/Incomplete.vue'
 import BannedUser from './components/users/BannedUser.vue'
+import FreezeUser from './components/users/FreezeUser.vue'
 Vue.component('active-user', ActiveUser)
 Vue.component('pending-user', PendingUser)
 Vue.component('incomplete-user', IncompleteUser)
 Vue.component('banned-user', BannedUser)
+Vue.component('freeze-user', FreezeUser)
 
 // Merchants
 import Merchant from './components/merchants/Index.vue'

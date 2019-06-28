@@ -209,10 +209,26 @@
                     :class="{
                       'table-success': mapTransactionTerms(terms).paid_date
                     }">
-                  {{ mapTransactionTerms(terms).msg }}<br>
-                  <small v-if="mapTransactionTerms(terms).paid_date" class="text-success">
-                    Di buat pada: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
-                  </small>
+                  <ul class="list-unstyled mb-0">
+                    <li>
+                      <strong>{{ mapTransactionTerms(terms).msg }}</strong>
+                    </li>
+                    <li v-if="mapTransactionTerms(terms).paid_date">
+                      <small>
+                        {{ mapTransactionTerms(terms).dateLabel }}: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
+                      </small>
+                    </li>
+                    <li v-if="terms.number!==1">
+                      <small>
+                        <span style="display: block">
+                          {{ (parseFloat(terms.total) + parseFloat(terms.lateFee)) | currency }}
+                        </span>
+                        <span style="display: block">
+                          <strong>Due: {{ new Date(terms.due.date) | date }}</strong>
+                        </span>
+                      </small>
+                    </li>
+                  </ul>
                 </td>
                 <td class="text-right" style="font-size: 1.2em">
                   <strong>{{ data.total | currency }}</strong>
@@ -961,14 +977,20 @@ export default {
       if ( dat.number !== 1 ) {
 
         if ( dat.paid.method == 'vabni' ) {
-          if ( dat.paid.status_code == 200 ) { responseObj.msg = 'Va telah dibayar' }
-            else { responseObj.msg = 'VA telah di buat' }
+          if ( dat.paid.status_code == 200 ) {
+            responseObj.msg = 'Va telah dibayar'
+            responseObj.dateLabel = 'Dibayar pada'
+          } else {
+            responseObj.msg = 'VA telah di buat'
+            responseObj.dateLabel = 'Dibuat pada'
+          }
         } else {
           responseObj.msg = 'VA belum di buat'
         }
 
       } else {
         responseObj.msg = 'Paid'
+        responseObj.dateLabel = 'Dibuat pada'
       }
 
       return responseObj

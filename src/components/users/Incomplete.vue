@@ -484,33 +484,20 @@ export default {
       }
       vm.userdetailsBidangKerja = nameIndustri;
 
-      // extract value for penghasilan
-      // 
-      let penghasilanValue = "";
-      switch (user.detail.penghasilan) {
-        case "gol1":
-          penghasilanValue = "< Rp 5.000.000";
-          vm.processVerificationSystem.penghasilan = 0;
-          break;
-        case "gol2":
-          penghasilanValue = "Rp 5.000.000 - Rp 10.000.000";
-          vm.processVerificationSystem.penghasilan = 2000000;
-          break;
-        case "gol3":
-          penghasilanValue = "Rp 10.000.000 - Rp 15.000.000";
-          vm.processVerificationSystem.penghasilan = 2500000;
-          break;
-        case "gol4":
-          penghasilanValue = "Rp 15.000.000 - Rp 20.000.000";
-          vm.processVerificationSystem.penghasilan = 3000000;
-          break;
-        case "gol5":
-          penghasilanValue = "> Rp 20.000.000";
-          vm.processVerificationSystem.penghasilan = 3500000;
-          break;
-        default: vm.processVerificationSystem.penghasilan = "No data found!";
-      }
-      vm.userDetailsPenghasilan = penghasilanValue;
+      /*
+       | ---------------------------------------------------------------------------
+       |  This will get the income from the database
+       | ---------------------------------------------------------------------------
+       */
+      axios
+        .get(`/api/usersalary/${user.detail.penghasilan}`, vm.requestedHeaders)
+        .then(res => {
+          vm.userDetailsPenghasilan = res.data.description
+          vm.processVerificationSystem.penghasilan = res.data.credit
+        })
+        .catch(err => {
+          console.log(err)
+        })
 
       // caculate age
       // Note: just moment

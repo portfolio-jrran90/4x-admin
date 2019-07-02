@@ -465,31 +465,23 @@ export default {
       vm.userDetails.index = index
       vm.processVerificationSystem.ktpStatus = vm.userDetails.ktp.status
 
-      // extract value for Bidang Kerja
-      let nameIndustri = "";
-      switch (user.detail.industri) {
-        case "industri1":   nameIndustri = "Angkasa & Pertahanan";          break;
-        case "industri2":   nameIndustri = "Angkutan Udara & Logistik";     break;
-        case "industri3":   nameIndustri = "Asuransi";                      break;
-        case "industri4":   nameIndustri = "Bahan Kimia";                   break;
-        case "industri5":   nameIndustri = "Bahan Konstruksi";              break;
-        case "industri6":   nameIndustri = "Konstruksi & Teknik";           break;
-        case "industri7":   nameIndustri = "Media";                         break;
-        case "industri8":   nameIndustri = "Jasa IT";                       break;
-        case "industri9":   nameIndustri = "Jasa Telekomunikasi Nirkabel";  break;
-        case "industri10":  nameIndustri = "Kelautan";                      break;
-        case "industri11":  nameIndustri = "Oil, Gas & Bahan Bakar";        break;
-        case "":            nameIndustri = "-";                             break; // ???
-        default: //
-      }
-      vm.userdetailsBidangKerja = nameIndustri;
+      // Used the native approach since axios is currently bound to the
+      // baseURL of the API that needs authentication, etc.
+      // Note: There's should be a database for this
+      fetch('__tmp-files/industry.json')
+        .then(resp => resp.json()) // Transform the data into JSON
+        .then(resIndustry => {
+          vm.userdetailsBidangKerja = resIndustry.filter(val => {
+            return val._id == user.detail.industri
+          })[0].label
+        })
 
       /*
        | ---------------------------------------------------------------------------
        |  This will get the income from the database
        | ---------------------------------------------------------------------------
        */
-      axios
+      /*axios
         .get(`/api/usersalary/${user.detail.penghasilan}`, vm.requestedHeaders)
         .then(res => {
           vm.userDetailsPenghasilan = res.data.description
@@ -497,6 +489,21 @@ export default {
         })
         .catch(err => {
           console.log(err)
+        })*/
+      // Temporary
+      fetch('__tmp-files/salary.json')
+        .then(resp => resp.json()) // Transform the data into JSON
+        .then(resSalary => {
+          let salaryObj = resSalary
+                            .filter(f => f.type == user.detail.penghasilan)
+                            .map(v => {
+                              return {
+                                description: v.description,
+                                credit: v.credit
+                              }
+                            })[0]
+          vm.userDetailsPenghasilan = salaryObj.description
+          vm.processVerificationSystem.penghasilan = salaryObj.credit
         })
 
       // caculate age

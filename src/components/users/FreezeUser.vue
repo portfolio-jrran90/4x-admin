@@ -665,52 +665,46 @@ export default {
       vm.userDetails.index = index
       vm.processVerificationSystem.ktpStatus = vm.userDetails.ktp.status
 
-      // extract value for Bidang Kerja
-      let nameIndustri = "";
-      switch (user.detail.industri) {
-        case "industri1":   nameIndustri = "Angkasa & Pertahanan";          break;
-        case "industri2":   nameIndustri = "Angkutan Udara & Logistik";     break;
-        case "industri3":   nameIndustri = "Asuransi";                      break;
-        case "industri4":   nameIndustri = "Bahan Kimia";                   break;
-        case "industri5":   nameIndustri = "Bahan Konstruksi";              break;
-        case "industri6":   nameIndustri = "Konstruksi & Teknik";           break;
-        case "industri7":   nameIndustri = "Media";                         break;
-        case "industri8":   nameIndustri = "Jasa IT";                       break;
-        case "industri9":   nameIndustri = "Jasa Telekomunikasi Nirkabel";  break;
-        case "industri10":  nameIndustri = "Kelautan";                      break;
-        case "industri11":  nameIndustri = "Oil, Gas & Bahan Bakar";        break;
-        case "":            nameIndustri = "-";                             break; // ???
-        default: //
-      }
-      vm.userdetailsBidangKerja = nameIndustri;
+      // Used the native approach since axios is currently bound to the
+      // baseURL of the API that needs authentication, etc.
+      // Note: There's should be a database for this
+      fetch('__tmp-files/industry.json')
+        .then(resp => resp.json()) // Transform the data into JSON
+        .then(resIndustry => {
+          vm.userdetailsBidangKerja = resIndustry.filter(val => {
+            return val._id == user.detail.industri
+          })[0].label
+        })
 
-      // extract value for penghasilan
-      // 
-      let penghasilanValue = "";
-      switch (user.detail.penghasilan) {
-        case "gol1":
-          penghasilanValue = "< Rp 5.000.000";
-          vm.processVerificationSystem.penghasilan = 'rejected';
-          break;
-        case "gol2":
-          penghasilanValue = "Rp 5.000.000 - Rp 10.000.000";
-          vm.processVerificationSystem.penghasilan = 2000000;
-          break;
-        case "gol3":
-          penghasilanValue = "Rp 10.000.000 - Rp 15.000.000";
-          vm.processVerificationSystem.penghasilan = 2500000;
-          break;
-        case "gol4":
-          penghasilanValue = "Rp 15.000.000 - Rp 20.000.000";
-          vm.processVerificationSystem.penghasilan = 3000000;
-          break;
-        case "gol5":
-          penghasilanValue = "> Rp 20.000.000";
-          vm.processVerificationSystem.penghasilan = 3500000;
-          break;
-        default: vm.processVerificationSystem.penghasilan = "No data found!";
-      }
-      vm.userDetailsPenghasilan = penghasilanValue;
+      /*
+       | ---------------------------------------------------------------------------
+       |  This will get the income from the database
+       | ---------------------------------------------------------------------------
+       */
+      /*axios
+        .get(`/api/usersalary/${user.detail.penghasilan}`, vm.requestedHeaders)
+        .then(res => {
+          vm.userDetailsPenghasilan = res.data.description
+          vm.processVerificationSystem.penghasilan = res.data.credit
+        })
+        .catch(err => {
+          console.log(err)
+        })*/
+      // Temporary
+      fetch('__tmp-files/salary.json')
+        .then(resp => resp.json()) // Transform the data into JSON
+        .then(resSalary => {
+          let salaryObj = resSalary
+                            .filter(f => f.type == user.detail.penghasilan)
+                            .map(v => {
+                              return {
+                                description: v.description,
+                                credit: v.credit
+                              }
+                            })[0]
+          vm.userDetailsPenghasilan = salaryObj.description
+          vm.processVerificationSystem.penghasilan = salaryObj.credit
+        })
 
       // caculate age
       // Note: just moment

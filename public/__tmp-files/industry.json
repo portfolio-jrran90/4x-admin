@@ -1,0 +1,90 @@
+[
+  {
+    "_id": "industri1",
+    "label": "Angkasa & Pertahanan"
+  },
+  {
+    "_id": "industri2",
+    "label": "Angkutan Udara & Logistik"
+  },
+  {
+    "_id": "industri3",
+    "label": "Asuransi"
+  },
+  {
+    "_id": "industri4",
+    "label": "Bahan Kimia"
+  },
+  {
+    "_id": "industri5",
+    "label": "Bahan Konstruksi"
+  },
+  {
+    "_id": "industri6",
+    "label": "Konstruksi & Teknik"
+  },
+  {
+    "_id": "industri7",
+    "label": "Media"
+  },
+  {
+    "_id": "industri13",
+    "label": "Banking"
+  },
+  {
+    "_id": "industri23",
+    "label": "Computer Games/ Hardware/ Software"
+  },
+  {
+    "_id": "industri19",
+    "label": "Construction"
+  },
+  {
+    "_id": "industri22",
+    "label": "Consulting"
+  },
+  {
+    "_id": "industri21",
+    "label": "Consumer Goods"
+  },
+  {
+    "_id": "industri24",
+    "label": "Financial Services"
+  },
+  {
+    "_id": "industri20",
+    "label": "Food and Beverages"
+  },
+  {
+    "_id": "industri12",
+    "label": "Graphic Design"
+  },
+  {
+    "_id": "industri16",
+    "label": "Hospital & Health Care"
+  },
+  {
+    "_id": "industri10",
+    "label": "Kelautan"
+  },
+  {
+    "_id": "industri15",
+    "label": "Manufacture/Production"
+  },
+  {
+    "_id": "industri11",
+    "label": "Oil, Gas & Bahan Bakar"
+  },
+  {
+    "_id": "industri14",
+    "label": "Real Estate"
+  },
+  {
+    "_id": "industri18",
+    "label": "Retail"
+  },
+  {
+    "_id": "industri17",
+    "label": "Telecommunications"
+  }
+]

@@ -1,13 +1,5 @@
 <template>
   <div>
-
-    <!-- create mixin or global component -->
-    <!-- <div class="global-loader" v-if="isLoader">
-      <img src="@/assets/logo.png" alt="">
-      Processing ...
-    </div> -->
-    <!--  -->
-
     <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Pending Users</h2>
@@ -88,6 +80,11 @@
                       }">
                     <em>{{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}</em>
                   </td>
+                </tr>
+                <tr>
+                  <th class="table-secondary">Mobile No.</th>
+                  <td class="table-active">{{ userDetails.mobileNumber }}</td>
+                  <td colspan="2"><em>Cannot be provided by the system</em></td>
                 </tr>
               </table>
             </div>
@@ -301,7 +298,29 @@
       <!-- Step 6 -->
       <div class="card">
         <div class="card-body">
-          <h2 class="mb-3">Step 6 - Verification Payment</h2>
+          <h2 class="mb-3">Step 6 - Verify Location And Evidence Of Identity</h2>
+          <div class="row">
+            <div class="col-md-6">
+              <h4>Location when applying</h4>
+              <GmapMap
+                :center="{
+                  lat: userDetails.loc?parseFloat(userDetails.loc.coordinates[1]):0,
+                  lng: userDetails.loc?parseFloat(userDetails.loc.coordinates[0]):0
+                }"
+                :zoom="10"
+                style="height: 320px"
+              ></GmapMap>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <!-- ./Step 6 -->
+
+      <!-- Step 7 -->
+      <div class="card">
+        <div class="card-body">
+          <h2 class="mb-3">Step 7 - Verification Payment</h2>
           <div class="row">
             <div class="col-md-6">
               
@@ -328,7 +347,7 @@
           
         </div>
       </div>
-      <!-- ./Step 6 -->
+      <!-- ./Step 7 -->
 
       <!-- Note -->
       <div class="mb-4">
@@ -374,7 +393,6 @@ export default {
   },
   data() {
     return {
-      isLoader: false,
       requestedHeaders: {
         headers: {
           Authorization: process.env.VUE_APP_AUTHORIZATION,
@@ -421,7 +439,6 @@ export default {
      */
     index() {
       let vm = this
-      vm.isLoader = true
       vm.loader = {
         has: true,
         message: 'Loading data'
@@ -431,7 +448,6 @@ export default {
         .get('/api/users?limit=50&skip=0&status=1', vm.requestedHeaders)
         .then(res => {
           vm.users = res.data
-          vm.isLoader = false
           vm.loader.has = false
         })
     },
@@ -558,8 +574,6 @@ export default {
             if (resultValidator) {
 
               if (confirm( 'Approve user?' )) {
-                vm.isLoader = true
-
                 let activateUserBodyInput = {
                   user: data.user._id,
                   description: vm.note
@@ -586,8 +600,6 @@ export default {
             if (resultValidator) {
 
               if (confirm ( 'Reject user?' )) {
-                vm.isLoader = true
-
                 let rejectUserBodyInput = {
                   user: data.user.mobileNumber,
                   description: vm.note
@@ -601,7 +613,6 @@ export default {
                     vm.index() // refresh list
                   })
                   .catch(err => {
-                    vm.isLoader = false
                     vm.$swal('Error!', err.response.data.message, 'error')
                   })
               }

@@ -35,9 +35,10 @@
             <tr>
               <th>Name</th>
               <th>Status</th>
-              <th>Mobile #</th>
-              <th style="text-align: right !important">Credit</th>
+              <th style="text-align: right !important">Approved Credit</th>
               <th style="text-align: right !important">Used Credit</th>
+              <th style="text-align: right !important">Remaining Credit</th>
+              <th style="text-align: center !important">Date registered</th>
               <th></th>
             </tr>
           </thead>
@@ -45,25 +46,29 @@
             <tr v-for="(data, index) in users">
               <td>
                 <a href="#" @click.prevent="openModalUserDetails(data, index)"
-                  v-b-tooltip.hover title="View details">{{ data.detail?data.detail.name:'--' }}</a>
+                  v-b-tooltip.hover title="View details" style="font-weight: 800">
+                  {{ data.detail?data.detail.name:'--' }}
+                </a>
+                <span style="display: block">
+                  <strong>Mobile #:</strong> {{ data.mobileNumber }}
+                </span>
               </td>
               <td>
-                  <span
-                    class="badge badge-success"
-                    v-if="data.status == 2 && data.credit != 0"
-                  >Approve User</span>
-                  <span
-                    class="badge badge-warning"
-                    v-if="data.status == 2 && data.credit == 0"
-                  >Pending User</span>
-                  <span
-                    class="badge badge-danger"
-                    v-if="data.status == 3"
-                  >Red User</span>
+                <span
+                  class="badge badge-success"
+                  v-if="data.status == 2 && data.credit != 0"
+                >Approve User</span>
+                <span
+                  class="badge badge-warning"
+                  v-if="data.status == 2 && data.credit == 0"
+                >Pending User</span>
+                <span
+                  class="badge badge-danger"
+                  v-if="data.status == 3"
+                >Red User</span>
               </td>
-              <td>{{ data.mobileNumber }}</td>
               <td class="text-right">
-                {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit) }}
+                {{ data.credit | currency }}
                 <!-- <a
                   href="#"
                   v-b-tooltip
@@ -71,9 +76,9 @@
                   @click.prevent="openModal('AssignCredit', data, index)"
                 >&plusmn;</a> -->
               </td>
-              <td class="text-right">
-                {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingCredit) }}
-              </td>
+              <td class="text-right">{{ (data.credit - data.remainingCredit) | currency }}</td>
+              <td class="text-right">{{ data.remainingCredit | currency }}</td>
+              <td class="text-center">{{ new Date(data.createdAt) | date }}</td>
               <td class="text-right">
                 <ul class="list-inline mb-0">
                   <li class="list-inline-item">
@@ -271,7 +276,7 @@
                 <tr>
                   <th class="table-secondary">Tanggal Lahir</th>
                   <td class="table-active">{{ (userDetails.detail)?(new Date(userDetails.detail.birthdate).toLocaleDateString("en-US")):'---' }}</td>
-                  <td colspan="2">{{ processVerificationSystem.age }}</td>
+                  <td colspan="2">{{ processVerificationSystem.age }} years old</td>
                 </tr>
                 <tr>
                   <th class="table-secondary">Alamat</th>
@@ -288,6 +293,11 @@
                       }">
                     {{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}
                   </td>
+                </tr>
+                <tr>
+                  <th class="table-secondary">Mobile No.</th>
+                  <td class="table-active">{{ userDetails.mobileNumber }}</td>
+                  <td colspan="2"><em>Cannot be provided by the system</em></td>
                 </tr>
               </table>
             </div>
@@ -405,13 +415,13 @@
         <div class="card-body">
           <h2 class="mb-3">Step 4 - Call (Verified)</h2>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8">
 
               <h4 class="mb-3">{{ userDetails.mobileNumber }}</h4>
 
               <div class="form-group mb-2">
                 <label>Notes</label>
-                <textarea rows="5" class="form-control"
+                <textarea rows="8" class="form-control"
                   :value="userDetails.verify?((userDetails.verify.applicant.notes)?userDetails.verify.applicant.notes:'no notes') : ''"
                   disabled></textarea>
               </div>
@@ -454,10 +464,10 @@
           </div>
 
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8">
               <div class="form-group">
                 <label>Notes</label>
-                <textarea rows="5" class="form-control"
+                <textarea rows="8" class="form-control"
                   :value="userDetails.verify?((userDetails.verify.emergencyContact.notes)?userDetails.verify.emergencyContact.notes:'no notes') : ''"
                   disabled></textarea>
               </div>
@@ -473,8 +483,7 @@
         <div class="card-body">
           <h2 class="mb-3">Step 6 - Payment</h2>
           <div class="row">
-            <div class="col-md-6">
-              
+            <div class="col-md-6">            
               <table class="table table-sm table-bordered">
                 <tr>
                   <th class="w-25 table-dark">Card #</th>
@@ -503,11 +512,9 @@
       <!-- Note -->
       <div class="mb-4">
         <h2>Summary</h2>
-        <textarea class="form-control" rows="5" name="note" placeholder="Enter summary..." 
-          v-validate="'required'"
-          v-model="note"
-          :class="{'is-invalid': errors.first('note')}"></textarea>
-        <small :class="{'invalid-feedback': errors.first('note')}" v-show="errors.first('note')">{{ errors.first('note') }}</small>
+        <textarea rows="5" class="form-control"
+          :value="userDetails.verify?((userDetails.verify.emergencyContact.notes)?userDetails.verify.emergencyContact.notes:'no notes') : ''"
+          disabled></textarea>
       </div>
       <!-- ./Note -->
 

@@ -1,62 +1,52 @@
 [
     {
         "_id": "5c7e7c22a5429076c97ab334",
-        "updatedAt": "2019-07-02T06:22:50.692Z",
+        "updatedAt": "2019-07-04T07:01:39.534Z",
         "createdAt": "2019-03-05T13:39:46.249Z",
         "type": "gol2",
-        "description": "Rp 3.500.000 - Rp 6.000.000",
+        "description": "Rp 5.000.000 - Rp 10.000.000",
         "credit": 2000000,
         "admin": "5c7a75133634923bd4f13632",
         "__v": 0
     },
     {
         "_id": "5c7e7c05a5429076c97ab333",
-        "updatedAt": "2019-07-02T06:21:48.722Z",
+        "updatedAt": "2019-07-04T07:01:03.735Z",
         "createdAt": "2019-03-05T13:39:17.508Z",
         "type": "gol1",
-        "description": "< Rp 3.500.000",
+        "description": "< Rp 5.000.000",
         "credit": 0,
         "admin": "5c7a75133634923bd4f13632",
         "__v": 0
     },
     {
         "_id": "5c7e7c37a5429076c97ab336",
-        "updatedAt": "2019-07-02T06:23:56.879Z",
+        "updatedAt": "2019-07-04T07:02:52.192Z",
         "createdAt": "2019-03-05T13:40:07.021Z",
         "type": "gol4",
-        "description": "Rp 8.000.000 - Rp 10.000.000",
+        "description": "Rp 15.000.000 - Rp 20.000.000",
         "credit": 3000000,
         "admin": "5c7a75133634923bd4f13632",
         "__v": 0
     },
     {
         "_id": "5c7e7c2da5429076c97ab335",
-        "updatedAt": "2019-07-02T06:23:21.567Z",
+        "updatedAt": "2019-07-04T07:02:40.270Z",
         "createdAt": "2019-03-05T13:39:57.120Z",
         "type": "gol3",
-        "description": "Rp 6.000.000 - Rp 8.000.000",
+        "description": "Rp 10.000.000 - Rp 15.000.000",
         "credit": 2500000,
         "admin": "5c7a75133634923bd4f13632",
         "__v": 0
     },
     {
         "_id": "5c7e7c41a5429076c97ab337",
-        "updatedAt": "2019-07-02T06:36:34.046Z",
+        "updatedAt": "2019-07-04T07:03:16.311Z",
         "createdAt": "2019-03-05T13:40:17.730Z",
         "type": "gol5",
-        "description": "Rp 10.000.000 - Rp 12.000.000",
-        "credit": 3000000,
-        "admin": "5c7a75133634923bd4f13632",
-        "__v": 0
-    },
-    {
-        "_id": "5d1afb849af4cb5ccba47cf1",
-        "updatedAt": "2019-07-02T06:36:52.993Z",
-        "createdAt": "2019-07-02T06:36:52.993Z",
-        "type": "gol6",
-        "description": "> Rp 12.000.000",
+        "description": "> Rp 20.000.000",
         "credit": 3500000,
-        "admin": "5cd5a45e0cbcb555bbe06813",
+        "admin": "5c7a75133634923bd4f13632",
         "__v": 0
     }
 ]

@@ -426,7 +426,6 @@ export default {
         message: ''
       },
 
-      // Davin test
       bankBni: {},
     };
   },
@@ -565,7 +564,7 @@ export default {
     async identifyBankBin(card) {
       let vm = this
 
-      let response = await fetch(`http://sandbox.empatkali.co.id/bin.php?a=${card[0].masked.split('-')[0]}`),
+      let response = await fetch(`https://jhon.empatkali.co.id/bin.php?a=${card[0].masked.split('-')[0]}`),
           json = await response.json()
       vm.bankBni = json
     },

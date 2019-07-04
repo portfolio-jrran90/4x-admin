@@ -83,11 +83,11 @@
           </tr>
           <tr>
             <th class="table-dark">Bank</th>
-            <td class="table-secondary">{{ (modal.showUserObj.card)?modal.showUserObj.card[0].bank:'' }}</td>
+            <td class="table-secondary">{{ bankBni.bank }}</td>
           </tr>
           <tr>
             <th class="table-dark">Type</th>
-            <td class="table-secondary">{{ (modal.showUserObj.card)?modal.showUserObj.card[0].type:'' }}</td>
+            <td class="table-secondary">{{ bankBni.tipe }}</td>
           </tr>
         </table>
       </div>
@@ -112,6 +112,7 @@ export default {
         showUser: false,
         showUserObj: {}
       },
+      bankBni: {},
     }
   },
   created() {
@@ -147,6 +148,7 @@ export default {
         case 'ShowUserDetail':
           vm.modal.showUser = true
           vm.modal.showUserObj = data
+          vm.identifyBankBin(data.card)
           break
         default: //
       }
@@ -179,6 +181,19 @@ export default {
             })
         }
       })
+    },
+
+    /**
+     * Identify Bank Bin
+     * 
+     * @param  Integer  card
+     */
+    async identifyBankBin(card) {
+      let vm = this
+
+      let response = await fetch(`https://jhon.empatkali.co.id/bin.php?a=${card[0].masked.split('-')[0]}`),
+          json = await response.json()
+      vm.bankBni = json
     },
 
   }

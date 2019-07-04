@@ -167,7 +167,7 @@
                 <tr>
                   <th class="table-secondary">Tanggal Lahir</th>
                   <td class="table-active">{{ (userDetails.detail)?(new Date(userDetails.detail.birthdate).toLocaleDateString("en-US")):'---' }}</td>
-                  <td colspan="2">{{ processVerificationSystem.age }}</td>
+                  <td colspan="2">{{ processVerificationSystem.age }} years old</td>
                 </tr>
                 <tr>
                   <th class="table-secondary">Alamat</th>
@@ -372,16 +372,15 @@
                   <th class="w-25 table-dark">Card #</th>
                   <td class="table-secondary">
                     {{ (userDetails.card)?(userDetails.card[0].masked.replace('-', '').replace(/\d(?=\d{4})/g, '*')):'---' }}
-                    <span class="badge badge-success ml-2 px-3">Valid</span>
                   </td>
                 </tr>
                 <tr>
                   <th class="table-dark">Bank</th>
-                  <td class="table-secondary">{{ (userDetails.card)?userDetails.card[0].bank:'---' }}</td>
+                  <td class="table-secondary">{{ bankBni.bank }}</td>
                 </tr>
                 <tr>
                   <th class="table-dark">Type</th>
-                  <td class="table-secondary">{{ (userDetails.card)?userDetails.card[0].type:'---' }}</td>
+                  <td class="table-secondary">{{ bankBni.tipe }}</td>
                 </tr>
               </table>
 
@@ -479,6 +478,8 @@ export default {
         has: true,
         message: ''
       },
+
+      bankBni: {},
     };
   },
   watch: {
@@ -718,6 +719,21 @@ export default {
       vm.selfieKtpViewerOption = {
         navbar: false, title: false, fullscreen: false
       }
+
+      vm.identifyBankBin(user.card)
+    },
+
+    /**
+     * Identify Bank Bin
+     * 
+     * @param  Integer  card
+     */
+    async identifyBankBin(card) {
+      let vm = this
+
+      let response = await fetch(`https://jhon.empatkali.co.id/bin.php?a=${card[0].masked.split('-')[0]}`),
+          json = await response.json()
+      vm.bankBni = json
     },
 
     /**

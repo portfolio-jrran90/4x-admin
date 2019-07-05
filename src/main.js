@@ -112,16 +112,12 @@ import AssignCategory from './components/AssignCategory.vue'
 
 // User
 import User from './components/users/Index.vue'
-import ActiveUser from './components/users/ActiveUser.vue'
-import PendingUser from './components/users/PendingUser.vue'
-import IncompleteUser from './components/users/Incomplete.vue'
-import BannedUser from './components/users/BannedUser.vue'
-import FreezeUser from './components/users/FreezeUser.vue'
-Vue.component('active-user', ActiveUser)
-Vue.component('pending-user', PendingUser)
-Vue.component('incomplete-user', IncompleteUser)
-Vue.component('banned-user', BannedUser)
-Vue.component('freeze-user', FreezeUser)
+Vue.component('active-user', require('./components/users/ActiveUser').default)
+Vue.component('pending-user', require('./components/users/PendingUser').default)
+Vue.component('incomplete-user', require('./components/users/Incomplete').default)
+Vue.component('banned-user', require('./components/users/BannedUser').default)
+Vue.component('freeze-user', require('./components/users/FreezeUser').default)
+require('./components/users') // this is for shared components
 
 // Merchants
 import Merchant from './components/merchants/Index.vue'

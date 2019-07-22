@@ -3,7 +3,7 @@
     <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Incomplete Users</h2>
-    <h5>Overall users: {{ totalUserRows }}</h5>
+    <h5>Total: {{ totalUserRows | number }}</h5>
 
     <div class="alert alert-secondary">
       <form class="form-inline" @submit.prevent="searchFilterResult">
@@ -76,12 +76,13 @@
       </div>
     </div>
 
-    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="User Detail"
+    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="[Incomplete] User Detail"
       hide-footer
       no-close-on-backdrop>
 
-      <!-- Step 1 -->
-      <div class="card">
+      <user-details :user="userDetails" status="incomplete"></user-details>
+
+      <!-- <div class="card">
         <div class="card-body">
           <h2 class="mb-3">Step 1 - Registration</h2>
           <div class="row">
@@ -132,11 +133,9 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- ./Step 1 -->
+      </div> -->
 
-      <!-- Step 2 -->
-      <div class="card">
+      <!-- <div class="card">
         <div class="card-body">
           <h2 class="mb-3">Step 2 - Income</h2>
           <div class="row">
@@ -183,11 +182,9 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- ./Step 2 -->
+      </div> -->
 
-      <!-- Step 3 -->
-      <div class="card c-step-3">
+      <!-- <div class="card c-step-3">
         <div class="card-body">
           <h2 class="mb-3">Step 3 - Identity</h2>
           <div class="row">
@@ -213,7 +210,6 @@
                 <tr>
                   <th class="table-secondary">OCR Result</th>
                   <td colspan="2">
-                    <!-- {{ OCRResult(userDetails.ktp) }} -->
                   </td>
                 </tr>
               </table>
@@ -236,11 +232,9 @@
 
           </div>
         </div>
-      </div>
-      <!-- ./Step 3 -->
+      </div> -->
 
-      <!-- Step 4 -->
-      <div class="card">
+      <!-- <div class="card">
         <div class="card-body">
           <h2 class="mb-3">Step 4 - Emergency</h2>
           <div class="row">
@@ -271,11 +265,9 @@
           </div>
           
         </div>
-      </div>
-      <!-- ./Step 4 -->
+      </div> -->
 
-      <!-- Step 5 -->
-      <div class="card">
+      <!-- <div class="card">
         <div class="card-body">
           <h2 class="mb-3">Step 5 - Payment</h2>
           <div class="row">
@@ -295,8 +287,7 @@
           </div>
           
         </div>
-      </div>
-      <!-- ./Step 5 -->
+      </div> -->
 
       <div class="mb-2">
         <button class="btn btn-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>

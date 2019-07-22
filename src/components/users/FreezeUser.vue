@@ -3,7 +3,7 @@
     <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Freeze User</h2>
-    <h5>Overall users: {{ totalUserRows }}</h5>
+    <h5>Total: {{ totalUserRows }}</h5>
     
     <div class="row">
       <div class="col">
@@ -11,9 +11,10 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Mobile #</th>
-              <th style="text-align: right !important">Credit</th>
+              <th style="text-align: right !important">Approved Credit</th>
               <th style="text-align: right !important">Used Credit</th>
+              <th style="text-align: right !important">Remaining Credit</th>
+              <th style="text-align: center !important">Date registered</th>
               <th></th>
             </tr>
           </thead>
@@ -21,15 +22,20 @@
             <tr v-for="(data, index) in users">
               <td>
                 <a href="#" @click.prevent="openModalUserDetails(data, index)"
-                  v-b-tooltip.hover title="View details">{{ data.detail?data.detail.name:'--' }}</a>
+                  v-b-tooltip.hover title="View details" style="font-weight: 800">
+                  {{ data.detail?data.detail.name:'--' }}
+                </a>
+                <span style="display: block">
+                  <strong>Mobile #:</strong> {{ data.mobileNumber }}
+                </span>
               </td>
-              <td>{{ data.mobileNumber }}</td>
               <td class="text-right">
-                {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit) }}
+                {{ data.credit | currency }}
               </td>
-              <td class="text-right">
-                {{ Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(data.credit-data.remainingCredit) }}
-              </td>
+              <td class="text-right">{{ (data.credit - data.remainingCredit) | currency }}</td>
+              <td class="text-right">{{ data.remainingCredit | currency }}</td>
+              <td class="text-center">{{ new Date(data.createdAt) | date }}</td>
+
               <td class="text-right">
                 <ul class="list-inline mb-0">
                   <li class="list-inline-item">
@@ -139,272 +145,11 @@
       </div>
     </b-modal>
 
-    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="User Detail"
+    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="[Freeze] User Detail"
       hide-footer>
 
-      <!-- Step 1 -->
-      <div class="card">
-        <div class="card-body">
-          <h2 class="mb-3">Step 1 - Registration</h2>
-          <div class="row">
-            <div class="col">
-              <table class="table table-striped table-sm table-bordered mb-0">
-                <tr class="bg-dark text-white">
-                  <th class="w-25">Field</th>
-                  <th class="w-25">Input User in App</th>
-                  <th>Proses Verifikasi Sistem</th>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Nama</th>
-                  <td class="table-active">{{ (userDetails.detail)?userDetails.detail.name:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Tempat Lahir</th>
-                  <td class="table-active">{{ (userDetails.detail)?userDetails.detail.birthplace:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Tanggal Lahir</th>
-                  <td class="table-active">{{ (userDetails.detail)?(new Date(userDetails.detail.birthdate).toLocaleDateString("en-US")):'---' }}</td>
-                  <td colspan="2">{{ processVerificationSystem.age }} years old</td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Alamat</th>
-                  <td class="table-active">{{ (userDetails.detail)?userDetails.detail.address:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">E-mail</th>
-                  <td class="table-active">{{ (userDetails.detail)?userDetails.detail.email:'---' }}</td>
-                  <td colspan="2"
-                      :class="{
-                        'table-danger': !userDetails.emailVerified,
-                        'table-success': userDetails.emailVerified,
-                      }">
-                    {{ (userDetails.emailVerified)?'email telah terverifikasi':'email belum verifikasi' }}
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ./Step 1 -->
+      <user-details :user="userDetails" status="freeze"></user-details>
 
-      <!-- Step 2 -->
-      <div class="card">
-        <div class="card-body">
-          <h2 class="mb-3">Step 2 - Income</h2>
-          <div class="row">
-            <div class="col">
-              <table class="table table-striped table-sm table-bordered mb-0">
-                <tr class="bg-dark text-white">
-                  <th class="w-25">Field</th>
-                  <th class="w-25">Input User in App</th>
-                  <th>Proses Verifikasi Sistem</th>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Bidang Kerja</th>
-                  <td class="table-active">{{ (userDetails.detail)?userdetailsBidangKerja:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Pekerjaan</th>
-                  <td class="table-active">{{ (userDetails.detail)?userDetails.detail.pekerjaan:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Pendidikan Terakhir</th>
-                  <td class="table-active">{{ (userDetails.detail)?userDetails.detail.pendidikan:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Penghasilan</th>
-                  <td class="table-active"> {{ (userDetails.detail)?userDetailsPenghasilan:'---' }}</td>
-                  <td colspan="2">rekomendasi limit dari sistem <strong>{{ processVerificationSystem.penghasilan | currency }}</strong></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">No. NPWP</th>
-                  <td class="table-active">{{ userDetails.npwp || '---' }}</td>
-                  <td colspan="2"
-                      :class="{
-                        'table-warning': processVerificationSystem.ktpStatus == 0,
-                        'table-success': processVerificationSystem.ktpStatus == 1,
-                        'table-danger': processVerificationSystem.ktpStatus == 2,
-                      }">
-                    {{ npwpStatus(processVerificationSystem.ktpStatus) }}
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ./Step 2 -->
-
-      <!-- Step 3 -->
-      <div class="card c-step-3">
-        <div class="card-body">
-          <h2 class="mb-3">Step 3 - Identity</h2>
-          <div class="row">
-            <div class="col">
-              <table class="table table-bordered table-sm">
-                <tr class="bg-dark text-white">
-                  <th class="w-25">Field</th>
-                  <th class="w-25">Input User in App</th>
-                  <th>Proses Verifikasi Sistem</th>
-                </tr>
-                <tr>
-                  <th class="table-secondary">No. KTP</th>
-                  <td class="table-active">{{ (userDetails.detail)?userDetails.ktp.number:'---' }}</td>
-                  <td colspan="2"
-                      :class="{
-                        'table-warning': processVerificationSystem.ktpStatus == 0,
-                        'table-success': processVerificationSystem.ktpStatus == 1,
-                        'table-danger': processVerificationSystem.ktpStatus == 2,
-                      }">
-                    {{ ktpStatus(processVerificationSystem.ktpStatus) }}
-                  </td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">OCR Result</th>
-                  <td colspan="2">
-                    <!-- {{ OCRResult(userDetails.ktp) }} -->
-                  </td>
-                </tr>
-              </table>
-            </div>
-
-            <div class="col-md-5 c-images">
-              <figure class="figure m-0" v-viewer="ktpViewerOption">
-                <img :src="((userDetails.ktp)?userDetails.ktp.image:'') || '/assets/img/default-photo.svg'" class="figure-img img-fluid rounded" alt="ktp">
-                <figcaption class="figure-caption text-center">KTP</figcaption>
-              </figure>
-              <figure class="figure m-0" v-viewer="selfieKtpViewerOption">
-                <img
-                  :src="userDetails.selfie || '/assets/img/default-photo.svg'"
-                  class="figure-img img-fluid rounded"
-                  alt="selfie with ktp"
-                >
-                <figcaption class="figure-caption text-center">Selfie with KTP</figcaption>
-              </figure>
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <!-- ./Step 3 -->
-
-      <!-- Step 4 -->
-      <div class="card">
-        <div class="card-body">
-          <h2 class="mb-3">Step 4 - Call (Verified)</h2>
-          <div class="row">
-            <div class="col-md-6">
-
-              <h4 class="mb-3">{{ userDetails.mobileNumber }}</h4>
-
-              <div class="form-group mb-2">
-                <label>Notes</label>
-                <textarea rows="5" class="form-control"></textarea>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ./Step 4 -->
-
-      <!-- Step 5 -->
-      <div class="card">
-        <div class="card-body">
-          <h2 class="mb-3">Step 5 - Emergency (Verified)</h2>
-          <div class="row">
-            <div class="col">
-              <table class="table table-striped table-sm table-bordered">
-                <tr class="bg-dark text-white">
-                  <th class="w-25">Field</th>
-                  <th class="w-25">Input User in App</th>
-                  <th>Proses Verifikasi Sistem</th>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Nama Kontak Darurat</th>
-                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.name:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Hubungan</th>
-                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.type:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-                <tr>
-                  <th class="table-secondary">Nomor Kontak Darurat</th>
-                  <td class="table-active">{{ (userDetails.emergencyContact)?userDetails.emergencyContact.mobileNumber:'---' }}</td>
-                  <td colspan="2"><em>Cannot be provided by the system</em></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label>Notes</label>
-                <textarea name="" id="" cols="30" rows="5" class="form-control"></textarea>
-              </div>
-            </div>
-          </div>           
-          
-        </div>
-      </div>
-      <!-- ./Step 5 -->
-
-      <!-- Step 6 -->
-      <div class="card">
-        <div class="card-body">
-          <h2 class="mb-3">Step 6 - Payment</h2>
-          <div class="row">
-            <div class="col-md-6">
-              
-              <table class="table table-sm table-bordered">
-                <tr>
-                  <th class="w-25 table-dark">Card #</th>
-                  <td class="table-secondary">
-                    {{ (userDetails.card)?(userDetails.card[0].masked.replace('-', '').replace(/\d(?=\d{4})/g, '*')):'---' }}
-                  </td>
-                </tr>
-                <tr>
-                  <th class="table-dark">Bank</th>
-                  <td class="table-secondary">{{ bankBni.bank }}</td>
-                </tr>
-                <tr>
-                  <th class="table-dark">Type</th>
-                  <td class="table-secondary">{{ bankBni.tipe }}</td>
-                </tr>
-              </table>
-
-            </div>
-          </div>
-          
-        </div>
-      </div>
-      <!-- ./Step 6 -->
-
-      <!-- Note -->
-      <div class="mb-4">
-        <h2>Summary</h2>
-        <textarea class="form-control" rows="5" name="note" placeholder="Enter summary..." 
-          v-validate="'required'"
-          v-model="note"
-          :class="{'is-invalid': errors.first('note')}"></textarea>
-        <small :class="{'invalid-feedback': errors.first('note')}" v-show="errors.first('note')">{{ errors.first('note') }}</small>
-      </div>
-      <!-- ./Note -->
-
-      <div class="mb-2">
-        <button class="btn btn-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
-      </div>
     </b-modal>
   </div>
 </template>

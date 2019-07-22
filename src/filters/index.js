@@ -19,3 +19,19 @@ Vue.filter('currency', amount => {
 Vue.filter('ucfirst', string => {
 	return string.charAt(0).toUpperCase() + string.slice(1)
 })
+
+/**
+ * Get Age
+ */
+Vue.filter('age', date => {
+	let ageDiff = new Date(Date.now() - new Date(date).getTime())
+	return Math.abs(ageDiff.getUTCFullYear() - 1970)
+})
+
+/**
+ * Format number that is putting a comma when it reaches thousand, etc.
+ */
+Vue.filter('number', number => {
+	return number.toLocaleString()
+})
+

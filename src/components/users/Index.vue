@@ -10,6 +10,7 @@
 				    <option value="incomplete">Incomplete users</option>
 				    <option value="banned">Banned users</option>
 				    <option value="freeze">Freeze users</option>
+				    <option value="rejected">Rejected users</option>
 				  </select>
 				</div>
 			</div>

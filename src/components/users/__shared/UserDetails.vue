@@ -184,7 +184,7 @@
 
     <div class="card" v-else>
       <div class="card-body">
-        <h2 class="mb-3">Step 4 - Call {{ status==='incomplete' ? '' : ' (Verified)' }}</h2>
+        <h2 class="mb-3">Step 4 - Call {{ (status==='incomplete' || status==='rejected') ? '' : ' (Verified)' }}</h2>
         <div class="row">
           <div class="col-md-8">
             <h4 class="mb-3">{{ user.mobileNumber }}</h4>
@@ -261,7 +261,7 @@
     
     <div class="card" v-else>
       <div class="card-body">
-        <h2 class="mb-3">Step 5 - Emergency {{ status==='incomplete' ? '' : ' (Verified)' }}</h2>
+        <h2 class="mb-3">Step 5 - Emergency {{ (status==='incomplete' || status==='rejected') ? '' : ' (Verified)' }}</h2>
         <div class="row">
           <div class="col">
             <table class="table table-striped table-sm table-bordered">
@@ -658,5 +658,8 @@ export default {
 	  margin-right: 10px !important;
 	  &:last-child { margin-right: 0 !important }
   }
+}
+.figure-img {
+  object-fit: cover;
 }
 </style>

@@ -338,12 +338,21 @@
       <div class="card-body">
         <h2 class="mb-3">Step 7 - {{ userStatus }}Payment</h2>
         <div class="row">
-          <div class="col-md-8">            
+          <div class="col">
             <table class="table table-sm table-bordered">
               <tr>
                 <th class="w-25 table-dark">Card #</th>
                 <td class="table-secondary">
                   {{ user.card[0].masked.replace('-', '').replace(/\d(?=\d{4})/g, '*') || '---' }}
+                </td>
+                <td rowspan="3">
+                  <label>Phone #</label> {{ user.mobileNumber }}
+                  <div v-if="user.danaVerifiedAccount">
+                    <img src="/assets/img/logo-dana-blue-sm.png" style="height: 30px;" alt="">
+                  </div>
+                  <div class="text-danger" v-else>
+                    <strong>User not yet validate DANA Account</strong>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -355,7 +364,6 @@
                 <td class="table-secondary">{{ bankBni.tipe }}</td>
               </tr>
             </table>
-
           </div>
         </div>
         
@@ -378,6 +386,15 @@
               </ul>
             </div>
 
+          </div>
+          <div class="col">
+            <label>Phone #</label> {{ user.mobileNumber }}
+            <div v-if="user.danaVerifiedAccount">
+              <img src="/assets/img/logo-dana-blue-sm.png" style="height: 30px;" alt="">
+            </div>
+            <div class="text-danger" v-else>
+              <strong>User not yet validate DANA Account</strong>
+            </div>
           </div>
         </div>
         

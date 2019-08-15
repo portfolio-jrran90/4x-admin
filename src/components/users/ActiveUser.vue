@@ -462,6 +462,8 @@ export default {
           }).then(res => {
             vm.modalUserTransactionInfo = res.data
 
+            console.log('trans', res.data)
+
             // check reverse i.e. from the last terms down to the downpayment (4-1)
             // check status if its paid, if so, check the number field, that'll be the total terms
             vm.modalUserTransactionInfo.forEach(item => {

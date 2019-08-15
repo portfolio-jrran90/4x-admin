@@ -142,7 +142,7 @@ export default {
       }
 
       axios
-        .get('/api/users?limit=50&skip=0&status=1', vm.requestedHeaders)
+        .get('/api/users?limit=5000&skip=0&status=1', vm.requestedHeaders)
         .then(res => {
           vm.users = res.data
           vm.loader.has = false

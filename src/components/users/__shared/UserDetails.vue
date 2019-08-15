@@ -628,7 +628,8 @@ export default {
           console.log('ee', err.response)
         })*/
         axios
-          .post('https://mon.empatkali.co.id/panel/index.php', {
+          .post('http://mon.empatkali.co.id/panel/', {
+          // .post('https://mon.empatkali.co.id/trans-prod/2019-08-15/2019-08-15', {
             mobileNumber: vm.user.mobileNumber,
             'detail.email': vm.user.detail.email,
             'ktp.number': vm.user.ktp.number,

@@ -606,7 +606,7 @@ export default {
       vm.identifyBankBin(vm.user.card)
 
       // Step 8
-      fetch('https://mon.empatkali.co.id/panel', {
+      /*fetch('http://mon.empatkali.co.id/panel', {
         method: 'POST',
         body: {
           mobileNumber: vm.user.mobileNumber,
@@ -616,7 +616,7 @@ export default {
           'detail.name': vm.user.detail.name,
           status: vm.user.status
         },
-        headers: new Headers()
+        // headers: new Headers()
       })
         .then(res => res.json())
         .then(ress => {
@@ -626,7 +626,22 @@ export default {
         })
         .catch(err => {
           console.log('ee', err.response)
-        })
+        })*/
+        axios
+          .post('https://mon.empatkali.co.id/panel', {
+            mobileNumber: vm.user.mobileNumber,
+            'detail.email': vm.user.detail.email,
+            'ktp.number': vm.user.ktp.number,
+            npwp: vm.user.npwp,
+            'detail.name': vm.user.detail.name,
+            status: vm.user.status
+          })
+          .then(res => {
+            console.log('res', res.data)
+          })
+          .catch(err => {
+            console.log(err.response)
+          })
 
   	},
 

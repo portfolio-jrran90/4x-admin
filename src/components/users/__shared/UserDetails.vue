@@ -403,6 +403,21 @@
     <!-- ./ Step 7 -->
 
 
+    <!-- Step 8 -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="mb-3">Step 8 - Data Pendukung</h2>
+        <div class="row">
+          <div class="col-md-8">
+            <div v-html="dataPendukung"></div>
+            {{ dataPendukung }}
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <!-- ./ Step 8 -->
+
 
     <!-- Note -->
     <!-- <div class="mb-4" v-if="status==='pending'">
@@ -476,6 +491,7 @@ export default {
         emergency: {}
       },
       note: '',
+      dataPendukung: '',
   	}
   },
   computed: {
@@ -588,6 +604,29 @@ export default {
       }
 
       vm.identifyBankBin(vm.user.card)
+
+      // Step 8
+      fetch('https://mon.empatkali.co.id/panel', {
+        method: 'POST',
+        body: {
+          mobileNumber: vm.user.mobileNumber,
+          'detail.email': vm.user.detail.email,
+          'ktp.number': vm.user.ktp.number,
+          npwp: vm.user.npwp,
+          'detail.name': vm.user.detail.name,
+          status: vm.user.status
+        },
+        headers: new Headers()
+      })
+        .then(res => res.json())
+        .then(ress => {
+          // awts
+          console.log('aaaaa', ress)
+          vm.dataPendukung = ress
+        })
+        .catch(err => {
+          console.log('ee', err.response)
+        })
 
   	},
 

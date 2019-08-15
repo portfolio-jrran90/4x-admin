@@ -628,7 +628,7 @@ export default {
           console.log('ee', err.response)
         })*/
         axios
-          .post('https://mon.empatkali.co.id/panel', {
+          .post('https://mon.empatkali.co.id/panel/index.php', {
             mobileNumber: vm.user.mobileNumber,
             'detail.email': vm.user.detail.email,
             'ktp.number': vm.user.ktp.number,
@@ -642,7 +642,6 @@ export default {
           .catch(err => {
             console.log(err.response)
           })
-
   	},
 
     /**

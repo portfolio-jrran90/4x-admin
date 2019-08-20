@@ -349,7 +349,7 @@ export default {
       npwp: 'NPWP',
       card: 'Card', // it has optional params, see Postman
       cardnumber: 'Card Number'
-    }    
+    }
     vm.totalUsers()
   },
   mounted() {

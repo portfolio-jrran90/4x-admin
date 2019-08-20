@@ -4,6 +4,28 @@
 
     <h2>Rejected User</h2>
     <h5>Total: {{ totalUserRows.toLocaleString() }}</h5>
+
+    <div class="alert alert-secondary">
+      <form class="form-inline" @submit.prevent="searchFilterResult">
+        <label class="my-1 mr-2" for="frmSearchFilter">
+          <strong>Search by</strong>
+        </label>
+        <select class="custom-select my-1 mr-sm-2" id="frmSearchFilter" v-model="search.filterBy">
+          <option :value="index" v-for="(data, index) in search.filterByOption">{{ data }}</option>
+        </select>
+
+        <input type="search" class="form-control mr-2" placeholder="Search ..."
+          v-model="search.query"
+          v-if="search.filterBy!==''">
+
+        <button type="submit" class="btn btn-primary px-4 mr-2">Filter Result</button>
+        <button type="button" class="btn btn-danger px-4" @click="removeFilter">Remove Filter</button>
+      </form>
+
+      <p class="mt-2 mb-0" v-if="search.showResult">
+        Found {{ users.length }} result(s)
+      </p>
+    </div>
    
     <div class="row">
       <div class="col-md-8">
@@ -80,6 +102,14 @@ export default {
       totalUserRows: 0,
       perPage: 12, // default
 
+      // Search
+      search: {
+        filterByOption: {}, // ex. name, email, mobile number, etc.
+        filterBy: '',       //
+        query: '',          // this is the actual 'query', based on chosen option of the end-user
+        showResult: false,
+      },
+
       users: {},
 
       modalUserShow: false,
@@ -97,7 +127,17 @@ export default {
     }
   },
   created() {
-    this.totalUsers()
+    let vm = this
+    vm.search.filterByOption = {
+      name: 'Name',
+      mn: 'Mobile Number',
+      email: 'E-mail',
+      ktp: 'KTP',
+      npwp: 'NPWP',
+      card: 'Card', // it has optional params, see Postman
+      cardnumber: 'Card Number'
+    }
+    vm.totalUsers()
   },
   mounted() {
     let vm = this
@@ -105,6 +145,8 @@ export default {
       has: true,
       message: 'Preparing'
     }
+    // load initial value
+    vm.search.filterBy = 'name'
   },
   methods: {
 
@@ -187,6 +229,43 @@ export default {
       vm.userDetails = user
       vm.userDetails.index = index
       vm.userDetails.verify = user.verify
+    },
+
+    /**
+     * Search and filter result
+     */
+    searchFilterResult() {
+      let vm = this
+
+      if (vm.search.query==='') {
+        vm.$swal.fire(
+          'Oiii!',
+          'Seems like you forgot to put something on search bar!',
+          'warning'
+        )
+        return
+      }
+
+      // Prepare end users input i.e. trim,etc.
+      let sanitizeQuery = vm.search.query.split(',').map(item=>item.trim())
+      console.log( sanitizeQuery )
+
+      let searchFilterObj = {}
+      searchFilterObj[vm.search.filterBy] = sanitizeQuery
+      vm.showUsersPerPage(1, searchFilterObj)
+    },
+
+    /**
+     * Clear filter
+     *
+     * Removed all remnants
+     */
+    removeFilter() {
+      let vm = this
+      delete vm.search.totalRows
+      vm.search.showResult = false
+      vm.search.query = ''
+      vm.showUsersPerPage(1)
     },
 
   }

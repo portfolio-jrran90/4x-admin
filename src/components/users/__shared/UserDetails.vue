@@ -91,7 +91,7 @@
               <tr>
                 <th class="table-secondary">Penghasilan</th>
                 <td class="table-active">{{ salaryDetail.description || '---' }}</td>
-                <td colspan="2">Rekomendasi limit dari sistem <strong>{{ salaryDetail.credit | currency }}</strong></td>
+                <td colspan="2">Rekomendasi limit dari sistem <strong>{{ user.credit | currency }}</strong></td>
               </tr>
               <tr>
                 <th class="table-secondary">No. NPWP</th>

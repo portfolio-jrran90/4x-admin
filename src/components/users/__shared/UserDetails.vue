@@ -606,7 +606,7 @@ export default {
 
       // Step 8
       axios
-        .post('http://mon.empatkali.co.id/jhon', {
+        .post('https://mon.empatkali.co.id/jhon', {
           mobileNumber: vm.user.mobileNumber,
           'detail.email': vm.user.detail.email,
           'ktp.number': vm.user.ktp.number,

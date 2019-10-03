@@ -37,12 +37,12 @@
             </a>
           </router-link>
 
-          <router-link tag="li" :to="{ name: 'transaction' }">
+          <!-- <router-link tag="li" :to="{ name: 'transaction' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'handshake']" class="mr-2" size="lg" />
               <p>Failed Transactions</p>
             </a>
-          </router-link>
+          </router-link> -->
 
           <router-link tag="li" :to="{ name: 'settings' }">
             <a class="nav-link" href="#">

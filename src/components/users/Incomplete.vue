@@ -49,7 +49,7 @@
                 <ul class="list-inline m-0">
                   <li class="list-inline-item">
                     <a href @click.prevent="openModalUserDetails(data, index)" v-b-tooltip.hover title="View details">
-                      <font-awesome-icon icon="search" size="sm" />
+                      <font-awesome-icon icon="search" size="sm" @click="actionAdmin('user detail incomplete')" />
                     </a>
                   </li>
                 </ul>
@@ -263,7 +263,7 @@
               </table>
             </div>
           </div>
-          
+
         </div>
       </div> -->
 
@@ -285,12 +285,12 @@
 
             </div>
           </div>
-          
+
         </div>
       </div> -->
 
       <div class="mb-2">
-        <button class="btn btn-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
+        <button class="btn btn-secondary btn-lg px-5" @click="modalUserShow=false, actionAdmin('close user detail incomplete')">Close</button>
       </div>
     </b-modal>
   </div>
@@ -364,7 +364,7 @@ export default {
       npwp: 'NPWP',
       card: 'Card', // it has optional params, see Postman
       cardnumber: 'Card Number'
-    }    
+    }
     vm.totalUsers()
   },
   mounted() {
@@ -400,7 +400,7 @@ export default {
      * Show users per page
      *
      * Display users per page
-     * 
+     *
      * @param  Integer page             default value: 1
      * @param  Object  queryStringObj
      */
@@ -411,7 +411,7 @@ export default {
         has: true,
         message: `Loading data`
       }
-      
+
       let skip
       if (vm.currentPage == 1) {
         skip = 0
@@ -513,7 +513,7 @@ export default {
 
     /**
      * Display the descriptive value based on the KTP status
-     * 
+     *
      * @param  Integer value
      */
     ktpStatus(value) {
@@ -530,7 +530,7 @@ export default {
 
     /**
      * Display the descriptive value based on the NPWP status
-     * 
+     *
      * @param  Integer value
      */
     npwpStatus(value) {
@@ -580,6 +580,47 @@ export default {
       vm.search.showResult = false
       vm.search.query = ''
       vm.showUsersPerPage(1)
+    },
+
+    decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: `click button ${paramsAction}`,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+      // console.log('actionAmin', actionAmin)
+
     }
   }
 };

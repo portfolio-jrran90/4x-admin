@@ -35,7 +35,7 @@
                     user.detail ?
                       Math.abs(new Date(Date.now() - new Date(user.detail.birthdate).getTime()).getUTCFullYear() - 1970) + ' years old'
                       : '---'
-                  }} 
+                  }}
                 </td>
               </tr>
               <tr>
@@ -174,7 +174,7 @@
                 <textarea rows="5" class="form-control"
                   v-model="verify.applicant.notes"></textarea>
               </div>
-              <button type="submit" class="btn btn-primary px-5">Confirm</button>
+              <button type="submit" @click="actionAdmin('verifyCall')" class="btn btn-primary px-5">Confirm</button>
             </form>
 
           </div>
@@ -250,15 +250,15 @@
                 <textarea name="" id="" cols="30" rows="5" class="form-control"
                   v-model="verify.emergency.notes"></textarea>
               </div>
-              <button type="submit" class="btn btn-primary px-5">Confirm</button>
+              <button type="submit" @click="actionAdmin('verifyEmergency')" class="btn btn-primary px-5">Confirm</button>
             </form>
 
           </div>
-        </div>           
-        
+        </div>
+
       </div>
     </div>
-    
+
     <div class="card" v-else>
       <div class="card-body">
         <h2 class="mb-3">Step 5 - Emergency {{ (status==='incomplete' || status==='rejected') ? '' : ' (Verified)' }}</h2>
@@ -298,8 +298,8 @@
                 disabled></textarea>
             </div>
           </div>
-        </div>           
-        
+        </div>
+
       </div>
     </div>
     <!-- ./Step 5 -->
@@ -328,7 +328,7 @@
             </GmapMap>
           </div>
         </div>
-        
+
       </div>
     </div>
     <!-- ./ Step 6 -->
@@ -366,7 +366,7 @@
             </table>
           </div>
         </div>
-        
+
       </div>
     </div>
 
@@ -397,7 +397,7 @@
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
     <!-- ./ Step 7 -->
@@ -412,7 +412,7 @@
             <div v-html="dataPendukung"></div>
           </div>
         </div>
-        
+
       </div>
     </div>
     <!-- ./ Step 8 -->
@@ -421,13 +421,13 @@
     <!-- Note -->
     <!-- <div class="mb-4" v-if="status==='pending'">
       <h2>Summary</h2>
-      <textarea class="form-control" rows="5" name="note" placeholder="Enter summary..." 
+      <textarea class="form-control" rows="5" name="note" placeholder="Enter summary..."
         v-validate="'required'"
         v-model="note"
         :class="{'is-invalid': errors.first('note')}"></textarea>
       <small :class="{'invalid-feedback': errors.first('note')}" v-show="errors.first('note')">{{ errors.first('note') }}</small>
     </div> -->
-    
+
     <div class="mb-4" v-if="status!=='pending' && status!=='incomplete'">
       <h2>Summary</h2>
       <textarea rows="5" class="form-control" disabled></textarea>
@@ -550,12 +550,52 @@ export default {
   	}
   },
   methods: {
+    decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: `click button ${paramsAction}`,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+			// console.log('actionAmin', actionAmin)
+    },
   	getOtherDetails() {
 			// Used the native approach since axios is currently bound to the
 			// baseURL of the API that needs authentication, etc.
 			// Note: There's should be a database for this
 			let vm = this
 
+      const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
       vm.ktpViewerOption = {
         navbar: false, title: false, fullscreen: false
       }
@@ -612,7 +652,11 @@ export default {
           'ktp.number': vm.user.ktp.number,
           npwp: vm.user.npwp,
           'detail.name': vm.user.detail.name,
-          status: vm.user.status
+          status: vm.user.status,
+          adminLogin: {
+            _id: tokenAuth._id,
+            email: tokenAuth.email
+          }
         })
         .then(res => {
           vm.dataPendukung = res.data
@@ -624,7 +668,7 @@ export default {
 
     /**
      * Identify Bank Bin
-     * 
+     *
      * @param  Integer  card
      */
     async identifyBankBin(card) {
@@ -640,7 +684,7 @@ export default {
      *
      * This function will just verify applicants credentials i.e.
      * contacting him/her for some verification that includes emergency
-     * 
+     *
      * @param  String type
      * @param  ObjectId userId
      */

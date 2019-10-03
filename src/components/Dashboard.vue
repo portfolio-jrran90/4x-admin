@@ -37,6 +37,13 @@
             </a>
           </router-link>
 
+          <!-- <router-link tag="li" :to="{ name: 'transaction' }">
+            <a class="nav-link" href="#">
+              <font-awesome-icon :icon="['fas', 'handshake']" class="mr-2" size="lg" />
+              <p>Failed Transactions</p>
+            </a>
+          </router-link> -->
+
           <router-link tag="li" :to="{ name: 'settings' }">
             <a class="nav-link" href="#">
               <font-awesome-icon icon="cog" class="mr-2" size="lg" />
@@ -98,16 +105,68 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
+  data() {
+  	return {
+      requestedHeaders: {
+        headers: {
+          Authorization: process.env.VUE_APP_AUTHORIZATION,
+          'x-access-token': localStorage.getItem("auth_token")
+        }
+      }
+  	}
+  },
   methods: {
     logout() {
+      this.actionAdmin('admin logout')
       this.$auth.logout({
         // makeRequest: true,
         success() {},
         error() {},
         redirect: "/login"
       });
-    }
+    },
+    decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: paramsAction,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+      // console.log('actionAmin', actionAmin)
+
+    },
   }
 };
 </script>

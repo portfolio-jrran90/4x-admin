@@ -4,7 +4,7 @@
 
     <h2>Active User</h2>
     <h5>Total: {{ totalUserRows.toLocaleString() }}</h5>
-   
+
     <div class="alert alert-secondary">
       <form class="form-inline" @submit.prevent="searchFilterResult">
         <label class="my-1 mr-2" for="frmSearchFilter">
@@ -45,7 +45,7 @@
           <tbody>
             <tr v-for="(data, index) in users">
               <td>
-                <a href="#" @click.prevent="openModalUserDetails(data, index)"
+                <a href="#" @click.prevent="(openModalUserDetails(data, index), actionAdmin('name of user'))"
                   v-b-tooltip.hover title="View details" style="font-weight: 800">
                   {{ data.detail?data.detail.name:'--' }}
                 </a>
@@ -255,7 +255,7 @@
       <user-details :user="userDetails" status="active"></user-details>
 
       <div class="mb-2">
-        <button class="btn btn-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
+        <button class="btn btn-secondary btn-lg px-5" @click="(modalUserShow=false, actionAdmin('close of user active detail'))">Close</button>
       </div>
     </b-modal>
   </div>
@@ -386,7 +386,7 @@ export default {
      * Show users per page
      *
      * Display users per page
-     * 
+     *
      * @param  Integer page             default value: 1
      * @param  Object  queryStringObj
      */
@@ -410,7 +410,7 @@ export default {
       // - 24 = page 3
       // - 36 = page 4
       // ...
-      
+
       let skip
       if (vm.currentPage == 1) {
         skip = 0
@@ -487,7 +487,7 @@ export default {
      *
      * @param  obj userData
      * @param  var @todo the values accepted are 'increase' and 'decrease'
-     
+
     topUpCredit(userData, todo) {
       let vm = this
       // let todo = "Assign" ? vm.inputCredit : -vm.inputCredit
@@ -524,7 +524,7 @@ export default {
 
     /**
      * Ban a user
-     * 
+     *
      * @param  ObjectId userObj
      * @param  Integer index
      */
@@ -556,7 +556,7 @@ export default {
           })
         }
       })
-      
+
     },
 
     openModalUserDetails(user, index) {
@@ -636,7 +636,7 @@ export default {
 
     /**
      * Identify Bank Bin
-     * 
+     *
      * @param  Integer  card
      */
     async identifyBankBin(card) {
@@ -649,7 +649,7 @@ export default {
 
     /**
      * Display the descriptive value based on the KTP status
-     * 
+     *
      * @param  Integer value
      */
     ktpStatus(value) {
@@ -666,7 +666,7 @@ export default {
 
     /**
      * Display the descriptive value based on the NPWP status
-     * 
+     *
      * @param  Integer value
      */
     npwpStatus(value) {
@@ -727,7 +727,7 @@ export default {
     mapTransactionTerms(dat) {
       let responseObj = {
         payment_id: dat.paid.payment_id,
-        paid_date: dat.paid.date 
+        paid_date: dat.paid.date
       }
 
       if ( dat.number !== 1 ) {
@@ -750,6 +750,48 @@ export default {
       }
 
       return responseObj
+    },
+
+
+    decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: `click button ${paramsAction}`,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+      // console.log('actionAmin', actionAmin)
+
     }
 
   }

@@ -26,7 +26,7 @@
         Found {{ users.length }} result(s)
       </p>
     </div>
-   
+
     <div class="row">
       <div class="col-md-8">
 
@@ -42,7 +42,7 @@
           <tbody>
             <tr v-for="(data, index) in users">
               <td>
-                <a href="#" @click.prevent="openModalUserDetails(data, index)"
+                <a href="#" @click.prevent="openModalUserDetails(data, index), actionAdmin('user detail reject')"
                   v-b-tooltip.hover title="View details">
                   {{ data.detail?data.detail.name:'--' }}
                 </a>
@@ -173,7 +173,7 @@ export default {
      * Show users per page
      *
      * Display users per page
-     * 
+     *
      * @param  Integer page             default value: 1
      * @param  Object  queryStringObj
      */
@@ -197,7 +197,7 @@ export default {
       // - 24 = page 3
       // - 36 = page 4
       // ...
-      
+
       let skip
       if (vm.currentPage == 1) {
         skip = 0
@@ -267,6 +267,47 @@ export default {
       vm.search.query = ''
       vm.showUsersPerPage(1)
     },
+
+
+    decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: `click button ${paramsAction}`,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+      // console.log('actionAmin', actionAmin)
+    }
 
   }
 };

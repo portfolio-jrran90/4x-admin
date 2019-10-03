@@ -37,12 +37,12 @@
             </a>
           </router-link>
 
-          <!-- <router-link tag="li" :to="{ name: 'transaction' }">
+          <router-link tag="li" :to="{ name: 'transaction' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'handshake']" class="mr-2" size="lg" />
               <p>Failed Transactions</p>
             </a>
-          </router-link> -->
+          </router-link>
 
           <router-link tag="li" :to="{ name: 'settings' }">
             <a class="nav-link" href="#">
@@ -148,15 +148,15 @@ export default {
 			delete adminLogin.mobileNumber
 			delete adminLogin._id
 
-      let actionAmin = {
+      let actionAdmin = {
         adminLogin,
         action: paramsAction,
       }
-			actionAmin = JSON.stringify(actionAmin)
+			actionAdmin = JSON.stringify(actionAdmin)
 
 			axios
-        .post('http://mon.empatkali.co.id/cs', {
-					actionAmin
+        .post('https://mon.empatkali.co.id/cs', {
+					actionAdmin
         })
         .then(res => {
 					console.log('res', res)
@@ -164,7 +164,7 @@ export default {
         .catch(err => {
           console.log(err.res)
         })
-      // console.log('actionAmin', actionAmin)
+      // console.log('actionAdmin', actionAdmin)
 
     },
   }

@@ -18,14 +18,14 @@
           <tbody v-else>
             <tr v-for="(data, index) in users">
               <td>
-                <a href="#" @click.prevent="openModal('ShowUserDetail', data)">{{ data.detail.name }}</a>
+                <a href="#" @click.prevent="openModal('ShowUserDetail', data), actionAdmin('user detail ban')">{{ data.detail.name }}</a>
               </td>
               <td>{{ data.mobileNumber }}</td>
               <td>{{ new Date(data.createdAt) | date }}</td>
               <td class="text-right">
                 <ul class="list-inline m-0">
                   <li class="list-inline-item">
-                    <a href @click.prevent="unBan(data)" v-b-tooltip.hover title="Unban" class="text-success">
+                    <a href @click.prevent="unBan(data), actionAdmin('detail unban user')" v-b-tooltip.hover title="Unban" class="text-success">
                       <font-awesome-icon icon="user-slash" size="sm" />
                     </a>
                   </li>
@@ -134,7 +134,7 @@ export default {
 
     /**
      * Open a modal
-     * 
+     *
      * @param  String modal
      * @param  Object data
      */
@@ -156,7 +156,7 @@ export default {
 
     /**
      * UnBan User
-     * 
+     *
      * @param  Object userObj
      */
     unBan(userObj) {
@@ -178,6 +178,7 @@ export default {
                 `The system has sent an activation email for user ${userObj.detail.name}.`,
                 'success'
               )
+              vm.actionAdmin('unBan User!')
             })
         }
       })
@@ -185,7 +186,7 @@ export default {
 
     /**
      * Identify Bank Bin
-     * 
+     *
      * @param  Integer  card
      */
     async identifyBankBin(card) {
@@ -195,6 +196,47 @@ export default {
           json = await response.json()
       vm.bankBni = json
     },
+
+    decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: `click button ${paramsAction}`,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+      // console.log('actionAmin', actionAmin)
+
+    }
 
   }
 }
@@ -215,4 +257,3 @@ export default {
     figcaption { text-align: center }
   }
 </style>
-

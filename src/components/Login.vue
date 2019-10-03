@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -75,11 +76,51 @@ export default {
           res => {
             // alert('logging in..')
             // should add some effects for logging in
+            this.actionAdmin('Admin new login', res.data.token)
           },
           err => {
             alert("Invalid Email/Password!");
           }
         )
+    },
+    decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction, token) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(token)
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: paramsAction,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+			// console.log('actionAmin', actionAmin)
     }
   }
 };

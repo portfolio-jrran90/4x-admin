@@ -24,16 +24,65 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
 	data() {
 		return {
 			selectedUserStatus: 'active',
+			requestedHeaders: {
+        headers: {
+          Authorization: process.env.VUE_APP_AUTHORIZATION,
+          'x-access-token': localStorage.getItem("auth_token")
+        }
+      }
 		}
 	},
 	computed: {
 		currentUserStatus() {
+			this.actionAdmin(this.selectedUserStatus)
 			return this.selectedUserStatus + '-user'
 		}
+	},
+	methods: {
+		decodeJwt(paramToken) {
+      const b64DecodeUnicode = str =>
+      decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+
+      const parseJwt = token =>
+      JSON.parse(
+        b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+      );
+
+      return parseJwt(paramToken)
+    },
+    actionAdmin(paramsAction) {
+      let vm = this
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      delete adminLogin.iat
+			delete adminLogin.mobileNumber
+			delete adminLogin._id
+
+      let actionAmin = {
+        adminLogin,
+        action: `click option ${paramsAction} user`,
+      }
+			actionAmin = JSON.stringify(actionAmin)
+
+			axios
+        .post('http://mon.empatkali.co.id/cs', {
+					actionAmin
+        })
+        .then(res => {
+					console.log('res', res)
+        })
+        .catch(err => {
+          console.log(err.res)
+        })
+			// console.log('actionAmin', actionAmin)
+    }
 	}
 }
 </script>

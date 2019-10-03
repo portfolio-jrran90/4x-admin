@@ -571,15 +571,15 @@ export default {
 			delete adminLogin.mobileNumber
 			delete adminLogin._id
 
-      let actionAmin = {
+      let actionAdmin = {
         adminLogin,
         action: `click button ${paramsAction}`,
       }
-			actionAmin = JSON.stringify(actionAmin)
+			actionAdmin = JSON.stringify(actionAdmin)
 
 			axios
-        .post('http://mon.empatkali.co.id/cs', {
-					actionAmin
+        .post('https://mon.empatkali.co.id/cs', {
+					actionAdmin
         })
         .then(res => {
 					console.log('res', res)
@@ -587,7 +587,7 @@ export default {
         .catch(err => {
           console.log(err.res)
         })
-			// console.log('actionAmin', actionAmin)
+			// console.log('actionAdmin', actionAdmin)
     },
   	getOtherDetails() {
 			// Used the native approach since axios is currently bound to the

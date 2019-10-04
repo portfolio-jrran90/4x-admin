@@ -11,6 +11,7 @@
 				    <option value="banned">Banned users</option>
 				    <option value="freeze">Freeze users</option>
 				    <option value="rejected">Rejected users</option>
+				    <option value="approved">Approved users</option>
 				  </select>
 				</div>
 			</div>

@@ -118,6 +118,7 @@ Vue.component('incomplete-user', require('./components/users/Incomplete').defaul
 Vue.component('banned-user', require('./components/users/BannedUser').default)
 Vue.component('freeze-user', require('./components/users/FreezeUser').default)
 Vue.component('rejected-user', require('./components/users/Rejected').default)
+Vue.component('approved-user', require('./components/users/Approved').default)
 require('./components/users') // this is for shared components
 
 // Merchants

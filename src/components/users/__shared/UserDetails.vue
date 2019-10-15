@@ -202,6 +202,7 @@
 
     <!-- Step 5 -->
     <div class="card" v-if="status==='pending'">
+
       <div class="card-body">
         <h2 class="mb-3">Step 5 - Verify emergency</h2>
         <div class="row">
@@ -214,17 +215,17 @@
               </tr>
               <tr>
                 <th class="table-secondary">Nama Kontak Darurat</th>
-                <td class="table-active">{{ user.emergencyContact.name || '---' }}</td>
+                <td class="table-active">{{ user.emergencyContact ? user.emergencyContact.name : '---' }}</td>
                 <td colspan="2">Cannot be provided by the system</td>
               </tr>
               <tr>
                 <th class="table-secondary">Hubungan</th>
-                <td class="table-active">{{ user.emergencyContact.type || '---' }}</td>
+                <td class="table-active">{{ user.emergencyContact ? user.emergencyContact.type : '---' }}</td>
                 <td colspan="2">Cannot be provided by the system</td>
               </tr>
               <tr>
                 <th class="table-secondary">Nomor Kontak Darurat</th>
-                <td class="table-active">{{ user.emergencyContact.mobileNumber || '---' }}</td>
+                <td class="table-active">{{ user.emergencyContact ? user.emergencyContact.mobileNumber : '---' }}</td>
                 <td colspan="2">Cannot be provided by the system</td>
               </tr>
             </table>

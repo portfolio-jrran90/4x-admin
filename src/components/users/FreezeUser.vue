@@ -130,6 +130,16 @@
                         </span>
                       </small>
                     </li>
+                    <li v-if="terms.number!==1">
+                      <small>
+                        <span style="display: block">
+                          VA Number: <strong> {{terms.paid.payment_id}}</strong>
+                        </span>
+                        <span style="display: block">
+                          VA Berlaku Sampai <strong> {{ new Date(terms.paid.date) | date }}</strong>
+                        </span>
+                      </small>
+                    </li>
                   </ul>
                 </td>
                 <td class="text-right" style="font-size: 1.2em">

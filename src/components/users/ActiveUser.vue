@@ -219,11 +219,15 @@
                     <li>
                       <strong>{{ mapTransactionTerms(terms).msg }}</strong>
                     </li>
+                    
                     <li v-if="mapTransactionTerms(terms).paid_date">
                       <small>
                         {{ mapTransactionTerms(terms).dateLabel }}: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
                       </small>
                     </li>
+
+                    
+
                     <li v-if="terms.number!==1">
                       <small>
                         <span style="display: block">
@@ -231,6 +235,17 @@
                         </span>
                         <span style="display: block">
                           <strong>Due: {{ new Date(terms.due.date) | date }}</strong>
+                        </span>
+                      </small>
+                    </li>
+
+                    <li v-if="terms.number!==1">
+                      <small>
+                        <span style="display: block">
+                          VA Number: <strong> {{terms.paid.payment_id}}</strong>
+                        </span>
+                        <span style="display: block">
+                          VA Berlaku Sampai <strong> {{ new Date(terms.paid.date) | date }}</strong>
                         </span>
                       </small>
                     </li>

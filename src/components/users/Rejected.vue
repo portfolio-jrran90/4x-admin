@@ -157,7 +157,7 @@ export default {
       let vm = this
 
       try {
-        let totalRows = await axios.get(`/api/users?status=4&limit=3000`, vm.requestedHeaders)
+        let totalRows = await axios.get(`/api/users?status=4&limit=50000`, vm.requestedHeaders)
         vm.totalUserRows = totalRows.data.length
 
         vm.showUsersPerPage(1) // initial

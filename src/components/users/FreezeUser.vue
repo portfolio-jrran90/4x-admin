@@ -133,10 +133,12 @@
                     <li v-if="terms.number!==1">
                       <small>
                         <span style="display: block">
-                          VA Number: <strong> {{terms.paid.payment_id}}</strong>
+                          VA Number: <strong>{{terms.paid.payment_id}}</strong>
                         </span>
                         <span style="display: block">
-                          VA Berlaku Sampai <strong> {{ new Date(terms.paid.date) | date }}</strong>
+                          VA Berlaku Sampai&nbsp;
+                          <strong v-if="terms.paid.date">{{ new Date(terms.paid.date) | date }}</strong>
+                          <strong v-else>---</strong>
                         </span>
                       </small>
                     </li>

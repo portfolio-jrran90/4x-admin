@@ -91,7 +91,7 @@
           <div class="main">
             <table style="margin-bottom: -0.7px;" class="table headerTable">
               <tr>
-                <th style="background-color: black; color: #fff; width: 476px;">Is this an ASLI application</th>
+                <th style="background-color: black; color: #fff; width: 476px;">Apakah aplikasi user ini baik dan nyata</th>
                 <th style="background-color: black; text-align: center; color: #fff;">Score</th>
                 <th style="background-color: black; text-align: center; color: #fff;">Phone</th>
                 <th style="background-color: black; text-align: center; color: #fff;">KTP OCR</th>
@@ -100,7 +100,7 @@
               </tr>
               <tbody>
                 <tr>
-                  <th>Is the users name match with other sources?</th>
+                  <th>Apakah nama user cocok dengan sumber lain?</th>
                   <td :style="`background-color: ${ scoreNameMatch.colorScore }; font-weight: bold; text-align: center; width: 149px; color: black;`">{{ scoreNameMatch.score }}%</td>
                   <!-- <td :style="`background-color: #70AD47; font-weight: bold; text-align: center; width: 149px; color: black;`">-</td> -->
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
@@ -116,28 +116,29 @@
               <table class="table table-striped leftSideTable">
                 <tbody>
                   <tr v-if="advanceAI.face_comparison.data">
-                    <th>Does this users selfie match their KTP?</th>
+                    <th>Apakah foto selfie user cocok dengan KTP nya?</th>
                     <td v-if="advanceAI.face_comparison.data.similarity >= 80" style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
                     <td v-else-if="advanceAI.face_comparison.data.similarity >= 60" style="background-color: yellow; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
                     <td v-else-if="advanceAI.face_comparison.data.similarity >= 40" style="background-color: red; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
                     <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr v-else>
-                    <th>Does this users selfie match their KTP?</th>
+                    <th>Apakah foto selfie user cocok dengan KTP nya?</th>
                     <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;"> - </td>
                   </tr>
                   <tr>
-                    <th>Is this number any other applicants emergency? </th>
+                    <th style="font-size: 14.7px;">Apakah nomor ini terdaftar sebagai kontak darurat user lainnya?</th>
                     <td :style="`background-color: ${userDetails.checkEmergencyNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkEmergencyNumber ? '#fff' : 'black'};`">
                       {{ userDetails.checkEmergencyNumber ? 'YES' : 'NO' }}
                     </td>
                   </tr>
                   <tr>
-                    <th>Is this number associated with any other IMEI? </th>
+                    <th>Apakah nomor ini terkait dengan IMEI lainnya?</th>
+                    <!-- Is this number associated with any other IMEI?  -->
                     <td :style="`background-color: ${userDetails.checkImeiUserNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkImeiUserNumber ? '#fff' : 'black'};`"> {{ userDetails.checkImeiUserNumber ? 'YES' : 'NO'  }} </td>
                   </tr>
                   <tr>
-                    <th>Similar face under different NIK Detected?</th>
+                    <th>Wajah serupa terdeteksi dengan NIK yang berbeda?</th>
                     <td :style="`background-color: ${faceSeacrhResult.length > 0 ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${faceSeacrhResult.length > 0 ? '#fff' : 'black'};`">
                       {{ faceSeacrhResult.length > 0 ? 'YES' : 'NO' }}
                     </td>
@@ -149,30 +150,30 @@
                     <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr>
-                    <th style="background-color: black; color: #fff;">Does the user have a bad credit history</th>
+                    <th style="background-color: black; color: #fff;">Apakah user memiliki riwayat kredit yang buruk</th>
                     <td style="background-color: black; font-weight: bold; text-align: center; color: #fff;"></td>
                   </tr>
                   <tr v-if="multiPlatformResult.queryCount">
-                    <th>Had the user applied for other loans recently?</th>
+                    <th>Apakah user baru saja mengajukan pinjaman lain?</th>
                     <td style="background-color: red; font-weight: bold; text-align: center; color: #fff;"> {{ multiPlatformResult.queryCount ? multiPlatformResult.queryCount : '-' }} </td>
                   </tr>
                   <tr v-else>
-                    <th>Had the user applied for other loans recently?</th>
+                    <th>Apakah user baru saja mengajukan pinjaman lain?</th>
                     <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;">-</td>
                   </tr>
                   <tr>
                     <!-- belum dynamic -->
-                    <th>Had the user got a good credit score </th>
+                    <th>Apakah user mempunyai skor kredit yang baik </th>
                     <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;"> - </td>
                   </tr>
                   <tr v-if="advanceAI.blacklist.data">
-                    <th>Has the user not paid back other loans</th>
+                    <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
                     <td v-if="advanceAI.blacklist.data.defaultListResult.length > 0" style="background-color: red; font-weight: bold; text-align: center; color: black;"> Record Exist</td>
                     <td v-else style="background-color: #FFC004; font-weight: bold; text-align: center; color: black;"> No Record</td>
                     <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr v-else>
-                    <th>Has the user not paid back other loans</th>
+                    <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
                     <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td>
                   </tr>
                 </tbody>
@@ -280,7 +281,7 @@
                   </tr>
                   <tr v-if="userDetails.detail">
                     <th>Salary</th>
-                    <td class="text-uppercase" style="font-size: 13px;">{{ userDetails.detail.descriptionOfsalary ? userDetails.detail.descriptionOfsalary : '-' }}</td>
+                    <td class="text-uppercase" :style="`font-size: 13px; background-color: ${customStyleUser.userSalary};`">{{ userDetails.detail.descriptionOfsalary ? userDetails.detail.descriptionOfsalary : '-' }}</td>
                   </tr>
                   <tr v-else>
                     <th>Salary</th>
@@ -288,9 +289,8 @@
                   </tr>
                   <tr v-if="userDetails.detail">
                     <th>Industry</th>
-                    <td class="text-uppercase" :style="`background-color: ${userDetails.detail.industri == 'industri2' || userDetails.detail.industri == 'industri7' || userDetails.detail.industri == 'industri11' ? 'red' : 'none'};
-                    color: ${userDetails.detail.industri == 'industri2' || userDetails.detail.industri == 'industri7' || userDetails.detail.industri == 'industri11' ? '#fff' : '#212529'};`">
-                      {{ userDetails.detail ? userDetails.detail.industri : '-' }}
+                    <td class="text-uppercase" :style="`background-color: ${userDetails.detail.industri == 'industri3' || userDetails.detail.industri == 'industri7' || userDetails.detail.industri == 'industri11' ? 'orange' : 'none'};`">
+                      {{ userDetails.detail ? userDetails.detail.industri_label : '-' }}
                     </td>
                   </tr>
                   <tr v-else>
@@ -464,12 +464,14 @@
                   <tr>
                     <th style="background-color: grey; color: #fff; text-align: left;">No</th>
                     <th style="background-color: grey; color: #fff; text-align: left;">Comment</th>
+                    <th style="background-color: grey; color: #fff; text-align: left;">By</th>
                     <th style="background-color: grey; color: #fff; text-align: center">Datetime</th>
                   </tr>
                   <tbody>
                     <tr v-for="(data, index) in userDetails.commentReviews" :key="index" style="text-align: left;">
                       <td>{{ index+1 }}</td>
-                      <td>{{ data.text }}</td>
+                      <td style="width: 50%;">{{ data.text }}</td>
+                      <td class="text-capitalize font-weight-bold">{{ data.commentBy }}</td>
                       <td style="width: 160px; text-align: center">{{ dateTime(new Date(data.createdAt)) }}</td>
                     </tr>
                   </tbody>
@@ -550,6 +552,7 @@ export default {
 
       modalUserShow: false,
       users: {},
+      admins: {},
       inputCredit: 0,
       userDetails: {},
       userImageProfile: "",
@@ -594,6 +597,9 @@ export default {
         score: 0,
         colorScore: 'red'
       },
+      customStyleUser: {
+        userSalary: '#fff'
+      },
       logEmail: '',
       commentReviewsText: '',
       ktpViewerOption: {},
@@ -618,6 +624,7 @@ export default {
       cardnumber: 'Card Number'
     }
     vm.totalUsers()
+    vm.getAdmin()
     // vm.index()
   },
   mounted() {
@@ -631,6 +638,19 @@ export default {
 
   },
   methods: {
+    getAdmin(params) {
+      let vm = this;
+      const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      axios.get(`api/admins/${adminLogin._id}`, vm.requestedHeaders)
+      .then(function (response) {
+        if (response) {
+          vm.admins = response.data
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+    },
     decodeJwt(paramToken) {
       const b64DecodeUnicode = str =>
       decodeURIComponent(
@@ -671,6 +691,7 @@ export default {
 
     },
     getAI(user) {
+      // debug user id
       // let UserId = { userid: '5ceac5c88f057759ee805c49' }
       // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
       // let UserId = { userid: '5dcbbd079bd8c04f071a9e02' }
@@ -758,7 +779,7 @@ export default {
               nameNpwp: this.advanceAI.npwpCheck.nama.toUpperCase()
             }
 
-            // dataNameToBeCompare.phone = 'OEI ACHMAD WIRIA'
+            // dataNameToBeCompare.phone = 'OEI ACHMAD WIRIA' //debug name phone
             //condition to match all name
             if (fixName == dataNameToBeCompare.phone) this.advanceAI.nameMatch[0].value = 33
             if (fixName == dataNameToBeCompare.nameOcr) this.advanceAI.nameMatch[1].value = 33
@@ -768,11 +789,11 @@ export default {
             console.log('userDetails', this.userDetails)
             console.log('dataNameToBeCompare', dataNameToBeCompare)
 
-            const sumscoreNameMatch = datas => datas.reduce((sum, data) => {
+            const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
               return sum + data.value;
             }, 0);
 
-            this.scoreNameMatch.score = sumscoreNameMatch(this.advanceAI.nameMatch)
+            this.scoreNameMatch.score = sumScoreNameMatch(this.advanceAI.nameMatch)
 
             if (this.scoreNameMatch.score >= 80) {
               this.scoreNameMatch.colorScore = '#70AD47'
@@ -844,7 +865,11 @@ export default {
       .then(function (response) {
         if (response) {
           let userSalary = vm.userDetails.detail.penghasilan
+          // userSalary = 'gol3' //debug userSalary
           let findSalary = response.data.filter(data => data.type == userSalary)
+          if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
+            vm.customStyleUser.userSalary = 'orange'
+          }
           vm.userDetails.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
         }
       })
@@ -852,22 +877,35 @@ export default {
         console.log(error);
       })
     },
+    getAllIndustry() {
+      // Industry
+			fetch('__tmp-files/industry.json')
+			  .then(resp => resp.json()) // Transform the data into JSON
+			  .then(resIndustry => {
+          if (this.userDetails.detail) {
+            // this.userDetails.detail.industri = 'industri11' //debug industry
+            let findIndustry = resIndustry.filter(data => data._id == this.userDetails.detail.industri)
+            this.userDetails.detail.industri_label = findIndustry[0].label
+            console.log('userDetails', this.userDetails.detail.industri_label)
+          }
+			  })
+    },
     openModalUserDetails(user, index) {
       let vm = this;
       // reset every time the modal is clicked
       vm.userDetails = {}
       // vm.note = ''
 
-      //set username from db
-      // user.detail.name = 'OEI ACHMAD WIRIA'
-
       vm.userDetails = user
       vm.userDetails.index = index
+      // user.mobileNumber = '087769675686'//debug mobileNumber already exist as user 4x, check Emergency Number
+      // user.mobileNumber = '08745468983'//debug check imei user already exist as imei number user 4x
       vm.getAI(user)
       vm.checkEmergencyNumber(user.mobileNumber)
       vm.checkImeiUser(user.mobileNumber)
       vm.getActivityMailUSer()
       vm.getAllTypeUserSalary()
+      vm.getAllIndustry()
 
       vm.modalUserShow = true
 
@@ -919,7 +957,8 @@ export default {
       } else {
         axios.post(`api/users/comment-review-status`, {
           user: vm.userDetails._id,
-          text: vm.commentReviewsText
+          text: vm.commentReviewsText,
+          commentBy: vm.admins.username
         }, vm.requestedHeaders)
         .then((response) => {
           vm.loader.has = false
@@ -1058,7 +1097,7 @@ export default {
                 text: "Approve User",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
+                confirmButtonColor: '#5EB96C',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, Approved!'
               }).then((result) => {
@@ -1102,8 +1141,8 @@ export default {
                 text: "Reject User",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#5EB96C',
                 confirmButtonText: 'Yes, Rejected!'
               }).then((result) => {
                 if (result.value) {

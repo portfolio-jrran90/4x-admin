@@ -9,14 +9,14 @@
         </div>
         <ul class="nav">
 
-          <router-link tag="li" :to="`/users`">
+          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin' || dataAdmin.roles == 'useradmin'" :to="`/users`">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" />
               <p>Users</p>
             </a>
           </router-link>
 
-          <router-link tag="li" :to="{ name: 'merchant' }">
+          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin'" :to="{ name: 'merchant' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" />
               <p>Merchants</p>
@@ -30,7 +30,7 @@
             </a>
           </router-link> -->
 
-          <router-link tag="li" :to="{ name: 'promotion' }">
+          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin'" :to="{ name: 'promotion' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'bullhorn']" class="mr-2" size="lg" />
               <p>Promotions</p>
@@ -44,7 +44,7 @@
             </a>
           </router-link> -->
 
-          <router-link tag="li" :to="{ name: 'settings' }">
+          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin'" :to="{ name: 'settings' }">
             <a class="nav-link" href="#">
               <font-awesome-icon icon="cog" class="mr-2" size="lg" />
               <p>Settings</p>
@@ -114,8 +114,12 @@ export default {
           Authorization: process.env.VUE_APP_AUTHORIZATION,
           'x-access-token': localStorage.getItem("auth_token")
         }
-      }
+      },
+      dataAdmin: []
   	}
+  },
+  created() {
+    this.actionAdmin()
   },
   methods: {
     logout() {
@@ -144,9 +148,12 @@ export default {
     actionAdmin(paramsAction) {
       let vm = this
       const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      vm.getDataAdminLogin(adminLogin._id)
+
       delete adminLogin.iat
 			delete adminLogin.mobileNumber
 			delete adminLogin._id
+
 
       let actionAdmin = {
         adminLogin,
@@ -167,6 +174,22 @@ export default {
       // console.log('actionAdmin', actionAdmin)
 
     },
+    getDataAdminLogin(id) {
+      let vm = this
+      try {
+        axios.get(`/api/admins/${id}`, vm.requestedHeaders)
+        .then(function (response) {
+          vm.dataAdmin = response.data
+          vm.dataAdmin.roles = vm.dataAdmin.roles.toString();
+          // vm.dataAdmin.roles = 'useradmin';
+        })
+        .catch(function (error) {
+          alert(error);
+        })
+      } catch (e) {
+        alert(e)
+      }
+    }
   }
 };
 </script>

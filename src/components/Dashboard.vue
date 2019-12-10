@@ -9,14 +9,14 @@
         </div>
         <ul class="nav">
 
-          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin' || dataAdmin.roles == 'useradmin'" :to="`/users`">
+          <router-link tag="li" :to="`/users`">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" />
               <p>Users</p>
             </a>
           </router-link>
 
-          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin'" :to="{ name: 'merchant' }">
+          <router-link tag="li" :to="{ name: 'merchant' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" />
               <p>Merchants</p>
@@ -30,7 +30,7 @@
             </a>
           </router-link> -->
 
-          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin'" :to="{ name: 'promotion' }">
+          <router-link tag="li" :to="{ name: 'promotion' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'bullhorn']" class="mr-2" size="lg" />
               <p>Promotions</p>
@@ -44,7 +44,7 @@
             </a>
           </router-link> -->
 
-          <router-link tag="li" v-if="dataAdmin.roles == 'superadmin,finance,useradmin'" :to="{ name: 'settings' }">
+          <router-link tag="li" :to="{ name: 'settings' }">
             <a class="nav-link" href="#">
               <font-awesome-icon icon="cog" class="mr-2" size="lg" />
               <p>Settings</p>

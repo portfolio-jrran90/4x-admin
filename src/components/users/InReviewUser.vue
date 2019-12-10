@@ -146,8 +146,8 @@
                   </tr>
                   <tr>
                     <th>Fraud Score</th>
-                    <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">{{ advanceAI.fraud_score.data ? advanceAI.fraud_score.data.score : '-' }}</td>
-                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
+                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">{{ advanceAI.fraud_score.data ? advanceAI.fraud_score.data.score : '-' }}</td> -->
+                    <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td>
                   </tr>
                   <tr>
                     <th style="background-color: black; color: #fff;">Apakah user memiliki riwayat kredit yang buruk</th>

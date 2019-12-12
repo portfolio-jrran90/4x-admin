@@ -134,7 +134,6 @@ Vue.component('banned-user', require('./components/users/BannedUser').default)
 Vue.component('freeze-user', require('./components/users/FreezeUser').default)
 Vue.component('rejected-user', require('./components/users/Rejected').default)
 Vue.component('approved-user', require('./components/users/Approved').default)
-// Vue.component('review-user', require('./components/users/InReviewUser').default)
 require('./components/users') // this is for shared components
 
 // Merchants
@@ -158,8 +157,6 @@ import SettingsFee from './components/settings/Fee.vue'
 import SettingsUserManagement from './components/settings/UserManagement.vue'
 import SettingsSalary from './components/settings/Salary.vue'
 
-//InReview beta, next will be load on component
-import InReview from'./components/users/InReviewUser'
 
 const routes = [
   { path: '*', redirect: '/login' },
@@ -179,7 +176,7 @@ const routes = [
       { path: '/allpromotion', component: AllPromotion },
       { path: '/addcategory', component: AddCategory },
       { path: '/assigncategory', component: AssignCategory },
-      { path: '/inreview', component: InReview },
+      // { path: '/inreview', component: InReview },
 
       { path: '/promotions', component: Promotion, name: 'promotion' },
       { path: '/transactions-failed', component: FailedTransactions, name: 'transaction' },//failed transaction

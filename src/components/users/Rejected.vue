@@ -323,13 +323,13 @@
             <div class="user-info-right">
               <table class="table table-striped">
                 <tr>
-                  <th style="background-color: black; text-align: center; color: #fff;">Email</th>
+                  <th style="background-color: black; text-align: center; color: #fff;">Subject</th>
                   <th style="background-color: black; text-align: center; color: #fff;">Status</th>
                   <th style="background-color: black; text-align: center; color: #fff;">Tanggal</th>
                 </tr>
                 <tbody>
                   <tr v-for="data in logEmail" :key="data.no">
-                    <td>{{ data.email }}</td>
+                    <td>{{ data.subject }}</td>
                     <td>{{ data.tipe }}</td>
                     <td>{{ data.tgl }}</td>
                   </tr>

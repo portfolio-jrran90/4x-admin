@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <!-- <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="[Approved] User Detail"
+    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="[Approved] User Detail"
       hide-footer
       no-close-on-esc
       no-close-on-backdrop>
@@ -80,9 +80,9 @@
       <div class="mb-2">
         <button class="btn btn-outline-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
       </div>
-    </b-modal> -->
+    </b-modal>
 
-    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="95" title="Approved Users"
+    <!-- <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="95" title="Approved Users"
       hide-footer
       no-close-on-esc
       no-close-on-backdrop>
@@ -95,7 +95,6 @@
             </div>
             <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
               <button class="btn btn-warning btn-md px-5" @click="refreshData(userDetails)"> <strong>Refresh</strong> </button>
-              <!-- <button class="btn btn-danger btn-md px-5" @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})"> <strong>Decline</strong> </button> -->
             </div>
           </header>
           <div class="main">
@@ -112,10 +111,8 @@
                 <tr>
                   <th>Apakah nama user cocok dengan sumber lain?</th>
                   <td :style="`background-color: ${ scoreNameMatch.colorScore }; font-weight: bold; text-align: center; width: 149px; color: black;`">{{ scoreNameMatch.score }}%</td>
-                  <!-- <td :style="`background-color: #70AD47; font-weight: bold; text-align: center; width: 149px; color: black;`">-</td> -->
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.ocr.data ? advanceAI.ocr.data.name : '-' }} </td>
-                  <!-- <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> - </td> -->
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.tele_check.data ? advanceAI.tele_check.data.status_msg : '-' }} </td>
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;">{{ advanceAI.npwpCheck ? advanceAI.npwpCheck.nama : '-' }}</td>
                 </tr>
@@ -130,7 +127,6 @@
                     <td v-if="advanceAI.face_comparison.data.similarity >= 80" style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
                     <td v-else-if="advanceAI.face_comparison.data.similarity >= 60" style="background-color: yellow; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
                     <td v-else-if="advanceAI.face_comparison.data.similarity >= 40" style="background-color: red; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
-                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr v-else>
                     <th>Apakah foto selfie user cocok dengan KTP nya?</th>
@@ -144,7 +140,6 @@
                   </tr>
                   <tr>
                     <th>Apakah nomor ini terkait dengan IMEI lainnya?</th>
-                    <!-- Is this number associated with any other IMEI?  -->
                     <td :style="`background-color: ${userDetails.checkImeiUserNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkImeiUserNumber ? '#fff' : 'black'};`"> {{ userDetails.checkImeiUserNumber ? 'YES' : 'NO'  }} </td>
                   </tr>
                   <tr>
@@ -152,11 +147,9 @@
                     <td :style="`background-color: ${faceSeacrhResult.length > 0 ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${faceSeacrhResult.length > 0 ? '#fff' : 'black'};`">
                       {{ faceSeacrhResult.length > 0 ? 'YES' : 'NO' }}
                     </td>
-                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr>
                     <th>Fraud Score</th>
-                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">{{ advanceAI.fraud_score.data ? advanceAI.fraud_score.data.score : '-' }}</td> -->
                     <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td>
                   </tr>
                   <tr>
@@ -172,7 +165,6 @@
                     <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;">-</td>
                   </tr>
                   <tr>
-                    <!-- belum dynamic -->
                     <th>Apakah user mempunyai skor kredit yang baik </th>
                     <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;"> - </td>
                   </tr>
@@ -180,7 +172,6 @@
                     <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
                     <td v-if="advanceAI.blacklist.data.defaultListResult.length > 0" style="background-color: red; font-weight: bold; text-align: center; color: black;"> Record Exist</td>
                     <td v-else style="background-color: #FFC004; font-weight: bold; text-align: center; color: black;"> No Record</td>
-                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr v-else>
                     <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
@@ -196,23 +187,6 @@
                 <div class="imageSelfie" v-viewer="selfieKtpViewerOption">
                   <img :src="userDetails.selfie ? userDetails.selfie : 'https://picsum.photos/id/237/900/900'" alt="">
                 </div>
-
-
-                <!-- <div class="col-md-5 c-images">
-                  <figure class="figure m-0" v-viewer="ktpViewerOption">
-                    <img :src="((user.ktp)?user.ktp.image:'') || '/assets/img/default-photo.svg'" class="figure-img img-fluid rounded" alt="ktp">
-                    <figcaption class="figure-caption text-center">KTP</figcaption>
-                  </figure>
-                  <figure class="figure m-0" v-viewer="selfieKtpViewerOption">
-                    <img
-                      :src="user.selfie || '/assets/img/default-photo.svg'"
-                      class="figure-img img-fluid rounded"
-                      alt="selfie with ktp"
-                    >
-                    <figcaption class="figure-caption text-center">Selfie with KTP</figcaption>
-                  </figure>
-                </div> -->
-
 
               </div>
             </div>
@@ -339,7 +313,6 @@
               </table>
             </div>
             <div class="row col-12">
-              <!-- <button class="btn btn-secondary btn-block btn-lg" disabled>Resend Contract</button> -->
             </div>
         </div>
           <div class="col-5 user-location" style="padding-left: 0px; padding-right: 0px;">
@@ -353,8 +326,6 @@
               <div class="map-first" style="height:347px;">
                 <GmapMap
                   :center="{
-                    /* lat: parseFloat(-6.349415014651284),
-                    lng: parseFloat(106.9484114391151) */
                     lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
                     lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
                   }"
@@ -363,8 +334,6 @@
                 >
     							<GmapMarker
     								:position="{
-                      /* lat: parseFloat(-6.349415014651284),
-                      lng: parseFloat(106.9484114391151) */
                       lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
                       lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
                   	}"
@@ -430,14 +399,6 @@
                 </tr>
               </tbody>
             </table>
-            <!-- <div class="row">
-              <div class="col-6">
-                <button class="btn btn-success btn-block btn-lg">Approve</button>
-              </div>
-              <div class="col-6">
-                <button class="btn btn-danger btn-block btn-lg">Decline</button>
-              </div>
-            </div> -->
           </div>
         </div>
 
@@ -457,7 +418,6 @@
                 </tbody>
               </table>
               <textarea disabled class="form-control" id="exampleFormControlTextarea1" rows="9" placeholder="Input comment here..." v-model="commentReviewsText"></textarea>
-                <!-- <button class="btn btn-primary btn-sm" @click="addCommentReview" style="float: right; margin-right: 5px; margin-top: 20px;">Add Comment</button> -->
             </div>
             <div class="col-6" style="padding-left: 0px; padding-right: 0px;">
               <table class="table table-striped" style="margin-bottom: 0px;">
@@ -465,7 +425,6 @@
                   <th style="background-color: black; text-align: center; color: black;">-</th>
                   <th style="background-color: black; text-align: center; color: #fff;">History</th>
                   <th style="background-color: black; text-align: center; color: #fff;">
-                    <!-- <button class="btn btn-warning btn-sm" @click="refreshHistoryComment(userDetails._id)" style="float: right;">Refresh History</button> -->
                   </th>
                 </tr>
               </table>
@@ -492,7 +451,6 @@
 
             <div class="col-12 row" style="margin-top: 20px;">
               <div class="col-6">
-                <!-- <button class="btn btn-success btn-lg px-5" @click="actionBtn('toPending', 'dataApp', {user: userDetails, index: userDetails.index})">Approve</button> -->
               </div>
               <div class="col-6 text-right">
                 <button class="btn btn-dark btn-lg px-5" @click="(modalUserShow=false, userDetails={}, resetAdvanceAi(), actionAdmin('close in review user'))">Close</button>
@@ -502,7 +460,7 @@
         </div>
       </div>
 
-    </b-modal>
+    </b-modal> -->
   </div>
 </template>
 

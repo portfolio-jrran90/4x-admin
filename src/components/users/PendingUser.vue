@@ -100,7 +100,7 @@
         </button>
         <button class="btn btn-outline-secondary btn-lg px-5" @click="(modalUserShow=false, actionAdmin('close in-review user'))">Close</button>
       </div>
-    </b-modal> -->
+    </b-modal>
 
     <!-- NEXT will be move in component -->
 
@@ -197,6 +197,7 @@ export default {
       commentReviewsText: '',
       ktpViewerOption: {},
       selfieKtpViewerOption: {},
+      dataPendukung: {}
 
     }
   },
@@ -302,7 +303,8 @@ export default {
         multi_platform: {},
         tele_check: {},
         ocr: {},
-        npwpCheck: ''
+        npwpCheck: '',
+        dataPendukung: {}
       }
 
       this.faceSeacrhResult = [],
@@ -317,7 +319,7 @@ export default {
       }
     },
     getAI(user) {
-      console.log('dada',user)
+      console.log('dada pending',user)
       // debug user id
       // let UserId = { userid: '5ceac5c88f057759ee805c49' }
       // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
@@ -547,7 +549,7 @@ export default {
       let vm = this;
       // reset every time the modal is clicked
       vm.userDetails = {}
-      // vm.note = ''
+      vm.note = ''
 
       vm.userDetails = user
       vm.userDetails.index = index
@@ -559,6 +561,7 @@ export default {
       vm.getActivityMailUSer()
       vm.getAllTypeUserSalary()
       vm.getAllIndustry()
+      vm.getDanaBalance()
 
       vm.modalUserShow = true
 
@@ -589,12 +592,34 @@ export default {
         })
         .then(res => {
           vm.logEmail = JSON.parse(res.data.email)
-          console.log('vm.logEmail', vm.logEmail[0])
         })
         .catch(err => {
           console.log(err.response)
         })
 
+    },
+    getDanaBalance() {
+      let vm = this
+      const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      axios
+        .post('https://mon.empatkali.co.id/jhon', {
+          mobileNumber: vm.userDetails.mobileNumber,
+          'detail.email': vm.userDetails.detail.email,
+          'ktp.number': vm.userDetails.ktp.number,
+          npwp: vm.userDetails.npwp,
+          'detail.name': vm.userDetails.detail.name,
+          status: vm.userDetails.status,
+          adminLogin: {
+            _id: tokenAuth._id,
+            email: tokenAuth.email
+          }
+        })
+        .then(res => {
+          vm.dataPendukung = res.data
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
     },
     addCommentReview() {
       let vm = this;
@@ -913,27 +938,26 @@ export default {
     background-color: #F2F2F2;
     border: 1px solid black;
 
+    header {
+      background-color: #4372C7;
+      margin-left: 0px;
+      color: #fff;
+
+      .title {
+        padding-top: 10px;
+      }
+    }
+
+    .buttonRight {
+      button {
+        margin-left: 20px;
+      }
+    }
+
     .wrapper-approval-decision {
 
         .review {
           // border: 1px solid black;
-
-          header {
-            background-color: #4372C7;
-            margin-left: 0px;
-            color: #fff;
-
-            .title {
-              padding-top: 10px;
-            }
-          }
-
-          .buttonRight {
-            button {
-              margin-left: 20px;
-            }
-          }
-
           .main {
             // border: 1px solid black;
             margin-left: 0px;
@@ -1060,6 +1084,21 @@ export default {
 
       //handle big screen min-width 1500px
       @media (min-width: 1800px) {
+        header {
+          background-color: #4372C7;
+          margin-left: 0px;
+          color: #fff;
+
+          .title {
+            padding-top: 10px;
+          }
+        }
+
+        .buttonRight {
+          button {
+            margin-left: 20px;
+          }
+        }
         .wrapper-approval-decision {
 
           .review {
@@ -1115,9 +1154,9 @@ export default {
 
                 .imageUser {
                   text-align: center;
-                  width: 708px;
+                  width: 60%;
                   float: none;
-                  padding: 10px 10px 10px 10px;
+                  padding: 10px 10px 10px 220px;
                   // background-color: #F2F2F2;
 
                   .imageKtp {

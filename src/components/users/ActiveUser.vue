@@ -748,7 +748,7 @@ export default {
       if ( dat.number !== 1 ) {
 
         if ( dat.paid.method == 'vabni' ) {
-          if ( dat.paid.status_code == 200 ) {
+          if ( dat.paid.status ) {
             responseObj.msg = 'Va telah dibayar'
             responseObj.dateLabel = 'Dibayar pada'
           } else {

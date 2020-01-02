@@ -114,8 +114,12 @@ export default {
           Authorization: process.env.VUE_APP_AUTHORIZATION,
           'x-access-token': localStorage.getItem("auth_token")
         }
-      }
+      },
+      dataAdmin: []
   	}
+  },
+  created() {
+    this.actionAdmin()
   },
   methods: {
     logout() {
@@ -144,9 +148,12 @@ export default {
     actionAdmin(paramsAction) {
       let vm = this
       const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+      vm.getDataAdminLogin(adminLogin._id)
+
       delete adminLogin.iat
 			delete adminLogin.mobileNumber
 			delete adminLogin._id
+
 
       let actionAdmin = {
         adminLogin,
@@ -167,6 +174,22 @@ export default {
       // console.log('actionAdmin', actionAdmin)
 
     },
+    getDataAdminLogin(id) {
+      let vm = this
+      try {
+        axios.get(`/api/admins/${id}`, vm.requestedHeaders)
+        .then(function (response) {
+          vm.dataAdmin = response.data
+          vm.dataAdmin.roles = vm.dataAdmin.roles.toString();
+          // vm.dataAdmin.roles = 'useradmin';
+        })
+        .catch(function (error) {
+          alert(error);
+        })
+      } catch (e) {
+        alert(e)
+      }
+    }
   }
 };
 </script>

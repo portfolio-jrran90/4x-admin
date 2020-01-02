@@ -12,6 +12,7 @@
 				    <option value="freeze">Freeze users</option>
 				    <option value="rejected">Rejected users</option>
 				    <option value="approved">Approved users</option>
+						<!-- <option value="review">In Review</option> -->
 				  </select>
 				</div>
 			</div>
@@ -41,6 +42,7 @@ export default {
 	computed: {
 		currentUserStatus() {
 			this.actionAdmin(this.selectedUserStatus)
+			console.log('selectedUserStatus', this.selectedUserStatus + '-user')
 			return this.selectedUserStatus + '-user'
 		}
 	},

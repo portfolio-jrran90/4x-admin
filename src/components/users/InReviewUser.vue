@@ -2,7 +2,7 @@
   <div>
     <loader v-if="loader.has" :message="loader.message"></loader>
 
-    <h2>Approved Users</h2>
+    <h2>In Review Users</h2>
     <h5>Total: {{ totalUserRows.toLocaleString() }}</h5>
 
     <div class="alert alert-secondary">
@@ -71,21 +71,12 @@
       </div>
     </div>
 
-    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="80" title="[Approved] User Detail"
+    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="95" title="[In Review] User Detail"
       hide-footer
       no-close-on-esc
       no-close-on-backdrop>
 
-      <user-details :user="userDetails" status="approved" @listener="userDetailListener" />
-      <div class="mb-2">
-        <button class="btn btn-outline-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
-      </div>
-    </b-modal>
-
-    <!-- <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="95" title="Approved Users"
-      hide-footer
-      no-close-on-esc
-      no-close-on-backdrop>
+      <!-- <in-review-user/> -->
 
       <div class="wrapper-approval-decision">
         <div class="review">
@@ -94,7 +85,7 @@
               <h4>User Approval Decision</h4>
             </div>
             <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
-              <button class="btn btn-warning btn-md px-5" @click="refreshData(userDetails)"> <strong>Refresh</strong> </button>
+              <button class="btn btn-danger btn-md px-5" @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})"> <strong>Decline</strong> </button>
             </div>
           </header>
           <div class="main">
@@ -111,8 +102,10 @@
                 <tr>
                   <th>Apakah nama user cocok dengan sumber lain?</th>
                   <td :style="`background-color: ${ scoreNameMatch.colorScore }; font-weight: bold; text-align: center; width: 149px; color: black;`">{{ scoreNameMatch.score }}%</td>
+                  <!-- <td :style="`background-color: #70AD47; font-weight: bold; text-align: center; width: 149px; color: black;`">-</td> -->
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.ocr.data ? advanceAI.ocr.data.name : '-' }} </td>
+                  <!-- <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> - </td> -->
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.tele_check.data ? advanceAI.tele_check.data.status_msg : '-' }} </td>
                   <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;">{{ advanceAI.npwpCheck ? advanceAI.npwpCheck.nama : '-' }}</td>
                 </tr>
@@ -127,6 +120,7 @@
                     <td v-if="advanceAI.face_comparison.data.similarity >= 80" style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
                     <td v-else-if="advanceAI.face_comparison.data.similarity >= 60" style="background-color: yellow; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
                     <td v-else-if="advanceAI.face_comparison.data.similarity >= 40" style="background-color: red; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
+                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr v-else>
                     <th>Apakah foto selfie user cocok dengan KTP nya?</th>
@@ -140,6 +134,7 @@
                   </tr>
                   <tr>
                     <th>Apakah nomor ini terkait dengan IMEI lainnya?</th>
+                    <!-- Is this number associated with any other IMEI?  -->
                     <td :style="`background-color: ${userDetails.checkImeiUserNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkImeiUserNumber ? '#fff' : 'black'};`"> {{ userDetails.checkImeiUserNumber ? 'YES' : 'NO'  }} </td>
                   </tr>
                   <tr>
@@ -147,9 +142,11 @@
                     <td :style="`background-color: ${faceSeacrhResult.length > 0 ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${faceSeacrhResult.length > 0 ? '#fff' : 'black'};`">
                       {{ faceSeacrhResult.length > 0 ? 'YES' : 'NO' }}
                     </td>
+                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr>
                     <th>Fraud Score</th>
+                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">{{ advanceAI.fraud_score.data ? advanceAI.fraud_score.data.score : '-' }}</td> -->
                     <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td>
                   </tr>
                   <tr>
@@ -165,6 +162,7 @@
                     <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;">-</td>
                   </tr>
                   <tr>
+                    <!-- belum dynamic -->
                     <th>Apakah user mempunyai skor kredit yang baik </th>
                     <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;"> - </td>
                   </tr>
@@ -172,6 +170,7 @@
                     <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
                     <td v-if="advanceAI.blacklist.data.defaultListResult.length > 0" style="background-color: red; font-weight: bold; text-align: center; color: black;"> Record Exist</td>
                     <td v-else style="background-color: #FFC004; font-weight: bold; text-align: center; color: black;"> No Record</td>
+                    <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
                   </tr>
                   <tr v-else>
                     <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
@@ -187,6 +186,23 @@
                 <div class="imageSelfie" v-viewer="selfieKtpViewerOption">
                   <img :src="userDetails.selfie ? userDetails.selfie : 'https://picsum.photos/id/237/900/900'" alt="">
                 </div>
+
+
+                <!-- <div class="col-md-5 c-images">
+                  <figure class="figure m-0" v-viewer="ktpViewerOption">
+                    <img :src="((user.ktp)?user.ktp.image:'') || '/assets/img/default-photo.svg'" class="figure-img img-fluid rounded" alt="ktp">
+                    <figcaption class="figure-caption text-center">KTP</figcaption>
+                  </figure>
+                  <figure class="figure m-0" v-viewer="selfieKtpViewerOption">
+                    <img
+                      :src="user.selfie || '/assets/img/default-photo.svg'"
+                      class="figure-img img-fluid rounded"
+                      alt="selfie with ktp"
+                    >
+                    <figcaption class="figure-caption text-center">Selfie with KTP</figcaption>
+                  </figure>
+                </div> -->
+
 
               </div>
             </div>
@@ -273,7 +289,7 @@
                   </tr>
                   <tr v-if="userDetails.detail">
                     <th>Industry</th>
-                    <td class="text-uppercase" :style="`background-color: ${userDetails.detail.industri == 'industri2' || userDetails.detail.industri == 'industri7' || userDetails.detail.industri == 'industri11' ? 'orange' : 'none'};`">
+                    <td class="text-uppercase" :style="`background-color: ${userDetails.detail.industri == 'industri3' || userDetails.detail.industri == 'industri7' || userDetails.detail.industri == 'industri11' ? 'orange' : 'none'};`">
                       {{ userDetails.detail ? userDetails.detail.industri_label : '-' }}
                     </td>
                   </tr>
@@ -299,13 +315,13 @@
             <div class="user-info-right">
               <table class="table table-striped">
                 <tr>
-                  <th style="background-color: black; text-align: center; color: #fff;">Subject</th>
+                  <th style="background-color: black; text-align: center; color: #fff;">Email</th>
                   <th style="background-color: black; text-align: center; color: #fff;">Status</th>
                   <th style="background-color: black; text-align: center; color: #fff;">Tanggal</th>
                 </tr>
                 <tbody>
                   <tr v-for="data in logEmail" :key="data.no">
-                    <td>{{ data.subject }}</td>
+                    <td>{{ data.email }}</td>
                     <td>{{ data.tipe }}</td>
                     <td>{{ data.tgl }}</td>
                   </tr>
@@ -313,6 +329,7 @@
               </table>
             </div>
             <div class="row col-12">
+              <!-- <button class="btn btn-secondary btn-block btn-lg" disabled>Resend Contract</button> -->
             </div>
         </div>
           <div class="col-5 user-location" style="padding-left: 0px; padding-right: 0px;">
@@ -326,6 +343,8 @@
               <div class="map-first" style="height:347px;">
                 <GmapMap
                   :center="{
+                    /* lat: parseFloat(-6.349415014651284),
+                    lng: parseFloat(106.9484114391151) */
                     lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
                     lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
                   }"
@@ -334,6 +353,8 @@
                 >
     							<GmapMarker
     								:position="{
+                      /* lat: parseFloat(-6.349415014651284),
+                      lng: parseFloat(106.9484114391151) */
                       lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
                       lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
                   	}"
@@ -399,6 +420,14 @@
                 </tr>
               </tbody>
             </table>
+            <!-- <div class="row">
+              <div class="col-6">
+                <button class="btn btn-success btn-block btn-lg">Approve</button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-danger btn-block btn-lg">Decline</button>
+              </div>
+            </div> -->
           </div>
         </div>
 
@@ -417,7 +446,8 @@
 
                 </tbody>
               </table>
-              <textarea disabled class="form-control" id="exampleFormControlTextarea1" rows="9" placeholder="Input comment here..." v-model="commentReviewsText"></textarea>
+              <textarea class="form-control" id="exampleFormControlTextarea1" rows="9" placeholder="Input comment here..." v-model="commentReviewsText"></textarea>
+                <button class="btn btn-primary btn-sm" @click="addCommentReview" style="float: right; margin-right: 5px; margin-top: 20px;">Add Comment</button>
             </div>
             <div class="col-6" style="padding-left: 0px; padding-right: 0px;">
               <table class="table table-striped" style="margin-bottom: 0px;">
@@ -425,6 +455,7 @@
                   <th style="background-color: black; text-align: center; color: black;">-</th>
                   <th style="background-color: black; text-align: center; color: #fff;">History</th>
                   <th style="background-color: black; text-align: center; color: #fff;">
+                    <!-- <button class="btn btn-warning btn-sm" @click="refreshHistoryComment(userDetails._id)" style="float: right;">Refresh History</button> -->
                   </th>
                 </tr>
               </table>
@@ -440,27 +471,46 @@
                     <tr v-for="(data, index) in userDetails.commentReviews" :key="index" style="text-align: left;">
                       <td>{{ index+1 }}</td>
                       <td style="width: 50%;">{{ data.text }}</td>
-                      <td v-if="data.type == 'cs'" class="text-capitalize font-weight-bold">{{ data.commentBy }}</td>
-                      <td v-if="data.type == 'Davin'" class="text-capitalize font-weight-bold">Sistem</td>
+                      <td class="text-capitalize font-weight-bold">{{ data.commentBy }}</td>
                       <td style="width: 160px; text-align: center">{{ dateTime(new Date(data.createdAt)) }}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-
+            <!-- <div class="row">
+              <div class="col-6 row">
+                <div class="col-6">
+                  <button class="btn btn-primary btn-block btn-lg" @click="actionBtn('approve', 'dataApp', {user: userDetails, index: userDetails.index})">Approve</button>
+                </div>
+                <div class="col-6">
+                  <button class="btn btn-danger btn-block btn-lg" @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})">Decline</button>
+                </div>
+              </div>
+            </div> -->
             <div class="col-12 row" style="margin-top: 20px;">
               <div class="col-6">
+                <button class="btn btn-success btn-lg px-5" @click="actionBtn('toPending', 'dataApp', {user: userDetails, index: userDetails.index})">Approve</button>
               </div>
               <div class="col-6 text-right">
-                <button class="btn btn-dark btn-lg px-5" @click="(modalUserShow=false, userDetails={}, resetAdvanceAi(), actionAdmin('close in review user'))">Close</button>
+                <button class="btn btn-dark btn-lg px-5" @click="(modalUserShow=false, actionAdmin('close in review user'))">Close</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-    </b-modal> -->
+      <!-- Note -->
+      <!-- <div class="mb-4">
+        <h2>Summary</h2>
+        <textarea class="form-control" rows="5" name="note" placeholder="Enter summary..."
+          v-validate="'required'"
+          v-model="note"
+          :class="{'is-invalid': errors.first('note')}"></textarea>
+        <small :class="{'invalid-feedback': errors.first('note')}" v-show="errors.first('note')">{{ errors.first('note') }}</small>
+      </div> -->
+
+    </b-modal>
   </div>
 </template>
 
@@ -640,46 +690,11 @@ export default {
         })
 
     },
-    refreshData(user) {
-      this.resetAdvanceAi()
-      this.getAI(user)
-      this.checkEmergencyNumber(user.mobileNumber)
-      this.checkImeiUser(user.mobileNumber)
-      this.getActivityMailUSer()
-      this.getAllTypeUserSalary()
-      this.getAllIndustry()
-    },
-    resetAdvanceAi() {
-      this.advanceAI = {
-        blacklist: {},
-        face_blackList: {},
-        face_comparison: {},
-        face_search: {},
-        fraud_score: {},
-        multi_platform: {},
-        tele_check: {},
-        ocr: {},
-        npwpCheck: ''
-      }
-
-      this.faceSeacrhResult = [],
-      this.multiPlatformResult = {},
-
-      this.scoreNameMatch = {
-        score: 0,
-        colorScore: 'red'
-      },
-      this.customStyleUser = {
-        userSalary: '#fff'
-      }
-    },
     getAI(user) {
-      console.log('dada', user)
       // debug user id
       // let UserId = { userid: '5ceac5c88f057759ee805c49' }
       // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
       // let UserId = { userid: '5dcbbd079bd8c04f071a9e02' }
-      // let UserId = { userid: '5df0b2f1b9495d52e7d5e676' }
       let UserId = { userid: user._id }
 
       axios
@@ -732,13 +747,12 @@ export default {
                   default:
                 }
             }
-            if (res.data[0].ocr) {
-              this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
-            }
+            if (res.data[0].ocr) this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
             if (res.data[0].npwp) {
               this.advanceAI.npwpCheck = JSON.parse(res.data[0].npwp).data[0]
               if (this.advanceAI.npwpCheck == undefined) {
-                  this.advanceAI.npwpCheck = { nama: '--' }
+                  this.advanceAI.npwpCheck = { nama: '-' }
+                  console.log('masuk', this.advanceAI.npwpCheck)
               }
             }
 
@@ -747,10 +761,6 @@ export default {
               fixName = this.advanceAI.ocr.data.name
               console.log('ocr exist')
             }
-
-            // if (this.advanceAI.npwpCheck) {
-            //   fixName = this.advanceAI.npwpCheck.nama
-            // }
 
             console.log('fixName', fixName)
 
@@ -761,40 +771,22 @@ export default {
               { data: 'nameNpwp', value: 0 }
             ]
 
-            if (user.detail) {
-              user.detail.name = user.detail.name.trim()
-            }
-
-            console.log('refresh', user)
 
             const dataNameToBeCompare = {
-              phone: user.detail.name.toUpperCase(),
+              phone: this.userDetails.detail.name.toUpperCase(),
               nameOcr: this.advanceAI.ocr.data ? this.advanceAI.ocr.data.name.toUpperCase() : '-',
               // tele_id: this.advanceAI.tele_check.data.name ? this.advanceAI.tele_check.data.name.toUpperCase() : this.advanceAI.tele_check.data.name = '-',
-              nameNpwp: this.advanceAI.npwpCheck ? this.advanceAI.npwpCheck.nama.toUpperCase() : '--'
+              nameNpwp: this.advanceAI.npwpCheck.nama.toUpperCase()
             }
 
-            console.log('npwp', dataNameToBeCompare.nameNpwp)
-
-            // dataNameToBeCompare.nameOcr = 'JAKA SUNTARA' //debug name similar
+            // dataNameToBeCompare.phone = 'OEI ACHMAD WIRIA' //debug name phone
             //condition to match all name
-            if (fixName == dataNameToBeCompare.phone) {
-              this.advanceAI.nameMatch[0].value = 33
-              console.log('=> phone')
-            }
-            if (fixName == dataNameToBeCompare.nameOcr) {
-              this.advanceAI.nameMatch[1].value = 33
-              console.log('=> nameOcr')
-            }
+            if (fixName == dataNameToBeCompare.phone) this.advanceAI.nameMatch[0].value = 33
+            if (fixName == dataNameToBeCompare.nameOcr) this.advanceAI.nameMatch[1].value = 33
             // if (fixName == dataNameToBeCompare.tele_id) this.advanceAI.nameMatch[2].value = 25
+            if (fixName == dataNameToBeCompare.nameNpwp) this.advanceAI.nameMatch[3].value = 33
 
-            if (fixName == dataNameToBeCompare.nameNpwp) {
-              if (fixName != '--') {
-                this.advanceAI.nameMatch[3].value = 33
-                console.log('=> nameNpwp')
-              }
-            }
-
+            console.log('userDetails', this.userDetails)
             console.log('dataNameToBeCompare', dataNameToBeCompare)
 
             const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
@@ -813,9 +805,7 @@ export default {
               this.scoreNameMatch.colorScore = 'red'
             }
 
-            console.log('colorScore', this.scoreNameMatch)
             console.log('advanceAI', this.advanceAI)
-            console.log('userDetails', this.userDetails)
           }
           else {
             console.log('advanceAI', 'data null')
@@ -998,7 +988,7 @@ export default {
       let vm = this
 
       try {
-        let totalRows = await axios.get(`/api/users?status=6&limit=3000`, vm.requestedHeaders)
+        let totalRows = await axios.get(`/api/users?status=7&limit=3000`, vm.requestedHeaders)
         vm.totalUserRows = totalRows.data.length
 
         vm.showUsersPerPage(1) // initial
@@ -1034,7 +1024,7 @@ export default {
       }
 
       // if query string object is passed it'll be appended, otherwise no changes
-      let url = `/api/users?status=6&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
+      let url = `/api/users?status=7&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
 
       // Limit display per page
       try {
@@ -1064,7 +1054,7 @@ export default {
     },
 
     /**
-     * Show approve users
+     * Show pending users
      */
     index() {
       let vm = this
@@ -1074,7 +1064,7 @@ export default {
       }
 
       axios
-        .get('/api/users?limit=5000&skip=0&status=6', vm.requestedHeaders)
+        .get('/api/users?limit=5000&skip=0&status=1', vm.requestedHeaders)
         .then(res => {
           vm.users = res.data
           vm.loader.has = false
@@ -1113,32 +1103,23 @@ export default {
               }).then((result) => {
                 if (result.value) {
 
-                  let activateUserBodyInput = {
+                  let activateUserFromReviewBodyInput = {
                     user: data.user._id,
                     description: vm.note
                   }
 
                   axios
-                    .post('/api/users/activatinguser', activateUserBodyInput, vm.requestedHeaders)
-                    .then(res => {
-                      vm.$swal('Success!', 'Email verification has been sent to the user!', 'success')
-                      vm.modalUserShow = false
-                      // vm.index() // refresh list
-                      vm.showUsersPerPage(1) // initial
-                    })
-
-                  // axios
-                  // .post('/api/users/activatinguserfromreview', activateUserFromReviewBodyInput, vm.requestedHeaders)
-                  // .then(res => {
-                  //   vm.modalUserShow = false
-                  //   // vm.index() // refresh list
-                  //   vm.showUsersPerPage(1) // initial
-                  //   vm.$swal.fire(
-                  //     'Success!',
-                  //     'Email verification has been sent to the user!',
-                  //     'success'
-                  //   )
-                  // })
+                  .post('/api/users/activatinguserfromreview', activateUserFromReviewBodyInput, vm.requestedHeaders)
+                  .then(res => {
+                    vm.modalUserShow = false
+                    // vm.index() // refresh list
+                    vm.showUsersPerPage(1) // initial
+                    vm.$swal.fire(
+                      'Success!',
+                      'Email verification has been sent to the user!',
+                      'success'
+                    )
+                  })
                   .catch(err => {
                     vm.$swal('Error!', err.response.data.message, 'error')
                   })
@@ -1283,10 +1264,155 @@ export default {
     background-color: #F2F2F2;
     border: 1px solid black;
 
-    .wrapper-approval-decision {
+.wrapper-approval-decision {
+
+    .review {
+      // border: 1px solid black;
+
+      header {
+        background-color: #4372C7;
+        margin-left: 0px;
+        color: #fff;
+
+        .title {
+          padding-top: 10px;
+        }
+      }
+
+      .buttonRight {
+        button {
+          margin-left: 20px;
+        }
+      }
+
+      .main {
+        // border: 1px solid black;
+        margin-left: 0px;
+
+        .headerTable {
+          th, td {
+            border: 1px solid #fff;
+            padding: 4px 4px 4px 8px !important;
+            margin: 0 !important;
+          }
+        }
+
+        .wrapper-contet-img {
+          padding-right: 13px;
+
+          // clear: both;
+
+          .leftSideTable {
+            width: 625px;
+            float: left;
+
+            tr, th {
+              width: 477px;
+              // padding: 0px 0px 0px 8px !important;
+              // margin: 0 !important;
+            }
+
+            tr, th, td {
+              padding: 4px 4px 4px 8px !important;
+              margin: 0 !important;
+            }
+          }
+
+          .imageUser {
+            text-align: center;
+            width: 708px;
+            float: right;
+            padding: 10px 10px 10px 10px;
+            // background-color: #F2F2F2;
+
+            .imageKtp {
+              img {
+                height: 330px;
+                width: 400px;
+                margin-left: 15px;
+                cursor: pointer;
+              }
+            }
+
+            .imageSelfie {
+              img {
+                height: 330px;
+                width: 250px;
+                margin-left: 15px;
+                cursor: pointer;
+              }
+            }
+          }
+
+
+        }
+
+      }
+    }
+
+    .other-user-information {
+      .user-info-left {
+        width: 381px;
+        float: left;
+        tr, th, td {
+          padding: 4px 4px 4px 8px !important;
+          margin: 0 !important;
+        }
+        tbody tr {
+          border: 1px solid #C8C8C8;
+        }
+      }
+      .user-info-right {
+        width: 371px;
+        float: left;
+        tbody tr td {
+          text-align: center;
+          font-size: 14px;
+        }
+        tbody, tr, th, td {
+          padding: 4px 4px 4px 8px !important;
+          margin: 0 !important;
+        }
+
+        tbody tr {
+          border: 1px solid #C8C8C8;
+        }
+
+        tbody {
+          // overflow: auto;
+          // height: 500px;
+        }
+      }
+
+      .user-location {
+        tr, th {
+          padding: 4px 4px 4px 8px !important;
+          margin: 0 !important;
+        }
+      }
+    }
+
+    .payment-info {
+      tbody, tr, th, td {
+        padding: 4px 4px 4px 8px !important;
+        margin: 0 !important;
+      }
+    }
+
+    .comments {
+      tbody, tr, th, td {
+        padding: 4px 4px 4px 8px !important;
+        margin: 0 !important;
+      }
+    }
+
+  }
+
+    //handle big screen min-width 1500px
+    @media (min-width: 1800px) {
+      .wrapper-approval-decision {
 
         .review {
-          // border: 1px solid black;
 
           header {
             background-color: #4372C7;
@@ -1340,7 +1466,7 @@ export default {
               .imageUser {
                 text-align: center;
                 width: 708px;
-                float: right;
+                float: none;
                 padding: 10px 10px 10px 10px;
                 // background-color: #F2F2F2;
 
@@ -1349,7 +1475,6 @@ export default {
                     height: 330px;
                     width: 400px;
                     margin-left: 15px;
-                    cursor: pointer;
                   }
                 }
 
@@ -1358,7 +1483,6 @@ export default {
                     height: 330px;
                     width: 250px;
                     margin-left: 15px;
-                    cursor: pointer;
                   }
                 }
               }
@@ -1371,7 +1495,7 @@ export default {
 
         .other-user-information {
           .user-info-left {
-            width: 381px;
+            width: 510px;
             float: left;
             tr, th, td {
               padding: 4px 4px 4px 8px !important;
@@ -1382,7 +1506,7 @@ export default {
             }
           }
           .user-info-right {
-            width: 371px;
+            width: 473px;
             float: left;
             tbody tr td {
               text-align: center;
@@ -1426,151 +1550,8 @@ export default {
         }
 
       }
+    }
 
-
-      //handle big screen min-width 1500px
-      @media (min-width: 1800px) {
-        .wrapper-approval-decision {
-
-          .review {
-
-            header {
-              background-color: #4372C7;
-              margin-left: 0px;
-              color: #fff;
-
-              .title {
-                padding-top: 10px;
-              }
-            }
-
-            .buttonRight {
-              button {
-                margin-left: 20px;
-              }
-            }
-
-            .main {
-              // border: 1px solid black;
-              margin-left: 0px;
-
-              .headerTable {
-                th, td {
-                  border: 1px solid #fff;
-                  padding: 4px 4px 4px 8px !important;
-                  margin: 0 !important;
-                }
-              }
-
-              .wrapper-contet-img {
-                padding-right: 13px;
-
-                // clear: both;
-
-                .leftSideTable {
-                  width: 625px;
-                  float: left;
-
-                  tr, th {
-                    width: 477px;
-                    // padding: 0px 0px 0px 8px !important;
-                    // margin: 0 !important;
-                  }
-
-                  tr, th, td {
-                    padding: 4px 4px 4px 8px !important;
-                    margin: 0 !important;
-                  }
-                }
-
-                .imageUser {
-                  text-align: center;
-                  width: 708px;
-                  float: none;
-                  padding: 10px 10px 10px 10px;
-                  // background-color: #F2F2F2;
-
-                  .imageKtp {
-                    img {
-                      height: 330px;
-                      width: 400px;
-                      margin-left: 15px;
-                    }
-                  }
-
-                  .imageSelfie {
-                    img {
-                      height: 330px;
-                      width: 250px;
-                      margin-left: 15px;
-                    }
-                  }
-                }
-
-
-              }
-
-            }
-          }
-
-          .other-user-information {
-            .user-info-left {
-              width: 510px;
-              float: left;
-              tr, th, td {
-                padding: 4px 4px 4px 8px !important;
-                margin: 0 !important;
-              }
-              tbody tr {
-                border: 1px solid #C8C8C8;
-              }
-            }
-            .user-info-right {
-              width: 473px;
-              float: left;
-              tbody tr td {
-                text-align: center;
-                font-size: 14px;
-              }
-              tbody, tr, th, td {
-                padding: 4px 4px 4px 8px !important;
-                margin: 0 !important;
-              }
-
-              tbody tr {
-                border: 1px solid #C8C8C8;
-              }
-
-              tbody {
-                // overflow: auto;
-                // height: 500px;
-              }
-            }
-
-            .user-location {
-              tr, th {
-                padding: 4px 4px 4px 8px !important;
-                margin: 0 !important;
-              }
-            }
-          }
-
-          .payment-info {
-            tbody, tr, th, td {
-              padding: 4px 4px 4px 8px !important;
-              margin: 0 !important;
-            }
-          }
-
-          .comments {
-            tbody, tr, th, td {
-              padding: 4px 4px 4px 8px !important;
-              margin: 0 !important;
-            }
-          }
-
-        }
-      }
 
 
 
@@ -1586,4 +1567,6 @@ export default {
     margin-right: 10px !important;
   }
   .c-step-3 .c-images figure:last-child { margin-right: 0 !important }
+
+
 </style>

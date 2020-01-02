@@ -14,6 +14,21 @@ import VueAxios from 'vue-axios'
 import VueMoment from 'vue-moment'
 import VueSweetalert2 from 'vue-sweetalert2'
 
+//vue-datetime
+import Datetime from 'vue-datetime'
+// You need a specific loader for CSS files
+import 'vue-datetime/dist/vue-datetime.css'
+Vue.use(Datetime)
+
+//vue-select
+import vSelect from 'vue-select'
+import 'vue-select/src/scss/vue-select.scss'
+Vue.component('v-select', vSelect)
+
+//vue-json-excel
+import JsonExcel from 'vue-json-excel'
+Vue.component('downloadExcel', JsonExcel)
+
 // Viewer
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
@@ -127,6 +142,9 @@ import Merchant from './components/merchants/Index.vue'
 // Promotions
 import Promotion from './components/promotions/Index.vue'
 
+// FailedTransactions
+import FailedTransactions from './components/transactions/Index.vue'
+
 // Help Desk
 import HelpDesk from './components/helpdesk/Index.vue'
 
@@ -134,9 +152,11 @@ import HelpDesk from './components/helpdesk/Index.vue'
 import Settings from './components/settings/__Main.vue'
 import SettingsIndex from './components/settings/Index.vue'
 import SettingsEmailTemplate from './components/settings/EmailTemplate.vue'
+import SettingsSmsTemplate from './components/settings/SmsTemplate.vue'
 import SettingsFee from './components/settings/Fee.vue'
 import SettingsUserManagement from './components/settings/UserManagement.vue'
 import SettingsSalary from './components/settings/Salary.vue'
+
 
 const routes = [
   { path: '*', redirect: '/login' },
@@ -156,8 +176,10 @@ const routes = [
       { path: '/allpromotion', component: AllPromotion },
       { path: '/addcategory', component: AddCategory },
       { path: '/assigncategory', component: AssignCategory },
+      // { path: '/inreview', component: InReview },
 
       { path: '/promotions', component: Promotion, name: 'promotion' },
+      { path: '/transactions-failed', component: FailedTransactions, name: 'transaction' },//failed transaction
       { path: '/help-desk', component: HelpDesk, name: 'helpdesk' },
 
       // Settings
@@ -166,6 +188,7 @@ const routes = [
         children: [
           { path: '/', component: SettingsIndex, name: 'settings-index' },
           { path: 'email-template', component: SettingsEmailTemplate, name: 'settings-email-template' },
+          { path: 'sms-template', component: SettingsSmsTemplate, name: 'settings-sms-template' },//sms template
           { path: 'fee', component: SettingsFee, name: 'settings-fee' },
           { path: 'user-management', component: SettingsUserManagement, name: 'settings-user-management' },
           { path: 'salary', component: SettingsSalary, name: 'settings-salary' },

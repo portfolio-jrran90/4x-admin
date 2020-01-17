@@ -28,7 +28,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-9">
         <table class="table table-hover table-striped tbl-users">
           <thead>
             <tr>
@@ -49,7 +49,7 @@
               </td>
               <td>{{ data.mobileNumber }}</td>
               <td>{{ new Date(data.createdAt) | date }}</td>
-              <!-- <td> <button type="button" class="btn btn-secondary btn-sm" name="button" @click="openModalInReview(data, index)"> Show In Review </button> </td> -->
+              <td> <button type="button" class="btn btn-secondary btn-sm" name="button" @click="openModalUserDetailsV1(data, index)"> New Dashboard </button> </td>
             </tr>
           </tbody>
         </table>
@@ -102,7 +102,34 @@
       </div>
     </b-modal>
 
-    <!-- NEXT will be move in component -->
+    <!-- New Dashboard V1 -->
+    <b-modal v-model="modalUserShowV1" modal-class="modal-pending-steps" size="95" title="Pending Users"
+    no-close-on-esc
+    no-close-on-backdrop
+    hide-footer>
+
+
+    <header class="col-12 row" style="padding-right: 0px">
+      <div class="col-6 title">
+        <h4>User Approval Decision</h4>
+      </div>
+      <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
+        <button class="btn btn-danger btn-md px-5" @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})"> <strong>Decline</strong> </button>
+      </div>
+    </header>
+
+    <user-details-v1 :userDetails="userDetails" status="pending"/>
+
+      <div class="col-12 row" style="margin-top: 20px;">
+        <div class="col-6">
+          <button class="btn btn-success btn-lg px-5" @click="actionBtn('approve', 'dataApp', {user: userDetails, index: userDetails.index})">Approve</button>
+        </div>
+        <div class="col-6 text-right">
+          <button class="btn btn-dark btn-lg px-5" @click="(modalUserShowV1=false, actionAdmin('close in review user'))">Close</button>
+        </div>
+      </div>
+
+    </b-modal>
 
   </div>
 </template>
@@ -144,6 +171,7 @@ export default {
       },
 
       modalUserShow: false,
+      modalUserShowV1: false,
       users: {},
       admins: {},
       inputCredit: 0,
@@ -284,267 +312,6 @@ export default {
         })
 
     },
-    refreshData(user) {
-      this.resetAdvanceAi()
-      this.getAI(user)
-      this.checkEmergencyNumber(user.mobileNumber)
-      this.checkImeiUser(user.mobileNumber)
-      this.getActivityMailUSer()
-      this.getAllTypeUserSalary()
-      this.getAllIndustry()
-    },
-    resetAdvanceAi() {
-      this.advanceAI = {
-        blacklist: {},
-        face_blackList: {},
-        face_comparison: {},
-        face_search: {},
-        fraud_score: {},
-        multi_platform: {},
-        tele_check: {},
-        ocr: {},
-        npwpCheck: '',
-        dataPendukung: {}
-      }
-
-      this.faceSeacrhResult = [],
-      this.multiPlatformResult = {},
-
-      this.scoreNameMatch = {
-        score: 0,
-        colorScore: 'red'
-      },
-      this.customStyleUser = {
-        userSalary: '#fff'
-      }
-    },
-    getAI(user) {
-      console.log('dada pending',user)
-      // debug user id
-      // let UserId = { userid: '5ceac5c88f057759ee805c49' }
-      // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
-      // let UserId = { userid: '5dcbbd079bd8c04f071a9e02' }
-      // let UserId = { userid: '5df0b2f1b9495d52e7d5e676' }
-      let UserId = { userid: user._id }
-
-      axios
-        .post('https://mon.empatkali.co.id/advanceai',
-          UserId
-        )
-        .then(res => {
-
-          if (res.data[0]) {
-            // console.log('res', res.data[0])
-
-            if (res.data[0].blacklist) this.advanceAI.blacklist = JSON.parse(res.data[0].blacklist)
-            if (res.data[0]['face blacklist']) this.advanceAI.face_blackList = JSON.parse(res.data[0]['face blacklist'])
-            if (res.data[0]['face comparison']) this.advanceAI.face_comparison = JSON.parse(res.data[0]['face comparison'])
-            if (res.data[0]['face search']) {
-                this.advanceAI.face_search = JSON.parse(res.data[0]['face search'])
-                this.faceSeacrhResult = this.advanceAI.face_search.data
-            }
-            if (res.data[0]['fraud score']) this.advanceAI.fraud_score = JSON.parse(res.data[0]['fraud score'])
-            if (res.data[0]['multi platform']) {
-              this.advanceAI.multi_platform = JSON.parse(res.data[0]['multi platform'])
-              // this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo
-              this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo.filter(data => data.queryCount <= 20).pop()
-            }
-            if (res.data[0]['tele check']) {
-                this.advanceAI.tele_check = JSON.parse(res.data[0]['tele check'])
-                const statusTeleCheck = this.advanceAI.tele_check.data.status
-                switch (statusTeleCheck) {
-                  case 1:
-                  this.advanceAI.tele_check.data.status_msg = 'Called number has ringer'
-                  break;
-                  case 2:
-                  this.advanceAI.tele_check.data.status_msg = 'Empty Number'
-                  break;
-                  case 3:
-                  this.advanceAI.tele_check.data.status_msg = 'Busy Line'
-                  break;
-                  case 4:
-                  this.advanceAI.tele_check.data.status_msg = 'Powered Off'
-                  break;
-                  case 5:
-                  this.advanceAI.tele_check.data.status_msg = 'Not Available'
-                  break;
-                  case 6:
-                  this.advanceAI.tele_check.data.status_msg = 'Emporarily unable to connect'
-                  break;
-                  case -1:
-                  this.advanceAI.tele_check.data.status_msg = 'Abnormal line, unknown state'
-                  break;
-                  default:
-                }
-            }
-            if (res.data[0].ocr) {
-              this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
-            }
-            if (res.data[0].npwp) {
-              this.advanceAI.npwpCheck = JSON.parse(res.data[0].npwp).data[0]
-              if (this.advanceAI.npwpCheck == undefined) {
-                  this.advanceAI.npwpCheck = { nama: '--' }
-              }
-            }
-
-            let fixName = ''
-            if (this.advanceAI.ocr.data) {
-              fixName = this.advanceAI.ocr.data.name
-              console.log('ocr exist')
-            }
-
-            // if (this.advanceAI.npwpCheck) {
-            //   fixName = this.advanceAI.npwpCheck.nama
-            // }
-
-            console.log('fixName', fixName)
-
-            this.advanceAI.nameMatch = [
-              { data: 'phone', value: 0 },
-              { data: 'nameOcr', value: 0 },
-              { data: 'tele_id', value: 0 },
-              { data: 'nameNpwp', value: 0 }
-            ]
-
-            if (user.detail) {
-              user.detail.name = user.detail.name.trim()
-            }
-
-            console.log('refresh', user)
-
-            const dataNameToBeCompare = {
-              phone: user.detail.name.toUpperCase(),
-              nameOcr: this.advanceAI.ocr.data ? this.advanceAI.ocr.data.name.toUpperCase() : '-',
-              // tele_id: this.advanceAI.tele_check.data.name ? this.advanceAI.tele_check.data.name.toUpperCase() : this.advanceAI.tele_check.data.name = '-',
-              nameNpwp: this.advanceAI.npwpCheck ? this.advanceAI.npwpCheck.nama.toUpperCase() : '--'
-            }
-
-            console.log('npwp', dataNameToBeCompare.nameNpwp)
-
-            // dataNameToBeCompare.nameOcr = 'JAKA SUNTARA' //debug name similar
-            //condition to match all name
-            if (fixName == dataNameToBeCompare.phone) {
-              this.advanceAI.nameMatch[0].value = 33
-              console.log('=> phone')
-            }
-            if (fixName == dataNameToBeCompare.nameOcr) {
-              this.advanceAI.nameMatch[1].value = 33
-              console.log('=> nameOcr')
-            }
-            // if (fixName == dataNameToBeCompare.tele_id) this.advanceAI.nameMatch[2].value = 25
-
-            if (fixName == dataNameToBeCompare.nameNpwp) {
-              if (fixName != '--') {
-                this.advanceAI.nameMatch[3].value = 33
-                console.log('=> nameNpwp')
-              }
-            }
-
-            console.log('dataNameToBeCompare', dataNameToBeCompare)
-
-            const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
-              return sum + data.value;
-            }, 0);
-
-            this.scoreNameMatch.score = sumScoreNameMatch(this.advanceAI.nameMatch)
-
-            if (this.scoreNameMatch.score >= 80) {
-              this.scoreNameMatch.colorScore = '#70AD47'
-            }
-            else if (this.scoreNameMatch.score >= 60) {
-              this.scoreNameMatch.colorScore = 'yellow'
-            }
-            else {
-              this.scoreNameMatch.colorScore = 'red'
-            }
-
-            console.log('colorScore', this.scoreNameMatch)
-            console.log('advanceAI', this.advanceAI)
-            console.log('userDetails', this.userDetails)
-          }
-          else {
-            console.log('advanceAI', 'data null')
-          }
-
-        })
-        .catch(err => {
-          console.log(err.res)
-        })
-    },
-    getNpwp(params) {
-      let vm = this;
-
-      axios.get(`/api/users/npwpname/${params}`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          vm.userDetails.nameOfNpwp = response.data.data[0]
-          console.log('haha', vm.userDetails)
-        }
-
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-
-    },
-    checkEmergencyNumber(params) {
-      let vm = this;
-
-      axios.get(`api/users/checkemergencyphone?mn=${params}`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          vm.userDetails.checkEmergencyNumber = response.data.data
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-    },
-    checkImeiUser(params) {
-      let vm = this;
-
-      axios.get(`api/users/checkuserimei?mn=${params}`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          vm.userDetails.checkImeiUserNumber = response.data.data
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-    },
-    getAllTypeUserSalary() {
-      let vm = this;
-
-      axios.get(`api/usersalary`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          let userSalary = vm.userDetails.detail.penghasilan
-          // userSalary = 'gol3' //debug userSalary
-          let findSalary = response.data.filter(data => data.type == userSalary)
-          if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
-            vm.customStyleUser.userSalary = 'orange'
-          }
-          vm.userDetails.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-    },
-    getAllIndustry() {
-      // Industry
-			fetch('__tmp-files/industry.json')
-			  .then(resp => resp.json()) // Transform the data into JSON
-			  .then(resIndustry => {
-          if (this.userDetails.detail) {
-            // this.userDetails.detail.industri = 'industri11' //debug industry
-            let findIndustry = resIndustry.filter(data => data._id == this.userDetails.detail.industri)
-            this.userDetails.detail.industri_label = findIndustry[0].label
-            console.log('userDetails', this.userDetails.detail.industri_label)
-          }
-			  })
-    },
     openModalUserDetails(user, index) {
       let vm = this;
       // reset every time the modal is clicked
@@ -553,16 +320,6 @@ export default {
 
       vm.userDetails = user
       vm.userDetails.index = index
-      // user.mobileNumber = '087769675686'//debug mobileNumber already exist as user 4x, check Emergency Number
-      // user.mobileNumber = '08745468983'//debug check imei user already exist as imei number user 4x
-      vm.getAI(user)
-      vm.checkEmergencyNumber(user.mobileNumber)
-      vm.checkImeiUser(user.mobileNumber)
-      vm.getActivityMailUSer()
-      vm.getAllTypeUserSalary()
-      vm.getAllIndustry()
-      vm.getDanaBalance()
-
       vm.modalUserShow = true
 
       //v-viewer
@@ -574,89 +331,24 @@ export default {
         navbar: false, title: false, fullscreen: false
       }
     },
-    getActivityMailUSer() {
+    openModalUserDetailsV1(user, index) {
       let vm = this;
-      const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
-      axios
-        .post('https://mon.empatkali.co.id/jhon2', {
-          mobileNumber: vm.userDetails.mobileNumber,
-          'detail.email': vm.userDetails.detail.email,
-          'ktp.number': vm.userDetails.ktp.number,
-          npwp: vm.userDetails.npwp,
-          'detail.name': vm.userDetails.detail.name,
-          status: vm.userDetails.status,
-          adminLogin: {
-            _id: tokenAuth._id,
-            email: tokenAuth.email
-          }
-        })
-        .then(res => {
-          vm.logEmail = JSON.parse(res.data.email)
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
+      // reset every time the modal is clicked
+      vm.userDetails = {}
+      vm.note = ''
 
-    },
-    getDanaBalance() {
-      let vm = this
-      const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
-      axios
-        .post('https://mon.empatkali.co.id/jhon', {
-          mobileNumber: vm.userDetails.mobileNumber,
-          'detail.email': vm.userDetails.detail.email,
-          'ktp.number': vm.userDetails.ktp.number,
-          npwp: vm.userDetails.npwp,
-          'detail.name': vm.userDetails.detail.name,
-          status: vm.userDetails.status,
-          adminLogin: {
-            _id: tokenAuth._id,
-            email: tokenAuth.email
-          }
-        })
-        .then(res => {
-          vm.dataPendukung = res.data
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
-    },
-    addCommentReview() {
-      let vm = this;
+      vm.userDetails = user
+      vm.userDetails.index = index
+      vm.modalUserShowV1 = true
 
-      if (vm.commentReviewsText == '') {
-          vm.loader.has = false
-          // vm.$emit('listener', response.data)
-          vm.$swal(
-            'Failed!',
-            'Fill your comment',
-            'error'
-          )
-      } else {
-        axios.post(`api/users/comment-review-status`, {
-          user: vm.userDetails._id,
-          text: vm.commentReviewsText,
-          commentBy: vm.admins.username
-        }, vm.requestedHeaders)
-        .then((response) => {
-          vm.loader.has = false
-          vm.$emit('listener', response.data)
-          vm.$swal(
-            'Success!',
-            'adding comment',
-            'success'
-          )
-          vm.refreshHistoryComment(response.data._id)
-          vm.showUsersPerPage(1)
-          vm.commentReviewsText = ''
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+      //v-viewer
+      vm.ktpViewerOption = {
+        navbar: false, title: false, fullscreen: false
       }
-    },
-    dateTime(date) {
-      return this.$moment(date).format('MMM D YYYY, h:mm:ss a')
+
+      vm.selfieKtpViewerOption = {
+        navbar: false, title: false, fullscreen: false
+      }
     },
 
     /**
@@ -791,6 +483,7 @@ export default {
                   .then(res => {
                     vm.$swal('Success!', 'Email verification has been sent to the user!', 'success')
                     vm.modalUserShow = false
+                    vm.modalUserShowV1 = false
                     // vm.index() // refresh list
                     vm.showUsersPerPage(1) // initial
                   })
@@ -830,6 +523,7 @@ export default {
                   .post('/api/users/reject', rejectUserBodyInput, vm.requestedHeaders)
                   .then(res => {
                     vm.modalUserShow = false
+                    vm.modalUserShowV1 = false
                     // vm.index() // refresh list
                     vm.showUsersPerPage(1) // initial
                     vm.$swal.fire(

@@ -28,7 +28,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-9">
         <table class="table table-hover table-striped tbl-users">
           <thead>
             <tr>
@@ -48,6 +48,7 @@
               </td>
               <td>{{ data.mobileNumber }}</td>
               <td>{{ new Date(data.createdAt) | date }}</td>
+              <td> <button type="button" class="btn btn-secondary btn-sm" name="button" @click="openModalUserDetailsV1(data, index)"> New Dashboard </button> </td>
             </tr>
           </tbody>
         </table>
@@ -82,385 +83,35 @@
       </div>
     </b-modal>
 
-    <!-- <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="95" title="Approved Users"
-      hide-footer
-      no-close-on-esc
-      no-close-on-backdrop>
 
-      <div class="wrapper-approval-decision">
-        <div class="review">
-          <header class="col-12 row" style="padding-right: 0px">
-            <div class="col-6 title">
-              <h4>User Approval Decision</h4>
-            </div>
-            <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
-              <button class="btn btn-warning btn-md px-5" @click="refreshData(userDetails)"> <strong>Refresh</strong> </button>
-            </div>
-          </header>
-          <div class="main">
-            <table style="margin-bottom: -0.7px;" class="table headerTable">
-              <tr>
-                <th style="background-color: black; color: #fff; width: 476px;">Apakah aplikasi user ini baik dan nyata</th>
-                <th style="background-color: black; text-align: center; color: #fff;">Score</th>
-                <th style="background-color: black; text-align: center; color: #fff;">Phone</th>
-                <th style="background-color: black; text-align: center; color: #fff;">KTP OCR</th>
-                <th style="background-color: black; text-align: center; color: #fff;">Tele-ID</th>
-                <th style="background-color: black; text-align: center; color: #fff;">NPWP</th>
-              </tr>
-              <tbody>
-                <tr>
-                  <th>Apakah nama user cocok dengan sumber lain?</th>
-                  <td :style="`background-color: ${ scoreNameMatch.colorScore }; font-weight: bold; text-align: center; width: 149px; color: black;`">{{ scoreNameMatch.score }}%</td>
-                  <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
-                  <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.ocr.data ? advanceAI.ocr.data.name : '-' }} </td>
-                  <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.tele_check.data ? advanceAI.tele_check.data.status_msg : '-' }} </td>
-                  <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;">{{ advanceAI.npwpCheck ? advanceAI.npwpCheck.nama : '-' }}</td>
-                </tr>
-              </tbody>
-            </table>
+    <!-- New Dashboard V1 -->
+    <b-modal v-model="modalUserShowV1" modal-class="modal-pending-steps" size="95" title="Approved Users"
+    no-close-on-esc
+    no-close-on-backdrop
+    hide-footer>
 
-            <div class="wrapper-contet-img">
-              <table class="table table-striped leftSideTable">
-                <tbody>
-                  <tr v-if="advanceAI.face_comparison.data">
-                    <th>Apakah foto selfie user cocok dengan KTP nya?</th>
-                    <td v-if="advanceAI.face_comparison.data.similarity >= 80" style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
-                    <td v-else-if="advanceAI.face_comparison.data.similarity >= 60" style="background-color: yellow; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
-                    <td v-else-if="advanceAI.face_comparison.data.similarity >= 40" style="background-color: red; text-align: center; font-weight: bold; color: black;"> {{ advanceAI.face_comparison.data.similarity }}% Similar</td>
-                  </tr>
-                  <tr v-else>
-                    <th>Apakah foto selfie user cocok dengan KTP nya?</th>
-                    <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;"> - </td>
-                  </tr>
-                  <tr>
-                    <th style="font-size: 14.7px;">Apakah nomor ini terdaftar sebagai kontak darurat user lainnya?</th>
-                    <td :style="`background-color: ${userDetails.checkEmergencyNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkEmergencyNumber ? '#fff' : 'black'};`">
-                      {{ userDetails.checkEmergencyNumber ? 'YES' : 'NO' }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Apakah nomor ini terkait dengan IMEI lainnya?</th>
-                    <td :style="`background-color: ${userDetails.checkImeiUserNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkImeiUserNumber ? '#fff' : 'black'};`"> {{ userDetails.checkImeiUserNumber ? 'YES' : 'NO'  }} </td>
-                  </tr>
-                  <tr>
-                    <th>Wajah serupa terdeteksi dengan NIK yang berbeda?</th>
-                    <td :style="`background-color: ${faceSeacrhResult.length > 0 ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${faceSeacrhResult.length > 0 ? '#fff' : 'black'};`">
-                      {{ faceSeacrhResult.length > 0 ? 'YES' : 'NO' }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Fraud Score</th>
-                    <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td>
-                  </tr>
-                  <tr>
-                    <th style="background-color: black; color: #fff;">Apakah user memiliki riwayat kredit yang buruk</th>
-                    <td style="background-color: black; font-weight: bold; text-align: center; color: #fff;"></td>
-                  </tr>
-                  <tr v-if="multiPlatformResult.queryCount">
-                    <th>Apakah user baru saja mengajukan pinjaman lain?</th>
-                    <td style="background-color: red; font-weight: bold; text-align: center; color: #fff;"> {{ multiPlatformResult.queryCount ? multiPlatformResult.queryCount : '-' }} </td>
-                  </tr>
-                  <tr v-else>
-                    <th>Apakah user baru saja mengajukan pinjaman lain?</th>
-                    <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;">-</td>
-                  </tr>
-                  <tr>
-                    <th>Apakah user mempunyai skor kredit yang baik </th>
-                    <td style="background-color: #70AD47; font-weight: bold; text-align: center; color: black;"> - </td>
-                  </tr>
-                  <tr v-if="advanceAI.blacklist.data">
-                    <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
-                    <td v-if="advanceAI.blacklist.data.defaultListResult.length > 0" style="background-color: red; font-weight: bold; text-align: center; color: black;"> Record Exist</td>
-                    <td v-else style="background-color: #FFC004; font-weight: bold; text-align: center; color: black;"> No Record</td>
-                  </tr>
-                  <tr v-else>
-                    <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
-                    <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td>
-                  </tr>
-                </tbody>
-              </table>
 
-              <div class="imageUser row">
-                <div class="imageKtp" v-viewer="ktpViewerOption">
-                  <img :src="userDetails.ktp ? userDetails.ktp.image : 'https://picsum.photos/id/237/900/900'" alt="">
-                </div>
-                <div class="imageSelfie" v-viewer="selfieKtpViewerOption">
-                  <img :src="userDetails.selfie ? userDetails.selfie : 'https://picsum.photos/id/237/900/900'" alt="">
-                </div>
+    <header class="col-12 row" style="padding-right: 0px">
+      <div class="col-6 title">
+        <h4>User Approval Decision</h4>
+      </div>
+      <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
+        <!-- <button class="btn btn-danger btn-md px-5" @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})"> <strong>Decline</strong> </button> -->
+      </div>
+    </header>
 
-              </div>
-            </div>
-          </div>
+    <user-details-v1 :userDetails="userDetails" status="approved"/>
+
+      <div class="col-12 row" style="margin-top: 20px;">
+        <div class="col-6">
+          <!-- <button class="btn btn-success btn-lg px-5" @click="actionBtn('approve', 'dataApp', {user: userDetails, index: userDetails.index})">Approve</button> -->
         </div>
-
-        <div class="row col-12 other-user-information" style="padding: 14px;">
-          <div class="col-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
-            <div class="user-info-left">
-              <table class="table table-striped">
-                <tr>
-                  <th style="background-color: black; color: #fff; font-size: 13px;">Other User Information</th>
-                  <th style="background-color: black; text-align: center; color: #fff;">KTP</th>
-                </tr>
-                <tbody>
-                  <tr>
-                    <th>Provinsi</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.province : '-' }} </td>
-
-                  </tr>
-                  <tr>
-                    <th>NIK</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.idNumber : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Tempat Tgl Lahir</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.birthPlaceBirthday : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Golongan Darah</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.bloodType : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Alamat</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.address : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>RT</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.rtrw : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Kelurahat</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.village : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Kecamatan</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.district : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Agama</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.religion : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Status Kawin</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.maritalStatus : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Occupation</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.occupation : '-' }} </td>
-                  </tr>
-                  <tr>
-                    <th>Expiry date</th>
-                    <td> {{ advanceAI.ocr.data ? advanceAI.ocr.data.expiryDate : '-' }} </td>
-                  </tr>
-                </tbody>
-              </table>
-              <table class="table table-striped" style="margin-top: 40px;">
-                <tr>
-                  <th style="background-color: black; color: #fff;">From 4X App</th>
-                  <th style="background-color: black; text-align: left; color: #fff;">Data</th>
-                </tr>
-                <tbody>
-                  <tr>
-                    <th>Job</th>
-                    <td class="text-uppercase">{{ userDetails.detail ? userDetails.detail.pekerjaan : '-' }}</td>
-                  </tr>
-                  <tr v-if="userDetails.detail">
-                    <th>Salary</th>
-                    <td class="text-uppercase" :style="`font-size: 13px; background-color: ${customStyleUser.userSalary};`">{{ userDetails.detail.descriptionOfsalary ? userDetails.detail.descriptionOfsalary : '-' }}</td>
-                  </tr>
-                  <tr v-else>
-                    <th>Salary</th>
-                    <td></td>
-                  </tr>
-                  <tr v-if="userDetails.detail">
-                    <th>Industry</th>
-                    <td class="text-uppercase" :style="`background-color: ${userDetails.detail.industri == 'industri2' || userDetails.detail.industri == 'industri7' || userDetails.detail.industri == 'industri11' ? 'orange' : 'none'};`">
-                      {{ userDetails.detail ? userDetails.detail.industri_label : '-' }}
-                    </td>
-                  </tr>
-                  <tr v-else>
-                    <th>Industry</th>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <th>Emergency Contact</th>
-                    <td class="text-uppercase">{{ userDetails.emergencyContact ? userDetails.emergencyContact.name : '-' }}</td>
-                  </tr>
-                  <tr>
-                    <th>Emergency Number</th>
-                    <td class="text-uppercase">{{ userDetails.emergencyContact ? userDetails.emergencyContact.mobileNumber : '-' }}</td>
-                  </tr>
-                  <tr>
-                    <th>Relationship</th>
-                    <td class="text-uppercase">{{ userDetails.emergencyContact ? userDetails.emergencyContact.type : '-' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="user-info-right">
-              <table class="table table-striped">
-                <tr>
-                  <th style="background-color: black; text-align: center; color: #fff;">Subject</th>
-                  <th style="background-color: black; text-align: center; color: #fff;">Status</th>
-                  <th style="background-color: black; text-align: center; color: #fff;">Tanggal</th>
-                </tr>
-                <tbody>
-                  <tr v-for="data in logEmail" :key="data.no">
-                    <td>{{ data.subject }}</td>
-                    <td>{{ data.tipe }}</td>
-                    <td>{{ data.tgl }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="row col-12">
-            </div>
-        </div>
-          <div class="col-5 user-location" style="padding-left: 0px; padding-right: 0px;">
-            <table class="table table-striped" style="margin-bottom: 0px;">
-              <tr>
-                <th style="background-color: black; text-align: center; color: #fff;">Location</th>
-              </tr>
-            </table>
-            <div class="" style="border: 1px solid #C8C8C8; height: 730px; text-align: center;">
-              <h4 style="margin-top: 10px;">First Location Logged in</h4>
-              <div class="map-first" style="height:347px;">
-                <GmapMap
-                  :center="{
-                    lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
-                    lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
-                  }"
-                  :zoom="10"
-                  style="height: 300px"
-                >
-    							<GmapMarker
-    								:position="{
-                      lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
-                      lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
-                  	}"
-    							/>
-                </GmapMap>
-              </div>
-              <div class="map-last" style="height:347px;">
-                <h4>Last Location Logged in</h4>
-                <GmapMap
-                  :center="{
-                    lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
-                    lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
-                  }"
-                  :zoom="10"
-                  style="height: 300px"
-                >
-    							<GmapMarker
-    								:position="{
-    	                lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
-    	                lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
-                  	}"
-    							/>
-                </GmapMap>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="row col-12 payment-info" style="padding: 14px;">
-          <div class="col-12" style="padding-left: 0px; padding-right: 0px;">
-            <table class="table table-striped">
-              <tr>
-                <th style="background-color: black; color: #fff;">Payment Information</th>
-                <th style="background-color: black; text-align: center; color: #fff;"></th>
-                <th style="background-color: black; color: #fff;">Usage Information</th>
-                <th style="background-color: black; text-align: center; color: #fff;"></th>
-              </tr>
-              <tbody>
-                <tr>
-                  <th>Type</th>
-                  <td class="text-capitalize">{{ userDetails.defaultPayment }}</td>
-                  <td>App Sessions</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th>Number</th>
-                  <td>{{ userDetails.mobileNumber }}</td>
-                  <td>Average Sessions Duration</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th>Exp Date</th>
-                  <td>xx-xx-xxxx</td>
-                  <td>Number of times changed email/telephone</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th>Balance</th>
-                  <td>{{ userDetails.credit | currency }}</td>
-                  <td>Number of times generate VA</td>
-                  <td>-</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-
-        <div class="row comments" style="padding: 14px;">
-          <div class="col-12 row" style="padding-left: 0px; padding-right: 0px;">
-            <div class="col-6" style="padding-right: 0px;">
-              <table class="table table-striped" style="text-align: left">
-                <tr>
-                  <th style="background-color: black; color: #fff;"></th>
-                  <th style="background-color: black; color: #fff;">Comments</th>
-                  <th style="background-color: black; color: #fff;"></th>
-                  <th style="background-color: black; color: #fff;"></th>
-                </tr>
-                <tbody>
-
-                </tbody>
-              </table>
-              <textarea disabled class="form-control" id="exampleFormControlTextarea1" rows="9" placeholder="Input comment here..." v-model="commentReviewsText"></textarea>
-            </div>
-            <div class="col-6" style="padding-left: 0px; padding-right: 0px;">
-              <table class="table table-striped" style="margin-bottom: 0px;">
-                <tr>
-                  <th style="background-color: black; text-align: center; color: black;">-</th>
-                  <th style="background-color: black; text-align: center; color: #fff;">History</th>
-                  <th style="background-color: black; text-align: center; color: #fff;">
-                  </th>
-                </tr>
-              </table>
-              <div class="" style="border: 1px solid #C8C8C8; height: 300px;overflow: auto;">
-                <table class="table table-striped">
-                  <tr>
-                    <th style="background-color: grey; color: #fff; text-align: left;">No</th>
-                    <th style="background-color: grey; color: #fff; text-align: left;">Comment</th>
-                    <th style="background-color: grey; color: #fff; text-align: left;">By</th>
-                    <th style="background-color: grey; color: #fff; text-align: center">Datetime</th>
-                  </tr>
-                  <tbody>
-                    <tr v-for="(data, index) in userDetails.commentReviews" :key="index" style="text-align: left;">
-                      <td>{{ index+1 }}</td>
-                      <td style="width: 50%;">{{ data.text }}</td>
-                      <td v-if="data.type == 'cs'" class="text-capitalize font-weight-bold">{{ data.commentBy }}</td>
-                      <td v-if="data.type == 'Davin'" class="text-capitalize font-weight-bold">Sistem</td>
-                      <td style="width: 160px; text-align: center">{{ dateTime(new Date(data.createdAt)) }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="col-12 row" style="margin-top: 20px;">
-              <div class="col-6">
-              </div>
-              <div class="col-6 text-right">
-                <button class="btn btn-dark btn-lg px-5" @click="(modalUserShow=false, userDetails={}, resetAdvanceAi(), actionAdmin('close in review user'))">Close</button>
-              </div>
-            </div>
-          </div>
+        <div class="col-6 text-right">
+          <button class="btn btn-dark btn-lg px-5" @click="(modalUserShowV1=false, actionAdmin('close in review user'))">Close</button>
         </div>
       </div>
 
-    </b-modal> -->
+    </b-modal>
   </div>
 </template>
 
@@ -501,6 +152,7 @@ export default {
       },
 
       modalUserShow: false,
+      modalUserShowV1: false,
       users: {},
       admins: {},
       inputCredit: 0,
@@ -640,282 +292,282 @@ export default {
         })
 
     },
-    refreshData(user) {
-      this.resetAdvanceAi()
-      this.getAI(user)
-      this.checkEmergencyNumber(user.mobileNumber)
-      this.checkImeiUser(user.mobileNumber)
-      this.getActivityMailUSer()
-      this.getAllTypeUserSalary()
-      this.getAllIndustry()
-    },
-    resetAdvanceAi() {
-      this.advanceAI = {
-        blacklist: {},
-        face_blackList: {},
-        face_comparison: {},
-        face_search: {},
-        fraud_score: {},
-        multi_platform: {},
-        tele_check: {},
-        ocr: {},
-        npwpCheck: ''
-      }
-
-      this.faceSeacrhResult = [],
-      this.multiPlatformResult = {},
-
-      this.scoreNameMatch = {
-        score: 0,
-        colorScore: 'red'
-      },
-      this.customStyleUser = {
-        userSalary: '#fff'
-      }
-    },
-    getAI(user) {
-      console.log('dada', user)
-      // debug user id
-      // let UserId = { userid: '5ceac5c88f057759ee805c49' }
-      // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
-      // let UserId = { userid: '5dcbbd079bd8c04f071a9e02' }
-      // let UserId = { userid: '5df0b2f1b9495d52e7d5e676' }
-      let UserId = { userid: user._id }
-
-      axios
-        .post('https://mon.empatkali.co.id/advanceai',
-          UserId
-        )
-        .then(res => {
-
-          if (res.data[0]) {
-            // console.log('res', res.data[0])
-
-            if (res.data[0].blacklist) this.advanceAI.blacklist = JSON.parse(res.data[0].blacklist)
-            if (res.data[0]['face blacklist']) this.advanceAI.face_blackList = JSON.parse(res.data[0]['face blacklist'])
-            if (res.data[0]['face comparison']) this.advanceAI.face_comparison = JSON.parse(res.data[0]['face comparison'])
-            if (res.data[0]['face search']) {
-                this.advanceAI.face_search = JSON.parse(res.data[0]['face search'])
-                this.faceSeacrhResult = this.advanceAI.face_search.data
-            }
-            if (res.data[0]['fraud score']) this.advanceAI.fraud_score = JSON.parse(res.data[0]['fraud score'])
-            if (res.data[0]['multi platform']) {
-              this.advanceAI.multi_platform = JSON.parse(res.data[0]['multi platform'])
-              // this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo
-              this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo.filter(data => data.queryCount <= 20).pop()
-            }
-            if (res.data[0]['tele check']) {
-                this.advanceAI.tele_check = JSON.parse(res.data[0]['tele check'])
-                const statusTeleCheck = this.advanceAI.tele_check.data.status
-                switch (statusTeleCheck) {
-                  case 1:
-                  this.advanceAI.tele_check.data.status_msg = 'Called number has ringer'
-                  break;
-                  case 2:
-                  this.advanceAI.tele_check.data.status_msg = 'Empty Number'
-                  break;
-                  case 3:
-                  this.advanceAI.tele_check.data.status_msg = 'Busy Line'
-                  break;
-                  case 4:
-                  this.advanceAI.tele_check.data.status_msg = 'Powered Off'
-                  break;
-                  case 5:
-                  this.advanceAI.tele_check.data.status_msg = 'Not Available'
-                  break;
-                  case 6:
-                  this.advanceAI.tele_check.data.status_msg = 'Emporarily unable to connect'
-                  break;
-                  case -1:
-                  this.advanceAI.tele_check.data.status_msg = 'Abnormal line, unknown state'
-                  break;
-                  default:
-                }
-            }
-            if (res.data[0].ocr) {
-              this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
-            }
-            if (res.data[0].npwp) {
-              this.advanceAI.npwpCheck = JSON.parse(res.data[0].npwp).data[0]
-              if (this.advanceAI.npwpCheck == undefined) {
-                  this.advanceAI.npwpCheck = { nama: '--' }
-              }
-            }
-
-            let fixName = ''
-            if (this.advanceAI.ocr.data) {
-              fixName = this.advanceAI.ocr.data.name
-              console.log('ocr exist')
-            }
-
-            // if (this.advanceAI.npwpCheck) {
-            //   fixName = this.advanceAI.npwpCheck.nama
-            // }
-
-            console.log('fixName', fixName)
-
-            this.advanceAI.nameMatch = [
-              { data: 'phone', value: 0 },
-              { data: 'nameOcr', value: 0 },
-              { data: 'tele_id', value: 0 },
-              { data: 'nameNpwp', value: 0 }
-            ]
-
-            if (user.detail) {
-              user.detail.name = user.detail.name.trim()
-            }
-
-            console.log('refresh', user)
-
-            const dataNameToBeCompare = {
-              phone: user.detail.name.toUpperCase(),
-              nameOcr: this.advanceAI.ocr.data ? this.advanceAI.ocr.data.name.toUpperCase() : '-',
-              // tele_id: this.advanceAI.tele_check.data.name ? this.advanceAI.tele_check.data.name.toUpperCase() : this.advanceAI.tele_check.data.name = '-',
-              nameNpwp: this.advanceAI.npwpCheck ? this.advanceAI.npwpCheck.nama.toUpperCase() : '--'
-            }
-
-            console.log('npwp', dataNameToBeCompare.nameNpwp)
-
-            // dataNameToBeCompare.nameOcr = 'JAKA SUNTARA' //debug name similar
-            //condition to match all name
-            if (fixName == dataNameToBeCompare.phone) {
-              this.advanceAI.nameMatch[0].value = 33
-              console.log('=> phone')
-            }
-            if (fixName == dataNameToBeCompare.nameOcr) {
-              this.advanceAI.nameMatch[1].value = 33
-              console.log('=> nameOcr')
-            }
-            // if (fixName == dataNameToBeCompare.tele_id) this.advanceAI.nameMatch[2].value = 25
-
-            if (fixName == dataNameToBeCompare.nameNpwp) {
-              if (fixName != '--') {
-                this.advanceAI.nameMatch[3].value = 33
-                console.log('=> nameNpwp')
-              }
-            }
-
-            console.log('dataNameToBeCompare', dataNameToBeCompare)
-
-            const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
-              return sum + data.value;
-            }, 0);
-
-            this.scoreNameMatch.score = sumScoreNameMatch(this.advanceAI.nameMatch)
-
-            if (this.scoreNameMatch.score >= 80) {
-              this.scoreNameMatch.colorScore = '#70AD47'
-            }
-            else if (this.scoreNameMatch.score >= 60) {
-              this.scoreNameMatch.colorScore = 'yellow'
-            }
-            else {
-              this.scoreNameMatch.colorScore = 'red'
-            }
-
-            console.log('colorScore', this.scoreNameMatch)
-            console.log('advanceAI', this.advanceAI)
-            console.log('userDetails', this.userDetails)
-          }
-          else {
-            console.log('advanceAI', 'data null')
-          }
-
-        })
-        .catch(err => {
-          console.log(err.res)
-        })
-    },
-    getNpwp(params) {
-      let vm = this;
-
-      axios.get(`/api/users/npwpname/${params}`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          vm.userDetails.nameOfNpwp = response.data.data[0]
-          console.log('haha', vm.userDetails)
-        }
-
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-
-    },
-    checkEmergencyNumber(params) {
-      let vm = this;
-
-      axios.get(`api/users/checkemergencyphone?mn=${params}`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          vm.userDetails.checkEmergencyNumber = response.data.data
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-    },
-    checkImeiUser(params) {
-      let vm = this;
-
-      axios.get(`api/users/checkuserimei?mn=${params}`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          vm.userDetails.checkImeiUserNumber = response.data.data
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-    },
-    getAllTypeUserSalary() {
-      let vm = this;
-
-      axios.get(`api/usersalary`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
-          let userSalary = vm.userDetails.detail.penghasilan
-          // userSalary = 'gol3' //debug userSalary
-          let findSalary = response.data.filter(data => data.type == userSalary)
-          if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
-            vm.customStyleUser.userSalary = 'orange'
-          }
-          vm.userDetails.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-    },
-    getAllIndustry() {
-      // Industry
-			fetch('__tmp-files/industry.json')
-			  .then(resp => resp.json()) // Transform the data into JSON
-			  .then(resIndustry => {
-          if (this.userDetails.detail) {
-            // this.userDetails.detail.industri = 'industri11' //debug industry
-            let findIndustry = resIndustry.filter(data => data._id == this.userDetails.detail.industri)
-            this.userDetails.detail.industri_label = findIndustry[0].label
-            console.log('userDetails', this.userDetails.detail.industri_label)
-          }
-			  })
-    },
+    // refreshData(user) {
+    //   this.resetAdvanceAi()
+    //   this.getAI(user)
+    //   this.checkEmergencyNumber(user.mobileNumber)
+    //   this.checkImeiUser(user.mobileNumber)
+    //   this.getActivityMailUSer()
+    //   this.getAllTypeUserSalary()
+    //   this.getAllIndustry()
+    // },
+    // resetAdvanceAi() {
+    //   this.advanceAI = {
+    //     blacklist: {},
+    //     face_blackList: {},
+    //     face_comparison: {},
+    //     face_search: {},
+    //     fraud_score: {},
+    //     multi_platform: {},
+    //     tele_check: {},
+    //     ocr: {},
+    //     npwpCheck: ''
+    //   }
+    //
+    //   this.faceSeacrhResult = [],
+    //   this.multiPlatformResult = {},
+    //
+    //   this.scoreNameMatch = {
+    //     score: 0,
+    //     colorScore: 'red'
+    //   },
+    //   this.customStyleUser = {
+    //     userSalary: '#fff'
+    //   }
+    // },
+    // getAI(user) {
+    //   console.log('dada', user)
+    //   // debug user id
+    //   // let UserId = { userid: '5ceac5c88f057759ee805c49' }
+    //   // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
+    //   // let UserId = { userid: '5dcbbd079bd8c04f071a9e02' }
+    //   // let UserId = { userid: '5df0b2f1b9495d52e7d5e676' }
+    //   let UserId = { userid: user._id }
+    //
+    //   axios
+    //     .post('https://mon.empatkali.co.id/advanceai',
+    //       UserId
+    //     )
+    //     .then(res => {
+    //
+    //       if (res.data[0]) {
+    //         // console.log('res', res.data[0])
+    //
+    //         if (res.data[0].blacklist) this.advanceAI.blacklist = JSON.parse(res.data[0].blacklist)
+    //         if (res.data[0]['face blacklist']) this.advanceAI.face_blackList = JSON.parse(res.data[0]['face blacklist'])
+    //         if (res.data[0]['face comparison']) this.advanceAI.face_comparison = JSON.parse(res.data[0]['face comparison'])
+    //         if (res.data[0]['face search']) {
+    //             this.advanceAI.face_search = JSON.parse(res.data[0]['face search'])
+    //             this.faceSeacrhResult = this.advanceAI.face_search.data
+    //         }
+    //         if (res.data[0]['fraud score']) this.advanceAI.fraud_score = JSON.parse(res.data[0]['fraud score'])
+    //         if (res.data[0]['multi platform']) {
+    //           this.advanceAI.multi_platform = JSON.parse(res.data[0]['multi platform'])
+    //           // this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo
+    //           this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo.filter(data => data.queryCount <= 20).pop()
+    //         }
+    //         if (res.data[0]['tele check']) {
+    //             this.advanceAI.tele_check = JSON.parse(res.data[0]['tele check'])
+    //             const statusTeleCheck = this.advanceAI.tele_check.data.status
+    //             switch (statusTeleCheck) {
+    //               case 1:
+    //               this.advanceAI.tele_check.data.status_msg = 'Called number has ringer'
+    //               break;
+    //               case 2:
+    //               this.advanceAI.tele_check.data.status_msg = 'Empty Number'
+    //               break;
+    //               case 3:
+    //               this.advanceAI.tele_check.data.status_msg = 'Busy Line'
+    //               break;
+    //               case 4:
+    //               this.advanceAI.tele_check.data.status_msg = 'Powered Off'
+    //               break;
+    //               case 5:
+    //               this.advanceAI.tele_check.data.status_msg = 'Not Available'
+    //               break;
+    //               case 6:
+    //               this.advanceAI.tele_check.data.status_msg = 'Emporarily unable to connect'
+    //               break;
+    //               case -1:
+    //               this.advanceAI.tele_check.data.status_msg = 'Abnormal line, unknown state'
+    //               break;
+    //               default:
+    //             }
+    //         }
+    //         if (res.data[0].ocr) {
+    //           this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
+    //         }
+    //         if (res.data[0].npwp) {
+    //           this.advanceAI.npwpCheck = JSON.parse(res.data[0].npwp).data[0]
+    //           if (this.advanceAI.npwpCheck == undefined) {
+    //               this.advanceAI.npwpCheck = { nama: '--' }
+    //           }
+    //         }
+    //
+    //         let fixName = ''
+    //         if (this.advanceAI.ocr.data) {
+    //           fixName = this.advanceAI.ocr.data.name
+    //           console.log('ocr exist')
+    //         }
+    //
+    //         // if (this.advanceAI.npwpCheck) {
+    //         //   fixName = this.advanceAI.npwpCheck.nama
+    //         // }
+    //
+    //         console.log('fixName', fixName)
+    //
+    //         this.advanceAI.nameMatch = [
+    //           { data: 'phone', value: 0 },
+    //           { data: 'nameOcr', value: 0 },
+    //           { data: 'tele_id', value: 0 },
+    //           { data: 'nameNpwp', value: 0 }
+    //         ]
+    //
+    //         if (user.detail) {
+    //           user.detail.name = user.detail.name.trim()
+    //         }
+    //
+    //         console.log('refresh', user)
+    //
+    //         const dataNameToBeCompare = {
+    //           phone: user.detail.name.toUpperCase(),
+    //           nameOcr: this.advanceAI.ocr.data ? this.advanceAI.ocr.data.name.toUpperCase() : '-',
+    //           // tele_id: this.advanceAI.tele_check.data.name ? this.advanceAI.tele_check.data.name.toUpperCase() : this.advanceAI.tele_check.data.name = '-',
+    //           nameNpwp: this.advanceAI.npwpCheck ? this.advanceAI.npwpCheck.nama.toUpperCase() : '--'
+    //         }
+    //
+    //         console.log('npwp', dataNameToBeCompare.nameNpwp)
+    //
+    //         // dataNameToBeCompare.nameOcr = 'JAKA SUNTARA' //debug name similar
+    //         //condition to match all name
+    //         if (fixName == dataNameToBeCompare.phone) {
+    //           this.advanceAI.nameMatch[0].value = 33
+    //           console.log('=> phone')
+    //         }
+    //         if (fixName == dataNameToBeCompare.nameOcr) {
+    //           this.advanceAI.nameMatch[1].value = 33
+    //           console.log('=> nameOcr')
+    //         }
+    //         // if (fixName == dataNameToBeCompare.tele_id) this.advanceAI.nameMatch[2].value = 25
+    //
+    //         if (fixName == dataNameToBeCompare.nameNpwp) {
+    //           if (fixName != '--') {
+    //             this.advanceAI.nameMatch[3].value = 33
+    //             console.log('=> nameNpwp')
+    //           }
+    //         }
+    //
+    //         console.log('dataNameToBeCompare', dataNameToBeCompare)
+    //
+    //         const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
+    //           return sum + data.value;
+    //         }, 0);
+    //
+    //         this.scoreNameMatch.score = sumScoreNameMatch(this.advanceAI.nameMatch)
+    //
+    //         if (this.scoreNameMatch.score >= 80) {
+    //           this.scoreNameMatch.colorScore = '#70AD47'
+    //         }
+    //         else if (this.scoreNameMatch.score >= 60) {
+    //           this.scoreNameMatch.colorScore = 'yellow'
+    //         }
+    //         else {
+    //           this.scoreNameMatch.colorScore = 'red'
+    //         }
+    //
+    //         console.log('colorScore', this.scoreNameMatch)
+    //         console.log('advanceAI', this.advanceAI)
+    //         console.log('userDetails', this.userDetails)
+    //       }
+    //       else {
+    //         console.log('advanceAI', 'data null')
+    //       }
+    //
+    //     })
+    //     .catch(err => {
+    //       console.log(err.res)
+    //     })
+    // },
+    // getNpwp(params) {
+    //   let vm = this;
+    //
+    //   axios.get(`/api/users/npwpname/${params}`, vm.requestedHeaders)
+    //   .then(function (response) {
+    //     if (response) {
+    //       vm.userDetails.nameOfNpwp = response.data.data[0]
+    //       console.log('haha', vm.userDetails)
+    //     }
+    //
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   })
+    //
+    // },
+    // checkEmergencyNumber(params) {
+    //   let vm = this;
+    //
+    //   axios.get(`api/users/checkemergencyphone?mn=${params}`, vm.requestedHeaders)
+    //   .then(function (response) {
+    //     if (response) {
+    //       vm.userDetails.checkEmergencyNumber = response.data.data
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   })
+    // },
+    // checkImeiUser(params) {
+    //   let vm = this;
+    //
+    //   axios.get(`api/users/checkuserimei?mn=${params}`, vm.requestedHeaders)
+    //   .then(function (response) {
+    //     if (response) {
+    //       vm.userDetails.checkImeiUserNumber = response.data.data
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   })
+    // },
+    // getAllTypeUserSalary() {
+    //   let vm = this;
+    //
+    //   axios.get(`api/usersalary`, vm.requestedHeaders)
+    //   .then(function (response) {
+    //     if (response) {
+    //       let userSalary = vm.userDetails.detail.penghasilan
+    //       // userSalary = 'gol3' //debug userSalary
+    //       let findSalary = response.data.filter(data => data.type == userSalary)
+    //       if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
+    //         vm.customStyleUser.userSalary = 'orange'
+    //       }
+    //       vm.userDetails.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   })
+    // },
+    // getAllIndustry() {
+    //   // Industry
+		// 	fetch('__tmp-files/industry.json')
+		// 	  .then(resp => resp.json()) // Transform the data into JSON
+		// 	  .then(resIndustry => {
+    //       if (this.userDetails.detail) {
+    //         // this.userDetails.detail.industri = 'industri11' //debug industry
+    //         let findIndustry = resIndustry.filter(data => data._id == this.userDetails.detail.industri)
+    //         this.userDetails.detail.industri_label = findIndustry[0].label
+    //         console.log('userDetails', this.userDetails.detail.industri_label)
+    //       }
+		// 	  })
+    // },
     openModalUserDetails(user, index) {
       let vm = this;
       // reset every time the modal is clicked
       vm.userDetails = {}
-      // vm.note = ''
+      vm.note = ''
 
       vm.userDetails = user
       vm.userDetails.index = index
       // user.mobileNumber = '087769675686'//debug mobileNumber already exist as user 4x, check Emergency Number
       // user.mobileNumber = '08745468983'//debug check imei user already exist as imei number user 4x
-      vm.getAI(user)
-      vm.checkEmergencyNumber(user.mobileNumber)
-      vm.checkImeiUser(user.mobileNumber)
-      vm.getActivityMailUSer()
-      vm.getAllTypeUserSalary()
-      vm.getAllIndustry()
+      // vm.getAI(user)
+      // vm.checkEmergencyNumber(user.mobileNumber)
+      // vm.checkImeiUser(user.mobileNumber)
+      // vm.getActivityMailUSer()
+      // vm.getAllTypeUserSalary()
+      // vm.getAllIndustry()
 
       vm.modalUserShow = true
 
@@ -928,68 +580,87 @@ export default {
         navbar: false, title: false, fullscreen: false
       }
     },
-    getActivityMailUSer() {
+    openModalUserDetailsV1(user, index) {
       let vm = this;
-      const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
-      axios
-        .post('https://mon.empatkali.co.id/jhon2', {
-          mobileNumber: vm.userDetails.mobileNumber,
-          'detail.email': vm.userDetails.detail.email,
-          'ktp.number': vm.userDetails.ktp.number,
-          npwp: vm.userDetails.npwp,
-          'detail.name': vm.userDetails.detail.name,
-          status: vm.userDetails.status,
-          adminLogin: {
-            _id: tokenAuth._id,
-            email: tokenAuth.email
-          }
-        })
-        .then(res => {
-          vm.logEmail = JSON.parse(res.data.email)
-          console.log('vm.logEmail', vm.logEmail[0])
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
+      // reset every time the modal is clicked
+      vm.userDetails = {}
+      vm.note = ''
 
-    },
-    addCommentReview() {
-      let vm = this;
+      vm.userDetails = user
+      vm.userDetails.index = index
+      vm.modalUserShowV1 = true
 
-      if (vm.commentReviewsText == '') {
-          vm.loader.has = false
-          // vm.$emit('listener', response.data)
-          vm.$swal(
-            'Failed!',
-            'Fill your comment',
-            'error'
-          )
-      } else {
-        axios.post(`api/users/comment-review-status`, {
-          user: vm.userDetails._id,
-          text: vm.commentReviewsText,
-          commentBy: vm.admins.username
-        }, vm.requestedHeaders)
-        .then((response) => {
-          vm.loader.has = false
-          vm.$emit('listener', response.data)
-          vm.$swal(
-            'Success!',
-            'adding comment',
-            'success'
-          )
-          vm.refreshHistoryComment(response.data._id)
-          vm.showUsersPerPage(1)
-          vm.commentReviewsText = ''
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+      //v-viewer
+      vm.ktpViewerOption = {
+        navbar: false, title: false, fullscreen: false
+      }
+
+      vm.selfieKtpViewerOption = {
+        navbar: false, title: false, fullscreen: false
       }
     },
-    dateTime(date) {
-      return this.$moment(date).format('MMM D YYYY, h:mm:ss a')
-    },
+    // getActivityMailUSer() {
+    //   let vm = this;
+    //   const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
+    //   axios
+    //     .post('https://mon.empatkali.co.id/jhon2', {
+    //       mobileNumber: vm.userDetails.mobileNumber,
+    //       'detail.email': vm.userDetails.detail.email,
+    //       'ktp.number': vm.userDetails.ktp.number,
+    //       npwp: vm.userDetails.npwp,
+    //       'detail.name': vm.userDetails.detail.name,
+    //       status: vm.userDetails.status,
+    //       adminLogin: {
+    //         _id: tokenAuth._id,
+    //         email: tokenAuth.email
+    //       }
+    //     })
+    //     .then(res => {
+    //       vm.logEmail = JSON.parse(res.data.email)
+    //       console.log('vm.logEmail', vm.logEmail[0])
+    //     })
+    //     .catch(err => {
+    //       console.log(err.response)
+    //     })
+    //
+    // },
+    // addCommentReview() {
+    //   let vm = this;
+    //
+    //   if (vm.commentReviewsText == '') {
+    //       vm.loader.has = false
+    //       // vm.$emit('listener', response.data)
+    //       vm.$swal(
+    //         'Failed!',
+    //         'Fill your comment',
+    //         'error'
+    //       )
+    //   } else {
+    //     axios.post(`api/users/comment-review-status`, {
+    //       user: vm.userDetails._id,
+    //       text: vm.commentReviewsText,
+    //       commentBy: vm.admins.username
+    //     }, vm.requestedHeaders)
+    //     .then((response) => {
+    //       vm.loader.has = false
+    //       vm.$emit('listener', response.data)
+    //       vm.$swal(
+    //         'Success!',
+    //         'adding comment',
+    //         'success'
+    //       )
+    //       vm.refreshHistoryComment(response.data._id)
+    //       vm.showUsersPerPage(1)
+    //       vm.commentReviewsText = ''
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     })
+    //   }
+    // },
+    // dateTime(date) {
+    //   return this.$moment(date).format('MMM D YYYY, h:mm:ss a')
+    // },
 
     /**
      * Total Count
@@ -1283,27 +954,26 @@ export default {
     background-color: #F2F2F2;
     border: 1px solid black;
 
+    header {
+      background-color: #4372C7;
+      margin-left: 0px;
+      color: #fff;
+
+      .title {
+        padding-top: 10px;
+      }
+    }
+
+    .buttonRight {
+      button {
+        margin-left: 20px;
+      }
+    }
+
     .wrapper-approval-decision {
 
         .review {
           // border: 1px solid black;
-
-          header {
-            background-color: #4372C7;
-            margin-left: 0px;
-            color: #fff;
-
-            .title {
-              padding-top: 10px;
-            }
-          }
-
-          .buttonRight {
-            button {
-              margin-left: 20px;
-            }
-          }
-
           .main {
             // border: 1px solid black;
             margin-left: 0px;
@@ -1430,6 +1100,21 @@ export default {
 
       //handle big screen min-width 1500px
       @media (min-width: 1800px) {
+        header {
+          background-color: #4372C7;
+          margin-left: 0px;
+          color: #fff;
+
+          .title {
+            padding-top: 10px;
+          }
+        }
+
+        .buttonRight {
+          button {
+            margin-left: 20px;
+          }
+        }
         .wrapper-approval-decision {
 
           .review {
@@ -1485,9 +1170,9 @@ export default {
 
                 .imageUser {
                   text-align: center;
-                  width: 708px;
+                  width: 60%;
                   float: none;
-                  padding: 10px 10px 10px 10px;
+                  padding: 10px 10px 10px 220px;
                   // background-color: #F2F2F2;
 
                   .imageKtp {

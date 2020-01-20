@@ -14,8 +14,8 @@
           </tr>
           <tbody>
             <tr>
-              <th>Apakah nama user cocok dengan sumber lain?</th>
-              <td :style="`background-color: ${ scoreNameMatch.colorScore }; font-weight: bold; text-align: center; width: 149px; color: black;`">{{ scoreNameMatch.score }}%</td>
+              <th class="customTh">Apakah nama user cocok dengan sumber lain?</th>
+              <td class="customTd" :style="`background-color: ${ scoreNameMatch.colorScore }; font-weight: bold; text-align: center; color: black;`">{{ scoreNameMatch.score }}%</td>
               <!-- <td :style="`background-color: #70AD47; font-weight: bold; text-align: center; width: 149px; color: black;`">-</td> -->
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.ocr.data ? advanceAI.ocr.data.name : '-' }} </td>
@@ -43,7 +43,9 @@
               <tr>
                 <th style="font-size: 14.7px;">Apakah nomor ini terdaftar sebagai kontak darurat user lainnya?</th>
                 <td :style="`background-color: ${userDetails.checkEmergencyNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkEmergencyNumber ? '#fff' : 'black'};`">
-                  {{ userDetails.checkEmergencyNumber ? 'YES' : 'NO' }}
+                  <!-- {{ userDetails.checkEmergencyNumber ? 'YES' : 'NO' }} -->
+                  <span v-if="userDetails.checkEmergencyNumber" @click="showResultCheckEmergency()" style="cursor: pointer;">YES</span>
+                  <span v-else>NO</span>
                 </td>
               </tr>
               <tr>
@@ -69,7 +71,7 @@
               </tr>
               <tr v-if="multiPlatformResult.queryCount">
                 <th>Apakah user baru saja mengajukan pinjaman lain?</th>
-                <td :style="`background-color: ${customStyleUser.multiPlatform}; font-weight: bold; text-align: center; color: black;`"> {{ multiPlatformResult.queryCount ? multiPlatformResult.queryCount : '-' }} </td>
+                <td :style="`background-color: ${customStyleUser.multiPlatform.bgColor}; font-weight: bold; text-align: center; color: ${customStyleUser.multiPlatform.colorText};`"> {{ multiPlatformResult.queryCount ? multiPlatformResult.queryCount : '-' }} </td>
               </tr>
               <tr v-else>
                 <th>Apakah user baru saja mengajukan pinjaman lain?</th>
@@ -105,8 +107,8 @@
       </div>
     </div>
 
-    <div class="row col-12 other-user-information" style="padding: 14px;">
-      <div class="col-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
+    <div class="row col-xl-12 other-user-information" style="padding: 14px;">
+      <div class="col-xl-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
         <div class="user-info-left">
           <table class="table table-striped">
             <tr>
@@ -192,7 +194,7 @@
               </tr>
               <tr v-if="userDetails.detail">
                 <th>Usia</th>
-                <td class="text-uppercase">{{
+                <td class="text-uppercase" :style="`background-color:${customStyleUser.age}`">{{
                   userDetails.detail ?
                     Math.abs(new Date(Date.now() - new Date(userDetails.detail.birthdate).getTime()).getUTCFullYear() - 1970) + ' Tahun'
                     : '---'
@@ -253,10 +255,11 @@
           </table>
         </div>
         <div class="row col-12">
-          <!-- <button class="btn btn-secondary btn-block btn-lg" disabled>Resend Contract</button> -->
+          <button class="col-6 btn btn-secondary btn-lg" @click="resendEmail('verification')" style="margin-right: 35px;">Resend Verification Email</button>
+          <button class="col-5 btn btn-secondary btn-lg" @click="resendEmail('contract')">Resend Contract</button>
         </div>
     </div>
-      <div class="col-5 user-location" style="padding-left: 0px; padding-right: 0px;">
+      <div class="col-xl-5 user-location" style="padding-left: 0px; padding-right: 0px;">
         <table class="table table-striped" style="margin-bottom: 0px;">
           <tr>
             <th style="background-color: black; text-align: center; color: #fff;">Location</th>
@@ -474,6 +477,35 @@
             <button class="btn btn-dark btn-lg px-5" @click="(modalUserShow=false, userDetails={}, resetAdvanceAi(), actionAdmin('close in review user'))">Close</button>
           </div>
         </div> -->
+
+        <b-modal v-model="modalCheckLIstEmergency" modal-class="modal-pending-steps" size="80" title="Checklist of Emergency Contact"
+        no-close-on-esc
+        no-close-on-backdrop
+        hide-footer>
+
+
+        <header class="col-12 row" style="padding-right: 0px">
+          <div class="col-6 title">
+
+          </div>
+          <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
+
+          </div>
+        </header>
+
+        <div class="">
+          <ul>
+            <li v-for="data in userDetails.listOfCheckEmergencyNumber"> <span class="text-capitalize">{{ data.detail.name }}</span> - {{ data.mobileNumber }}</li>
+          </ul>
+        </div>
+
+          <div class="col-12 row" style="margin-top: 20px;">
+
+          </div>
+
+        </b-modal>
+
+
       </div>
     </div>
   </div>
@@ -513,6 +545,7 @@ export default {
       },
 
       modalUserShow: false,
+      modalCheckLIstEmergency: false,
       users: {},
       admins: {},
       inputCredit: 0,
@@ -561,7 +594,11 @@ export default {
       },
       customStyleUser: {
         userSalary: '#fff',
-        multiPlatform: '#70AD47',
+        multiPlatform: {
+          bgColor: '#70AD47',
+          colorText: 'black'
+        },
+        age: '',
         trusting_social: {
           bgColor: '#FFC004',
           colorText: 'black'
@@ -580,7 +617,7 @@ export default {
     console.log('status', this.status)
     this.getAdmin()
     this.getAI(this.userDetails)
-    this.checkEmergencyNumber(this.userDetails.mobileNumber)
+    this.checkEmergencyNumber(this.userDetails._id)
     this.checkImeiUser(this.userDetails.mobileNumber)
     this.getActivityMailUSer()
     this.getAllTypeUserSalary()
@@ -643,7 +680,7 @@ export default {
     refreshData(user) {
       // this.resetAdvanceAi()
       this.getAI(user)
-      this.checkEmergencyNumber(user.mobileNumber)
+      this.checkEmergencyNumber(user._id)
       this.checkImeiUser(user.mobileNumber)
       this.getActivityMailUSer()
       this.getAllTypeUserSalary()
@@ -674,6 +711,77 @@ export default {
       },
       this.customStyleUser = {
         userSalary: '#fff'
+      }
+    },
+    resendEmail(src) {
+      let vm = this
+
+      if (src == 'contract') {
+        vm.$swal.fire({
+          title: 'Are you sure?',
+          text: "Resend Email Contract",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#5EB96C',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Resend Email Contract!'
+        }).then((result) => {
+          if (result.value) {
+
+            alert(src)
+
+            // let activateUserBodyInput = {
+            //   user: data.user._id,
+            //   description: vm.note
+            // }
+
+          // axios
+          //   .post('/api/users/activatinguser', activateUserBodyInput, vm.requestedHeaders)
+          //   .then(res => {
+          //     vm.$swal('Success!', 'Email verification has been sent to the user!', 'success')
+          //     vm.modalUserShow = false
+          //     vm.modalUserShowV1 = false
+          //     // vm.index() // refresh list
+          //     vm.showUsersPerPage(1) // initial
+          //   })
+          //   .catch(err => {
+          //     vm.$swal('Error!', err.response.data.message, 'error')
+          //   })
+          }
+        })
+      }
+      else if (src == 'verification') {
+        vm.$swal.fire({
+          title: 'Are you sure?',
+          text: "Resend Email Verification",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#5EB96C',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Resend Email Verification!'
+        }).then((result) => {
+          if (result.value) {
+            alert(src)
+            //
+            // let activateUserBodyInput = {
+            //   user: data.user._id,
+            //   description: vm.note
+            // }
+
+          // axios
+          //   .post('/api/users/activatinguser', activateUserBodyInput, vm.requestedHeaders)
+          //   .then(res => {
+          //     vm.$swal('Success!', 'Email verification has been sent to the user!', 'success')
+          //     vm.modalUserShow = false
+          //     vm.modalUserShowV1 = false
+          //     // vm.index() // refresh list
+          //     vm.showUsersPerPage(1) // initial
+          //   })
+          //   .catch(err => {
+          //     vm.$swal('Error!', err.response.data.message, 'error')
+          //   })
+          }
+        })
       }
     },
     getAI(user) {
@@ -770,6 +878,10 @@ export default {
 
             if (user.detail) {
               user.detail.name = user.detail.name.trim()
+              const getAge = Math.abs(new Date(Date.now() - new Date(user.detail.birthdate).getTime()).getUTCFullYear() - 1970)
+              if (getAge < 21) {
+                this.customStyleUser.age = 'orange'
+              }
             }
 
 
@@ -872,7 +984,8 @@ export default {
                 // this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo.filter(data => data.queryCount <= 20).pop()
                 console.log('result multiPlatformResult', this.multiPlatformResult)
                 if (this.multiPlatformResult.queryCount > 20) {
-                  this.customStyleUser.multiPlatform = 'red'
+                  this.customStyleUser.multiPlatform.bgColor = 'red'
+                  this.customStyleUser.multiPlatform.colorText = '#fff'
                 }
               }
 
@@ -941,13 +1054,24 @@ export default {
       })
 
     },
+    showResultCheckEmergency() {
+      let vm = this
+      vm.modalCheckLIstEmergency = true
+      console.log('check', vm.userDetails.listOfCheckEmergencyNumber)
+    },
     checkEmergencyNumber(params) {
       let vm = this;
 
-      axios.get(`api/users/checkemergencyphone?mn=${params}`, vm.requestedHeaders)
+      // axios.get(`api/users/checkemergencyphone?mn=${params}`, vm.requestedHeaders)
+      axios.get(`api/users/${params}`, vm.requestedHeaders)
       .then(function (response) {
         if (response) {
-          vm.userDetails.checkEmergencyNumber = response.data.data
+          if (response.data.isUsedAsEmergencyContact.length > 0) {
+            console.log('checkEmergencyNumber', response.data)
+            vm.userDetails.checkEmergencyNumber = true
+            vm.userDetails.listOfCheckEmergencyNumber = response.data.isUsedAsEmergencyContact
+          }
+          // vm.userDetails.checkEmergencyNumber = response.data.data
         }
       })
       .catch(function (error) {
@@ -1167,6 +1291,10 @@ export default {
                 padding: 4px 4px 4px 8px !important;
                 margin: 0 !important;
               }
+              .customTd {
+                // width: 20%;
+                width: 136px;
+              }
             }
 
             .wrapper-contet-img {
@@ -1195,7 +1323,7 @@ export default {
                 width: 708px;
                 float: right;
                 padding: 10px 10px 10px 10px;
-                // background-color: #F2F2F2;
+                background-color: aliceblue;
 
                 .imageKtp {
                   img {
@@ -1313,6 +1441,13 @@ export default {
                   padding: 4px 4px 4px 8px !important;
                   margin: 0 !important;
                 }
+                .customTh {
+                  width: 37.2%;
+                }
+                .customTd {
+                  width: 12.5%;
+                  // width: 149px;
+                }
               }
 
               .wrapper-contet-img {
@@ -1321,13 +1456,18 @@ export default {
                 // clear: both;
 
                 .leftSideTable {
-                  width: 625px;
+                  width: 50%;
                   float: left;
 
-                  tr, th {
-                    width: 477px;
+                  td {
+                    width: 25%;
                     // padding: 0px 0px 0px 8px !important;
                     // margin: 0 !important;
+                  }
+
+                  th {
+                    width: 75%;
+
                   }
 
                   tr, th, td {
@@ -1338,10 +1478,14 @@ export default {
 
                 .imageUser {
                   text-align: center;
-                  width: 60%;
+                  width: 50%;
                   float: none;
-                  padding: 10px 10px 10px 220px;
-                  // background-color: #F2F2F2;
+                  padding: 10px 10px 10px 110px;
+                  background-color: aliceblue;
+
+                  @media (min-width: 2500px) {
+                    padding: 10px 10px 10px 205px;
+                  }
 
                   .imageKtp {
                     img {
@@ -1368,7 +1512,7 @@ export default {
 
           .other-user-information {
             .user-info-left {
-              width: 510px;
+              width: 50%;
               float: left;
               tr, th, td {
                 padding: 4px 4px 4px 8px !important;
@@ -1379,7 +1523,7 @@ export default {
               }
             }
             .user-info-right {
-              width: 473px;
+              width: 50%;
               float: left;
               tbody tr td {
                 text-align: center;

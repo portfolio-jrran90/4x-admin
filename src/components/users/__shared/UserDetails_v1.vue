@@ -255,8 +255,8 @@
           </table>
         </div>
         <div class="row col-12">
-          <button class="col-6 btn btn-secondary btn-lg" @click="resendEmail('verification')" style="margin-right: 35px;">Resend Verification Email</button>
-          <button class="col-5 btn btn-secondary btn-lg" @click="resendEmail('contract')">Resend Contract</button>
+          <!-- <button class="col-6 btn btn-secondary btn-lg" @click="resendEmail('verification')" style="margin-right: 35px;">Resend Verification Email</button>
+          <button class="col-5 btn btn-secondary btn-lg" @click="resendEmail('contract')">Resend Contract</button> -->
         </div>
     </div>
       <div class="col-xl-5 user-location" style="padding-left: 0px; padding-right: 0px;">

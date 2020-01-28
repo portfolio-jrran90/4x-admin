@@ -48,6 +48,9 @@
                       <font-awesome-icon icon="user-slash" size="sm" />
                     </a>
                   </li>
+                  <li class="list-inline-item">
+                    <button type="button" class="btn btn-secondary btn-sm" name="button" @click="openModalUserDetailsV1(data, index)"> New Dashboard </button>
+                  </li>
                 </ul>
               </td>
 
@@ -163,6 +166,31 @@
       <user-details :user="userDetails" status="freeze"></user-details>
 
     </b-modal>
+
+    <b-modal v-model="modalUserShowV1" modal-class="modal-pending-steps" size="95" title="[Freeze] User Detail"
+    no-close-on-esc
+    no-close-on-backdrop
+    hide-footer>
+
+    <header class="col-12 row" style="padding-right: 0px">
+      <div class="col-6 title">
+        <h4>User Approval Decision</h4>
+      </div>
+      <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
+        <!-- <button class="btn btn-warning btn-md px-5" @click="refreshData(userDetails)"> <strong>Refresh</strong> </button> -->
+        <!-- <button class="btn btn-danger btn-md px-5" @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})"> <strong>Decline</strong> </button> -->
+      </div>
+    </header>
+
+    <user-details-v1 :userDetails="userDetails" status="freeze"/>
+
+      <div class="col-12 row" style="margin-top: 20px;">
+        <div class="col-12 text-right">
+          <button class="btn btn-dark btn-lg px-5" @click="(modalUserShowV1=false, actionAdmin('close in freeze user'))">Close</button>
+        </div>
+      </div>
+
+    </b-modal>
   </div>
 </template>
 
@@ -210,6 +238,7 @@ export default {
         data: {}
       },
       modalUserTransactionInfo: {},
+      modalUserShowV1: false,
       inputCredit: 0,
       selectAssignCredit: "",
       userCurrentTerms: [], // default is one, meaning he has paid the downpayment
@@ -478,6 +507,25 @@ export default {
       }
 
       vm.identifyBankBin(user.card)
+    },
+    openModalUserDetailsV1(user, index) {
+      let vm = this;
+      // reset every time the modal is clicked
+      vm.userDetails = {}
+      vm.note = ''
+
+      vm.userDetails = user
+      vm.userDetails.index = index
+      vm.modalUserShowV1 = true
+
+      //v-viewer
+      vm.ktpViewerOption = {
+        navbar: false, title: false, fullscreen: false
+      }
+
+      vm.selfieKtpViewerOption = {
+        navbar: false, title: false, fullscreen: false
+      }
     },
 
     /**

@@ -84,7 +84,7 @@
               </tr>
               <tr v-if="advanceAI.blacklist.data">
                 <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
-                <td v-if="advanceAI.blacklist.data.defaultListResult.length > 0" style="background-color: red; font-weight: bold; text-align: center; color: #fff;"> Record Exist</td>
+                <td v-if="advanceAI.blacklist.data.defaultListResult.length > 0" style="background-color: red; font-weight: bold; text-align: center; color: #fff; cursor: pointer;" @click="showResultBlackList()"> Record Exist</td>
                 <td v-else style="background-color: #FFC004; font-weight: bold; text-align: center; color: black;"> No Record</td>
                 <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">-</td> -->
               </tr>
@@ -478,6 +478,9 @@
           </div>
         </div> -->
 
+
+        <!-- modal -->
+
         <b-modal v-model="modalCheckLIstEmergency" modal-class="modal-pending-steps" size="80" title="Checklist of Emergency Contact"
         no-close-on-esc
         no-close-on-backdrop
@@ -497,6 +500,47 @@
           <ul>
             <li v-for="data in userDetails.listOfCheckEmergencyNumber"> <span class="text-capitalize">{{ data.detail.name }}</span> - {{ data.mobileNumber }}</li>
           </ul>
+        </div>
+
+          <div class="col-12 row" style="margin-top: 20px;">
+
+          </div>
+
+        </b-modal>
+
+        <b-modal v-model="modalBlackList" modal-class="modal-pending-steps" size="80" title="Blacklist Results"
+        no-close-on-esc
+        no-close-on-backdrop
+        hide-footer>
+
+        <header class="col-12 row" style="padding-right: 0px">
+          <div class="col-6 title">
+
+          </div>
+          <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
+
+          </div>
+        </header>
+
+        <div class="">
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th>Hit Reason</th>
+                <th>Event Time</th>
+                <th>Reason Code</th>
+                <th>Product Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="data in resultOfBlackList">
+                <td>{{ data.hitReason }}</td>
+                <td>{{ data.eventTime }}</td>
+                <td>{{ data.reasonCode }}</td>
+                <td>{{ data.productType }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
           <div class="col-12 row" style="margin-top: 20px;">
@@ -546,6 +590,7 @@ export default {
 
       modalUserShow: false,
       modalCheckLIstEmergency: false,
+      modalBlackList: false,
       users: {},
       admins: {},
       inputCredit: 0,
@@ -608,7 +653,8 @@ export default {
       commentReviewsText: '',
       ktpViewerOption: {},
       selfieKtpViewerOption: {},
-      dataPendukung: {}
+      dataPendukung: {},
+      resultOfBlackList: []
 
     }
   },
@@ -938,7 +984,10 @@ export default {
               this.scoreNameMatch.colorScore = 'red'
             }
 
-            if (res.data[0].blacklist) this.advanceAI.blacklist = JSON.parse(res.data[0].blacklist)
+            if (res.data[0].blacklist) {
+              this.advanceAI.blacklist = JSON.parse(res.data[0].blacklist)
+              this.resultOfBlackList = this.advanceAI.blacklist.data.defaultListResult
+            }
             if (res.data[0]['face blacklist']) this.advanceAI.face_blackList = JSON.parse(res.data[0]['face blacklist'])
             if (res.data[0]['face comparison']) this.advanceAI.face_comparison = JSON.parse(res.data[0]['face comparison'])
             if (res.data[0]['face search']) {
@@ -1059,10 +1108,12 @@ export default {
       vm.modalCheckLIstEmergency = true
       console.log('check', vm.userDetails.listOfCheckEmergencyNumber)
     },
+    showResultBlackList() {
+      let vm = this
+      vm.modalBlackList = true
+    },
     checkEmergencyNumber(params) {
       let vm = this;
-
-      // axios.get(`api/users/checkemergencyphone?mn=${params}`, vm.requestedHeaders)
       axios.get(`api/users/${params}`, vm.requestedHeaders)
       .then(function (response) {
         if (response) {
@@ -1071,7 +1122,6 @@ export default {
             vm.userDetails.checkEmergencyNumber = true
             vm.userDetails.listOfCheckEmergencyNumber = response.data.isUsedAsEmergencyContact
           }
-          // vm.userDetails.checkEmergencyNumber = response.data.data
         }
       })
       .catch(function (error) {
@@ -1291,9 +1341,12 @@ export default {
                 padding: 4px 4px 4px 8px !important;
                 margin: 0 !important;
               }
+              .customTh {
+                width: 37.2%;
+              }
               .customTd {
-                // width: 20%;
-                width: 136px;
+                width: 12.5%;
+                // width: 149px;
               }
             }
 
@@ -1303,13 +1356,18 @@ export default {
               // clear: both;
 
               .leftSideTable {
-                width: 625px;
+                width: 50%;
                 float: left;
 
-                tr, th {
-                  width: 477px;
+                td {
+                  width: 25%;
                   // padding: 0px 0px 0px 8px !important;
                   // margin: 0 !important;
+                }
+
+                th {
+                  width: 75%;
+
                 }
 
                 tr, th, td {
@@ -1320,17 +1378,26 @@ export default {
 
               .imageUser {
                 text-align: center;
-                width: 708px;
-                float: right;
-                padding: 10px 10px 10px 10px;
+                width: 50%;
+                float: none;
+                padding: 10px 10px 10px 40px;
                 background-color: aliceblue;
+                @media (min-width: 1680px) {
+                  padding: 10px 10px 10px 80px;
+                }
 
                 .imageKtp {
                   img {
                     height: 330px;
                     width: 400px;
                     margin-left: 15px;
-                    cursor: pointer;
+                  }
+                  @media (min-width: 1400px) {
+                    img {
+                      height: 330px;
+                      width: 300px;
+                      margin-left: 15px;
+                    }
                   }
                 }
 
@@ -1339,7 +1406,6 @@ export default {
                     height: 330px;
                     width: 250px;
                     margin-left: 15px;
-                    cursor: pointer;
                   }
                 }
               }
@@ -1352,7 +1418,7 @@ export default {
 
         .other-user-information {
           .user-info-left {
-            width: 381px;
+            width: 50%;
             float: left;
             tr, th, td {
               padding: 4px 4px 4px 8px !important;
@@ -1363,7 +1429,7 @@ export default {
             }
           }
           .user-info-right {
-            width: 371px;
+            width: 50%;
             float: left;
             tbody tr td {
               text-align: center;
@@ -1480,7 +1546,7 @@ export default {
                   text-align: center;
                   width: 50%;
                   float: none;
-                  padding: 10px 10px 10px 110px;
+                  padding: 10px 10px 10px 100px;
                   background-color: aliceblue;
 
                   @media (min-width: 2500px) {

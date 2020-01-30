@@ -90,14 +90,14 @@
       </div>
 
       <div class="mb-2">
-        <button class="btn btn-success btn-lg px-5"
+        <!-- <button class="btn btn-success btn-lg px-5"
           @click="actionBtn('approve', 'dataApp', {user: userDetails, index: userDetails.index})">
           Approve
         </button>
         <button class="btn btn-danger btn-lg px-5 mx-2"
           @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})">
           Reject
-        </button>
+        </button> -->
         <button class="btn btn-outline-secondary btn-lg px-5" @click="(modalUserShow=false, actionAdmin('close in-review user'))">Close</button>
       </div>
     </b-modal>

@@ -671,6 +671,56 @@ export default {
     this.getDanaBalance()
   },
   methods: {
+    async totalUsers() {
+      let vm = this
+
+      try {
+        let totalRows = await axios.get(`/api/users?status=1&limit=3000`, vm.requestedHeaders)
+        vm.totalUserRows = totalRows.data.length
+
+        vm.showUsersPerPage(1) // initial
+
+      } catch (e) {
+        alert(e)
+        vm.currentPage = 1
+        vm.loader.has = false
+      }
+    },
+    async showUsersPerPage(page, queryStringObj) {
+      let vm = this
+
+      vm.loader = {
+        has: true,
+        message: `Loading data`
+      }
+
+      let skip
+      if (vm.currentPage == 1) {
+        skip = 0
+      } else if (vm.currentPage == page) {
+        skip = (page - 1) * vm.perPage
+      }
+
+      // if query string object is passed it'll be appended, otherwise no changes
+      let url = `/api/users?status=1&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
+
+      // Limit display per page
+      try {
+        let usersPerPage = await axios.get(url, vm.requestedHeaders)
+        vm.users = usersPerPage.data
+        console.log('agung', usersPerPage.data)
+        // if query string object is passed, load, otherwise, no changes
+        if (queryStringObj!==undefined) {
+          vm.search.showResult = true
+          vm.search.totalRows = vm.users.length
+        }
+        vm.loader.has = false
+      } catch (e) {
+        alert(e)
+        // vm.currentPage = oldPage
+        vm.loader.has = false
+      }
+    },
     getAdmin(params) {
       let vm = this;
       const adminLogin = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])

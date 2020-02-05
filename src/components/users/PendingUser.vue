@@ -125,7 +125,7 @@
           <button class="btn btn-success btn-lg px-5" @click="actionBtn('approve', 'dataApp', {user: userDetails, index: userDetails.index})">Approve</button>
         </div>
         <div class="col-6 text-right">
-          <button class="btn btn-dark btn-lg px-5" @click="(modalUserShowV1=false, actionAdmin('close in review user'))">Close</button>
+          <button class="btn btn-dark btn-lg px-5" @click="(modalUserShowV1=false, showUsersPerPage(1), actionAdmin('close in review user'))">Close</button>
         </div>
       </div>
 
@@ -481,6 +481,24 @@ export default {
                 axios
                   .post('/api/users/activatinguser', activateUserBodyInput, vm.requestedHeaders)
                   .then(res => {
+                    console.log('debug', res)
+                    if (res.data.status == 6) {
+                      console.log('works')
+                      axios.post(`api/users/comment-review-status`, {
+                        user: vm.userDetails._id,
+                        text: `Approved by ${vm.admins.username}`,
+                        commentBy: vm.admins.username
+                      }, vm.requestedHeaders)
+                      .then((response) => {
+                        vm.loader.has = false
+                        vm.$emit('listener', response.data)
+                        vm.refreshHistoryComment(response.data._id)
+                        vm.commentReviewsText = ''
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      })
+                    }
                     vm.$swal('Success!', 'Email verification has been sent to the user!', 'success')
                     vm.modalUserShow = false
                     vm.modalUserShowV1 = false
@@ -522,6 +540,23 @@ export default {
                   axios
                   .post('/api/users/reject', rejectUserBodyInput, vm.requestedHeaders)
                   .then(res => {
+                    console.log('res', res)
+                    if (res.data.message == 'User has been rejected') {
+                      axios.post(`api/users/comment-review-status`, {
+                        user: vm.userDetails._id,
+                        text: `Rejected by ${vm.admins.username}`,
+                        commentBy: vm.admins.username
+                      }, vm.requestedHeaders)
+                      .then((response) => {
+                        vm.loader.has = false
+                        vm.$emit('listener', response.data)
+                        vm.refreshHistoryComment(response.data._id)
+                        vm.commentReviewsText = ''
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      })
+                    }
                     vm.modalUserShow = false
                     vm.modalUserShowV1 = false
                     // vm.index() // refresh list

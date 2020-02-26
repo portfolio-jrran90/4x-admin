@@ -9,6 +9,7 @@
             <th style="background-color: black; text-align: center; color: #fff;">Score</th>
             <th style="background-color: black; text-align: center; color: #fff;">Phone</th>
             <th style="background-color: black; text-align: center; color: #fff;">KTP OCR</th>
+            <!-- <th style="background-color: black; text-align: center; color: #fff;">KTP Validation?</th> -->
             <th style="background-color: black; text-align: center; color: #fff;">NPWP</th>
             <th style="background-color: black; text-align: center; color: #fff;">Tele-ID</th>
           </tr>
@@ -20,6 +21,7 @@
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.ocr.data ? advanceAI.ocr.data.name : '-' }} </td>
               <!-- <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> - </td> -->
+              <!-- <td :style="`background-color: ${customStyleUser.ktp_validation.bgColor}; text-transform: uppercase; font-weight: bold; text-align: center; color: ${customStyleUser.ktp_validation.colorText};`">{{ customStyleUser.ktp_validation.textValidation }}</td> -->
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;">{{ advanceAI.npwpCheck ? advanceAI.npwpCheck : '-' }}</td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.tele_check.data ? advanceAI.tele_check.data.status_msg : '-' }} </td>
             </tr>
@@ -189,6 +191,10 @@
                 <td class="">{{ userDetails.detail ? userDetails.detail.email : '-' }}</td>
               </tr>
               <tr>
+                <th>KTP</th>
+                <td class="">{{ userDetails.ktp ? userDetails.ktp.number : '-' }}</td>
+              </tr>
+              <tr>
                 <th>Pekerjaan</th>
                 <td class="text-uppercase">{{ userDetails.detail ? userDetails.detail.pekerjaan : '-' }}</td>
               </tr>
@@ -335,7 +341,7 @@
               </tr>
               <tr>
                 <th>Bank</th>
-                <td>{{ userDetails.card[0].bank }}</td>
+                <td class="text-uppercase">{{ userDetails.card[0].bank }}</td>
               </tr>
             </tbody>
           </table>
@@ -406,19 +412,22 @@
               <td></td>
               <td></td>
             </tr>
-            <!-- <tr>
+            <tr>
               <th>Dana Balance</th>
-              <td v-if="userDetails.danaVerifiedAccount"> - </td>
+              <td v-if="userDetails.danaVerifiedAccount"> <span style="color: #118DE9; font-weight: bold;"> {{ dataPendukung.dana | currency }} </span> </td>
               <td v-else> - </td>
               <td></td>
               <td></td>
-            </tr> -->
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div class="" v-html="dataPendukung"></div>
+    <!-- <div class="" v-html="dataPendukung.kontrak"></div> -->
+    <div class="">
+      Status Kontrak : <span class="font-weight-bold">{{ dataPendukung.kontrak }}</span>
+    </div>
 
 
     <div class="row comments" style="padding: 14px;">
@@ -647,6 +656,11 @@ export default {
         trusting_social: {
           bgColor: '#FFC004',
           colorText: 'black'
+        },
+        ktp_validation: {
+          bgColor: '#FFC004',
+          colorText: 'black',
+          textValidation: 'No Record'
         }
       },
       logEmail: '',
@@ -1218,6 +1232,7 @@ export default {
           if (this.userDetails.detail) {
             // this.userDetails.detail.industri = 'industri11' //debug industry
             let findIndustry = resIndustry.filter(data => data._id == this.userDetails.detail.industri)
+            // bugz => in type industri8 coz not have in static json data
             this.userDetails.detail.industri_label = findIndustry[0].label
             // console.log('userDetails', this.userDetails.detail.industri_label)
           }
@@ -1251,7 +1266,7 @@ export default {
       let vm = this
       const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
       axios
-        .post('https://mon.empatkali.co.id/jhon', {
+        .post('https://mon.empatkali.co.id/jhon3', {
           mobileNumber: vm.userDetails.mobileNumber,
           'detail.email': vm.userDetails.detail.email,
           'ktp.number': vm.userDetails.ktp.number,
@@ -1264,7 +1279,37 @@ export default {
           }
         })
         .then(res => {
-          vm.dataPendukung = res.data
+          // vm.dataPendukung = res.data.kontrak
+
+          console.log('dataPendukung', res.data)
+
+          if (res.data)
+          {
+            const statusCheck = res.data.kontrak
+            const detailUser = vm.userDetails.status
+            vm.dataPendukung.dana = res.data.dana
+
+            if (statusCheck == 'Sudah klik kontrak' && detailUser == 2)
+            {
+              vm.dataPendukung.kontrak = 'Sudah lihat dan menyetujui kontrak'
+            }
+            else if (statusCheck == 'Sudah klik kontrak' && detailUser == 6)
+            {
+              vm.dataPendukung.kontrak = 'Sudah lihat kontrak'
+            }
+            else
+            {
+              vm.dataPendukung.kontrak = res.data.kontrak
+            }
+          }
+          else
+          {
+            vm.dataPendukung =
+            {
+              kontrak: 'No Records',
+              dana: 'No Records'
+            }
+          }
         })
         .catch(err => {
           console.log(err.response)

@@ -9,7 +9,7 @@
             <th style="background-color: black; text-align: center; color: #fff;">Score</th>
             <th style="background-color: black; text-align: center; color: #fff;">Phone</th>
             <th style="background-color: black; text-align: center; color: #fff;">KTP OCR</th>
-            <!-- <th style="background-color: black; text-align: center; color: #fff;">KTP Validation?</th> -->
+            <th style="background-color: black; text-align: center; color: #fff;">KTP Validation?</th>
             <th style="background-color: black; text-align: center; color: #fff;">NPWP</th>
             <th style="background-color: black; text-align: center; color: #fff;">Tele-ID</th>
           </tr>
@@ -21,7 +21,7 @@
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.ocr.data ? advanceAI.ocr.data.name : '-' }} </td>
               <!-- <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> - </td> -->
-              <!-- <td :style="`background-color: ${customStyleUser.ktp_validation.bgColor}; text-transform: uppercase; font-weight: bold; text-align: center; color: ${customStyleUser.ktp_validation.colorText};`">{{ customStyleUser.ktp_validation.textValidation }}</td> -->
+              <td :style="`background-color: ${customStyleUser.ktp_validation.bgColor}; text-transform: uppercase; font-weight: bold; text-align: center; color: ${customStyleUser.ktp_validation.colorText};`">{{ customStyleUser.ktp_validation.textValidation }}</td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;">{{ advanceAI.npwpCheck ? advanceAI.npwpCheck : '-' }}</td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.tele_check.data ? advanceAI.tele_check.data.status_msg : '-' }} </td>
             </tr>
@@ -937,6 +937,24 @@ export default {
               // this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
               // fixName = JSON.parse(res.data[0].ocr).data.name
               // console.log('2 ocr exist', this.advanceAI.ocr)
+            }
+
+            if (res.data[0].ktp) {
+
+              console.log('ktp Validation', JSON.parse(res.data[0].ktp))
+              let ktpCheck = JSON.parse(res.data[0].ktp)
+              if (ktpCheck.name_matches)
+              {
+                this.customStyleUser.ktp_validation.bgColor = '#70AD47';
+                this.customStyleUser.ktp_validation.textValidation = 'valid';
+                this.customStyleUser.ktp_validation.colorText = 'black';
+              }
+              else
+              {
+                this.customStyleUser.ktp_validation.bgColor = 'red';
+                this.customStyleUser.ktp_validation.textValidation = 'no valid';
+                this.customStyleUser.ktp_validation.colorText = '#ffffff';
+              }
             }
 
             // debug

@@ -3,7 +3,7 @@
     <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Pending Users</h2>
-    <h5>Total: {{ totalUserRows.toLocaleString() }}</h5>
+    <h5>Total: {{ users.total ? users.total : 0}}</h5>
 
     <div class="alert alert-secondary">
       <form class="form-inline" @submit.prevent="searchFilterResult">
@@ -23,7 +23,7 @@
       </form>
 
       <p class="mt-2 mb-0" v-if="search.showResult">
-        Found {{ users.length }} result(s)
+        Found {{ users.total }} result(s)
       </p>
     </div>
 
@@ -42,7 +42,7 @@
             <tr><td colspan="4">No record found!</td></tr>
           </tbody>
           <tbody v-else>
-            <tr v-for="(data, index) in users">
+            <tr v-for="(data, index) in users.data">
               <td>
                 <a href="#" @click.prevent="openModalUserDetails(data, index)"
                   v-b-tooltip.hover title="View details">{{ data.detail?data.detail.name:'--' }}</a>
@@ -56,7 +56,7 @@
 
         <b-pagination
           v-model="currentPage"
-          :total-rows="totalUserRows"
+          :total-rows="users.total"
           :per-page="perPage"
           size="sm"
           v-if="!search.totalRows && users.length!==0"

@@ -3,7 +3,29 @@
     <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Freeze User</h2>
-    <h5>Total: {{ totalUserRows }}</h5>
+    <h5>Total: {{ users.total ? users.total : 0 }}</h5>
+
+    <div class="alert alert-secondary">
+      <form class="form-inline" @submit.prevent="searchFilterResult">
+        <label class="my-1 mr-2" for="frmSearchFilter">
+          <strong>Search by</strong>
+        </label>
+        <select class="custom-select my-1 mr-sm-2" id="frmSearchFilter" v-model="search.filterBy">
+          <option :value="index" v-for="(data, index) in search.filterByOption">{{ data }}</option>
+        </select>
+
+        <input type="search" class="form-control mr-2" placeholder="Search ..."
+          v-model="search.query"
+          v-if="search.filterBy!==''">
+
+        <button type="submit" class="btn btn-primary px-4 mr-2">Filter Result</button>
+        <button type="button" class="btn btn-danger px-4" @click="removeFilter">Remove Filter</button>
+      </form>
+
+      <p class="mt-2 mb-0" v-if="search.showResult">
+        Found {{ users.data.length }} result(s)
+      </p>
+    </div>
 
     <div class="row">
       <div class="col">
@@ -19,7 +41,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in users">
+            <tr v-for="(data, index) in users.data">
               <td>
                 <a href="#" @click.prevent="openModalUserDetails(data, index), actionAdmin('freeze user detail')"
                   v-b-tooltip.hover title="View details" style="font-weight: 800">
@@ -63,7 +85,7 @@
 
         <b-pagination
           v-model="currentPage"
-          :total-rows="totalUserRows"
+          :total-rows="users.total"
           :per-page="perPage"
           size="sm"
           v-if="!search.totalRows && users.length!==0"
@@ -384,6 +406,7 @@ export default {
             .get(`${process.env.VUE_APP_API_URL}/api/approvedtransactions?skip=0&limit=0&user=${user._id}`, vm.requestedHeaders)
             .then(res => {
               vm.modalUserTransactionInfo = res.data
+              console.log('modalUserTransactionInfo', res.data)
               /*// check reverse i.e. from the last terms down to the downpayment (4-1)
               // check status if its paid, if so, check the number field, that'll be the total terms
               vm.modalUserTransactionInfo.forEach(item => {
@@ -714,6 +737,323 @@ export default {
   }
   .modal-pending-steps textarea {
     resize: none;
+  }
+  .modal-pending-steps .review .main {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .modal-pending-steps {
+    background-color: #F2F2F2;
+    border: 1px solid black;
+
+    header {
+      background-color: #4372C7;
+      margin-left: 0px;
+      color: #fff;
+
+      .title {
+        padding-top: 10px;
+      }
+    }
+
+    .buttonRight {
+      button {
+        margin-left: 20px;
+      }
+    }
+
+    .wrapper-approval-decision {
+
+        .review {
+          // border: 1px solid black;
+          .main {
+            // border: 1px solid black;
+            margin-left: 0px;
+
+            .headerTable {
+              th, td {
+                border: 1px solid #fff;
+                padding: 4px 4px 4px 8px !important;
+                margin: 0 !important;
+              }
+            }
+
+            .wrapper-contet-img {
+              padding-right: 13px;
+
+              // clear: both;
+
+              .leftSideTable {
+                width: 625px;
+                float: left;
+
+                tr, th {
+                  width: 477px;
+                  // padding: 0px 0px 0px 8px !important;
+                  // margin: 0 !important;
+                }
+
+                tr, th, td {
+                  padding: 4px 4px 4px 8px !important;
+                  margin: 0 !important;
+                }
+              }
+
+              .imageUser {
+                text-align: center;
+                width: 708px;
+                float: right;
+                padding: 10px 10px 10px 10px;
+                // background-color: #F2F2F2;
+
+                .imageKtp {
+                  img {
+                    height: 330px;
+                    width: 400px;
+                    margin-left: 15px;
+                    cursor: pointer;
+                  }
+                }
+
+                .imageSelfie {
+                  img {
+                    height: 330px;
+                    width: 250px;
+                    margin-left: 15px;
+                    cursor: pointer;
+                  }
+                }
+              }
+
+
+            }
+
+          }
+        }
+
+        .other-user-information {
+          .user-info-left {
+            width: 381px;
+            float: left;
+            tr, th, td {
+              padding: 4px 4px 4px 8px !important;
+              margin: 0 !important;
+            }
+            tbody tr {
+              border: 1px solid #C8C8C8;
+            }
+          }
+          .user-info-right {
+            width: 371px;
+            float: left;
+            tbody tr td {
+              text-align: center;
+              font-size: 14px;
+            }
+            tbody, tr, th, td {
+              padding: 4px 4px 4px 8px !important;
+              margin: 0 !important;
+            }
+
+            tbody tr {
+              border: 1px solid #C8C8C8;
+            }
+
+            tbody {
+              // overflow: auto;
+              // height: 500px;
+            }
+          }
+
+          .user-location {
+            tr, th {
+              padding: 4px 4px 4px 8px !important;
+              margin: 0 !important;
+            }
+          }
+        }
+
+        .payment-info {
+          tbody, tr, th, td {
+            padding: 4px 4px 4px 8px !important;
+            margin: 0 !important;
+          }
+        }
+
+        .comments {
+          tbody, tr, th, td {
+            padding: 4px 4px 4px 8px !important;
+            margin: 0 !important;
+          }
+        }
+
+      }
+
+
+      //handle big screen min-width 1500px
+      @media (min-width: 1800px) {
+        header {
+          background-color: #4372C7;
+          margin-left: 0px;
+          color: #fff;
+
+          .title {
+            padding-top: 10px;
+          }
+        }
+
+        .buttonRight {
+          button {
+            margin-left: 20px;
+          }
+        }
+        .wrapper-approval-decision {
+
+          .review {
+
+            header {
+              background-color: #4372C7;
+              margin-left: 0px;
+              color: #fff;
+
+              .title {
+                padding-top: 10px;
+              }
+            }
+
+            .buttonRight {
+              button {
+                margin-left: 20px;
+              }
+            }
+
+            .main {
+              // border: 1px solid black;
+              margin-left: 0px;
+
+              .headerTable {
+                th, td {
+                  border: 1px solid #fff;
+                  padding: 4px 4px 4px 8px !important;
+                  margin: 0 !important;
+                }
+              }
+
+              .wrapper-contet-img {
+                padding-right: 13px;
+
+                // clear: both;
+
+                .leftSideTable {
+                  width: 625px;
+                  float: left;
+
+                  tr, th {
+                    width: 477px;
+                    // padding: 0px 0px 0px 8px !important;
+                    // margin: 0 !important;
+                  }
+
+                  tr, th, td {
+                    padding: 4px 4px 4px 8px !important;
+                    margin: 0 !important;
+                  }
+                }
+
+                .imageUser {
+                  text-align: center;
+                  width: 60%;
+                  float: none;
+                  padding: 10px 10px 10px 220px;
+                  // background-color: #F2F2F2;
+
+                  .imageKtp {
+                    img {
+                      height: 330px;
+                      width: 400px;
+                      margin-left: 15px;
+                    }
+                  }
+
+                  .imageSelfie {
+                    img {
+                      height: 330px;
+                      width: 250px;
+                      margin-left: 15px;
+                    }
+                  }
+                }
+
+
+              }
+
+            }
+          }
+
+          .other-user-information {
+            .user-info-left {
+              width: 510px;
+              float: left;
+              tr, th, td {
+                padding: 4px 4px 4px 8px !important;
+                margin: 0 !important;
+              }
+              tbody tr {
+                border: 1px solid #C8C8C8;
+              }
+            }
+            .user-info-right {
+              width: 473px;
+              float: left;
+              tbody tr td {
+                text-align: center;
+                font-size: 14px;
+              }
+              tbody, tr, th, td {
+                padding: 4px 4px 4px 8px !important;
+                margin: 0 !important;
+              }
+
+              tbody tr {
+                border: 1px solid #C8C8C8;
+              }
+
+              tbody {
+                // overflow: auto;
+                // height: 500px;
+              }
+            }
+
+            .user-location {
+              tr, th {
+                padding: 4px 4px 4px 8px !important;
+                margin: 0 !important;
+              }
+            }
+          }
+
+          .payment-info {
+            tbody, tr, th, td {
+              padding: 4px 4px 4px 8px !important;
+              margin: 0 !important;
+            }
+          }
+
+          .comments {
+            tbody, tr, th, td {
+              padding: 4px 4px 4px 8px !important;
+              margin: 0 !important;
+            }
+          }
+
+        }
+      }
+
+
+
+
+
   }
 
   .c-step-3 .c-images {

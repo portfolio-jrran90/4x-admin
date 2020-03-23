@@ -3,7 +3,7 @@
     <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Active User</h2>
-    <h5>Total: {{ totalUserRows.toLocaleString() }}</h5>
+    <h5>Total: {{ users.total ? users.total : 0 }}</h5>
 
     <div class="alert alert-secondary">
       <form class="form-inline" @submit.prevent="searchFilterResult">
@@ -23,7 +23,7 @@
       </form>
 
       <p class="mt-2 mb-0" v-if="search.showResult">
-        Found {{ users.length }} result(s)
+        Found {{ users.total }} result(s)
       </p>
     </div>
 
@@ -43,7 +43,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in users">
+            <tr v-for="(data, index) in users.data">
               <td>
                 <a href="#" @click.prevent="(openModalUserDetails(data, index), actionAdmin('name of user'))"
                   v-b-tooltip.hover title="View details" style="font-weight: 800">
@@ -96,7 +96,7 @@
               <td> <button type="button" class="btn btn-secondary btn-sm" name="button" @click="openModalUserDetailsV1(data, index)"> New Dashboard </button> </td>
 
             </tr>
-            <tr v-if="users.length==0">
+            <tr v-if="users.total==0">
               <td colspan="7">No active user(s) found!</td>
             </tr>
           </tbody>
@@ -104,10 +104,10 @@
 
         <b-pagination
           v-model="currentPage"
-          :total-rows="totalUserRows"
+          :total-rows="users.total"
           :per-page="perPage"
           size="sm"
-          v-if="!search.totalRows && users.length!==0"
+          v-if="!search.totalRows && users.total!==0"
         ></b-pagination>
 
         <b-pagination
@@ -439,18 +439,19 @@ export default {
      */
     async totalUsers() {
       let vm = this
+      vm.showUsersPerPage(1) // initial
 
-      try {
-        let totalRows = await axios.get(`/api/users?status=2&limit=3000`, vm.requestedHeaders)
-        vm.totalUserRows = totalRows.data.length
-
-        vm.showUsersPerPage(1) // initial
-
-      } catch (e) {
-        alert(e)
-        vm.currentPage = 1
-        vm.loader.has = false
-      }
+      // try {
+      //   let totalRows = await axios.get(`/api/users?status=2&limit=3000`, vm.requestedHeaders)
+      //   vm.totalUserRows = totalRows.data.length
+      //
+      //   vm.showUsersPerPage(1) // initial
+      //
+      // } catch (e) {
+      //   alert(e)
+      //   vm.currentPage = 1
+      //   vm.loader.has = false
+      // }
     },
 
     /**
@@ -495,6 +496,7 @@ export default {
       // Limit display per page
       try {
         let usersPerPage = await axios.get(url, vm.requestedHeaders)
+        console.log('usersPerPage', usersPerPage)
         vm.users = usersPerPage.data
         // if query string object is passed, load, otherwise, no changes
         if (queryStringObj!==undefined) {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Banned Users</h2>
-    <h5>Total: {{ users.length }}</h5>
+    <h5>Total: {{ users.total ? users.total : 0 }}</h5>
     <div class="row">
       <div class="col-md-8">
         <table class="table table-hover table-striped">
@@ -12,11 +12,11 @@
               <th colspan="2">Date registered</th>
             </tr>
           </thead>
-          <tbody v-if="users.length===0">
+          <tbody v-if="users.total===0">
             <tr><td colspan="4">No record found!</td></tr>
           </tbody>
           <tbody v-else>
-            <tr v-for="(data, index) in users">
+            <tr v-for="(data, index) in users.data">
               <td>
                 <a href="#" @click.prevent="openModal('ShowUserDetail', data), actionAdmin('user detail ban')">{{ data.detail.name }}</a>
               </td>

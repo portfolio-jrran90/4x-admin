@@ -137,7 +137,7 @@ export default {
             ipAddress: ip
           }
           axios
-            .post('http://127.0.0.1:3000/admin-logger', reqBody)
+            .post('https://web-api.empatkali.co.id/admin-logger', reqBody)
             .then(() => {})
         })
     }

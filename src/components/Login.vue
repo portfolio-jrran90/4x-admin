@@ -77,6 +77,7 @@ export default {
             // alert('logging in..')
             // should add some effects for logging in
             this.actionAdmin('Admin new login', res.data.token)
+            vm.captureInfo()
           },
           err => {
             alert("Invalid Email/Password!");
@@ -121,6 +122,24 @@ export default {
           console.log(err.res)
         })
 			// console.log('actionAdmin', actionAdmin)
+    },
+
+    // Capture information for the user who logged i.e. IP address,
+    // date/time, etc
+    captureInfo() {
+      let vm = this
+
+      fetch('https://api.ipify.org?format=json')
+        .then(x => x.json())
+        .then(({ ip }) => {
+          let reqBody = {
+            username: vm.data.body.identity,
+            ipAddress: ip
+          }
+          axios
+            .post('http://127.0.0.1:3000/admin-logger', reqBody)
+            .then(() => {})
+        })
     }
   }
 };

@@ -23,6 +23,13 @@
             </a>
           </router-link>
 
+          <router-link tag="li" :to="{ name: 'merchant-fee' }">
+            <a class="nav-link" href="#">
+              <font-awesome-icon :icon="['fas', 'coins']" class="mr-2" size="lg" />
+              <p>Merchant Fee</p>
+            </a>
+          </router-link>
+
           <!-- <router-link tag="li" :to="{ name: 'helpdesk' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'handshake']" class="mr-2" size="lg" />

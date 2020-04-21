@@ -138,6 +138,7 @@ require('./components/users') // this is for shared components
 
 // Merchants
 import Merchant from './components/merchants/Index.vue'
+import MerchantFee from './components/merchants/MerchantFee.vue'
 
 // Promotions
 import Promotion from './components/promotions/Index.vue'
@@ -169,6 +170,7 @@ const routes = [
     meta: { auth: true },
     children: [
       { path: '/merchants', component: Merchant, name: 'merchant' },
+      { path: '/merchant-fee', component: MerchantFee, name: 'merchant-fee' },
       { path: '/users', component: User },
       { path: '/transactions', component: Transaction },
       { path: '/approvepromo', component: ApprovePromo },

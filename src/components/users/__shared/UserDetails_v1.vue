@@ -906,7 +906,7 @@ export default {
       // "{"data":[{"npwp":"248519761033000","nama":"OEI ACHMAD WIRIA"}],"status":1,"ketStatus":null,"message":null}"
 
       axios
-        .post('https://mon.empatkali.co.id/advanceai',
+        .post('https://minion.empatkali.co.id/advanceai.php',
           UserId
         )
         .then(res => {
@@ -1260,7 +1260,7 @@ export default {
       let vm = this;
       const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
       axios
-        .post('https://mon.empatkali.co.id/jhon2', {
+        .post('https://minion.empatkali.co.id/jhon2.php', {
           mobileNumber: vm.userDetails.mobileNumber,
           'detail.email': vm.userDetails.detail.email,
           'ktp.number': vm.userDetails.ktp.number,
@@ -1284,7 +1284,7 @@ export default {
       let vm = this
       const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
       axios
-        .post('https://mon.empatkali.co.id/jhon3', {
+        .post('https://minion.empatkali.co.id/jhon3.php', {
           mobileNumber: vm.userDetails.mobileNumber,
           'detail.email': vm.userDetails.detail.email,
           'ktp.number': vm.userDetails.ktp.number,

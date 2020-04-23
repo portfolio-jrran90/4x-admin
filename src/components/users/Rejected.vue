@@ -344,7 +344,7 @@ export default {
     //   let vm = this;
     //   const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
     //   axios
-    //     .post('https://mon.empatkali.co.id/jhon2', {
+    //     .post('https://minion.empatkali.co.id/jhon2.php', {
     //       mobileNumber: vm.userDetails.mobileNumber,
     //       'detail.email': vm.userDetails.detail.email,
     //       'ktp.number': vm.userDetails.ktp.number,

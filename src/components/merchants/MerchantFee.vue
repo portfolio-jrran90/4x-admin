@@ -18,17 +18,17 @@
             </tr>
           </thead>
 					<tbody>
-						<tr>
-							<td>Merchant 1</td>
+						<tr v-for="data in merchants">
+							<td>{{ data.name }}</td>
 							<td class="text-right">
-								Rp. 100
-								<a href="#" class="ml-2">
+								{{ data.convenienceFee.twoWeekly | currency }}
+								<a href="#" class="ml-2" @click.prevent="openModal('EditMerchantFee14', data)">
 									<font-awesome-icon :icon="['fas', 'edit']" class="" size="sm" />
 								</a>
 							</td>
 							<td class="text-right">
-								Rp. 100
-								<a href="#" class="ml-2">
+								{{ data.convenienceFee.monthly | currency }}
+								<a href="#" class="ml-2" @click.prevent="openModal('EditMerchantFee30', data)">
 									<font-awesome-icon :icon="['fas', 'edit']" class="" size="sm" />
 								</a>
 							</td>
@@ -39,41 +39,20 @@
 		</div>
 
 		<!-- modal -->
-    <b-modal title="Merchant Registration" v-model="modalAddMerchant" size="sm" hide-footer>
-    	<form @submit.prevent="formValidator('frmAddMerchant')" id="frmAddMerchant" data-vv-scope="frmAddMerchant">
+    <b-modal title="Edit Merchant Fee" v-model="modalUpdateMerchantFee" size="sm" hide-footer>
+    	<form @submit.prevent="formValidator('frmEditMerchantFee')" id="frmEditMerchantFee" data-vv-scope="frmEditMerchantFee">
 				<div class="mb-1">
 				  <div class="form-group">
-				    <input type="text" class="form-control" placeholder="Enter name" name="name"
-				    	v-model="addMerchant.name"
+				    <input type="text" class="form-control" placeholder="Enter fee" name="fee"
+				    	v-model="editMerchantFee.convenienceFee"
               v-validate="'required'"
-							:class="{'is-invalid': errors.first('frmAddMerchant.name')}">
-						<div class="invalid-feedback">{{ errors.first('frmAddMerchant.name') }}</div>
-				  </div>
-				  <div class="form-group">
-				    <input type="text" class="form-control" placeholder="Enter username" name="username"
-				    	v-model="addMerchant.username"
-							v-validate="'required'"
-              :class="{'is-invalid': errors.first('frmAddMerchant.username')}">
-            <div class="invalid-feedback">{{ errors.first('frmAddMerchant.username') }}</div>
-				  </div>
-				  <div class="form-group">
-				    <input type="email" class="form-control" placeholder="Enter email" name="email" 
-				    	v-model="addMerchant.email"
-							v-validate="'required'"
-              :class="{'is-invalid': errors.first('frmAddMerchant.email')}">
-            <div class="invalid-feedback">{{ errors.first('frmAddMerchant.email') }}</div>
-				  </div>
-				  <div class="form-group">
-				    <input type="text" class="form-control" placeholder="Enter mobile" name="mobile_no" 
-				    	v-model="addMerchant.mobileNumber"
-							v-validate="'required'"
-              :class="{'is-invalid': errors.first('frmAddMerchant.mobile_no')}">
-            <div class="invalid-feedback">{{ errors.first('frmAddMerchant.mobile_no') }}</div>
+							:class="{'is-invalid': errors.first('frmEditMerchantFee.fee')}">
+						<div class="invalid-feedback">{{ errors.first('frmEditMerchantFee.fee') }}</div>
 				  </div>
 				</div>
 				<div slot="modal-footer" class="w-100 text-center">
-				 	<button type="submit" class="btn btn-primary mr-2">Register</button>
-				 	<button type="button" class="btn btn-default" @click="modalAddMerchant=false">Cancel</button>
+				 	<button type="submit" class="btn btn-primary mr-2">Update</button>
+				 	<button type="button" class="btn btn-default" @click="modalUpdateMerchantFee=false">Cancel</button>
 				</div>
 			</form>
     </b-modal>
@@ -81,7 +60,6 @@
 </template>
 
 <script>
-// 2. sweet alert
 
 import axios from 'axios'
 
@@ -94,22 +72,23 @@ export default {
 	        'x-access-token': localStorage.getItem("auth_token")
 	      }
 			},
-			modalAddMerchant: false,
-			addMerchant: {},
+			modalUpdateMerchantFee: false,
+			editMerchantFee: {},
+
 			merchants: {}
 		}
 	},
 	created() {
-		this.indexMerchants()
+		this.indexMerchantFee()
   },
 	methods: {
 
 		/**
 		 * List all merchants
 		 */
-		indexMerchants() {
+		indexMerchantFee() {
 			let vm = this
-	    axios.get('/api/merchants', vm.requestedHeaders).then(res => vm.merchants = res.data)
+	    axios.get('/api/merchants?limit=1000000', vm.requestedHeaders).then(res => vm.merchants = res.data)
 		},
 
     /**
@@ -123,7 +102,7 @@ export default {
       vm.$validator.validateAll(scope).then(result => {
         if (result) {
           switch (scope) {
-            case 'frmAddMerchant':   vm.register();      break
+            case 'frmEditMerchantFee':   vm.updateMerchantFee();      break
             default: //
           }
         }
@@ -137,26 +116,40 @@ export default {
 		 */
 		openModal(type, data) {
 			let vm = this
+
+			vm.editMerchantFee['_id'] = data._id
+
 			switch(type) {
-				case 'AddMerchant':
-					vm.addMerchant = {}
-					vm.modalAddMerchant = true
+				case 'EditMerchantFee14':
+					vm.editMerchantFee['convenienceFee'] = data.convenienceFee.twoWeekly
+					vm.editMerchantFee['type'] = 'twoWeekly'
+					vm.modalUpdateMerchantFee = true
+					break
+				case 'EditMerchantFee30':
+					vm.editMerchantFee['convenienceFee'] = data.convenienceFee.monthly
+					vm.editMerchantFee['type'] = 'monthly'
+					vm.modalUpdateMerchantFee = true
 					break
 				default: //
 			}
 		},
 
 		/**
-		 * Merchant Registration
+		 * Update Merchant Fee
 		 */
-		register() {
+		updateMerchantFee() {
 			let vm = this
+			let reqBody = {
+				convenienceFee: {
+					[vm.editMerchantFee.type]: parseFloat(vm.editMerchantFee.convenienceFee)
+				}
+			}
 			axios
-				.post('/api/merchants', vm.addMerchant, vm.requestedHeaders)
+				.put(`/api/merchants/${vm.editMerchantFee._id}`, reqBody, vm.requestedHeaders)
 				.then(res => {
-					vm.$swal('Success!', 'New merchant added!', 'success')
-					vm.indexMerchants()
-					vm.modalAddMerchant = false
+					vm.$swal('Success!', 'Fee updated!', 'success')
+					vm.indexMerchantFee()
+					vm.modalUpdateMerchantFee = false
 				})
 				.catch(err => {
 					vm.$swal('Error!', err.response.data.message, 'error')

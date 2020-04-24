@@ -86,9 +86,10 @@ export default {
 		/**
 		 * List all merchants
 		 */
-		indexMerchantFee() {
+		async indexMerchantFee() {
 			let vm = this
-	    axios.get('/api/merchants?limit=1000000', vm.requestedHeaders).then(res => vm.merchants = res.data)
+	    let merchants = await axios.get('/api/merchants?limit=1000000', vm.requestedHeaders)
+	    vm.merchants = merchants.data.filter(ft => ft.activated === true )
 		},
 
     /**

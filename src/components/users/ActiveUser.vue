@@ -1151,19 +1151,15 @@ export default {
       }
 
       if ( dat.number !== 1 ) {
-
-        if ( dat.paid.method == 'vabni' ) {
-          if ( dat.paid.status ) {
-            responseObj.msg = 'Va telah dibayar'
-            responseObj.dateLabel = 'Dibayar pada'
-          } else {
-            responseObj.msg = 'VA telah di buat'
-            responseObj.dateLabel = 'Dibuat pada'
-          }
-        } else {
+        if ( dat.paid.status_code == 200 && dat.paid.status ) {
+          responseObj.msg = 'Va telah dibayar'
+          responseObj.dateLabel = 'Dibayar pada'
+        } else if ( dat.paid.payment_id == '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA belum di buat'
+        } else if ( dat.paid.payment_id != '' && dat.paid.status_code == 201 && !dat.paid.status ) {
+          responseObj.msg = 'VA telah di buat'
+          responseObj.dateLabel = 'Dibuat pada'
         }
-
       } else {
         responseObj.msg = 'Paid'
         responseObj.dateLabel = 'Dibuat pada'

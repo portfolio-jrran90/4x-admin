@@ -1151,7 +1151,7 @@ export default {
       }
 
       if ( dat.number !== 1 ) {
-        if ( dat.paid.status_code == 200 && dat.paid.status ) {
+        if ( (dat.paid.status_code == 201 || dat.paid.status_code == 200) && dat.paid.status ) {
           responseObj.msg = 'Va telah dibayar'
           responseObj.dateLabel = 'Dibayar pada'
         } else if ( dat.paid.payment_id == '' && dat.paid.status_code == 201 && !dat.paid.status ) {

@@ -170,7 +170,7 @@ const routes = [
     meta: { auth: true },
     children: [
       { path: '/merchants', component: Merchant, name: 'merchant' },
-      { path: '/merchant-fee', component: MerchantFee, name: 'merchant-fee' },
+      // { path: '/merchant-fee', component: MerchantFee, name: 'merchant-fee' },
       { path: '/users', component: User },
       { path: '/transactions', component: Transaction },
       { path: '/approvepromo', component: ApprovePromo },

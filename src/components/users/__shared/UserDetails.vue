@@ -335,7 +335,7 @@
     <!-- ./ Step 6 -->
 
     <!-- Step 7 -->
-    <div class="card" v-if="user.card[0]">
+    <div class="card" v-if="user.card && user.card[0]">
       <div class="card-body">
         <h2 class="mb-3">Step 7 - {{ userStatus }}Payment</h2>
         <div class="row">

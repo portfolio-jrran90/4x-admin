@@ -227,8 +227,6 @@
                       </small>
                     </li>
 
-
-
                     <li v-if="terms.number!==1">
                       <small>
                         <span style="display: block">
@@ -249,6 +247,18 @@
                           VA Berlaku Sampai <strong> {{ new Date(terms.paid.date) | date }}</strong>
                         </span>
                       </small>
+                    </li>
+
+                    <li v-if="mapTransactionTerms(terms).btnGenerateVA" style="border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
+                      <select class="form-control form-control-sm" v-model="generateVAforUnpaidInstallmentBankInput">
+                        <option value="">Select a bank</option>
+                        <option value="BNI">BNI</option>
+                        <option value="MANDIRI">Mandiri</option>
+                        <option value="PERMATA">Permata</option>
+                        <option value="BRI">BRI</option>
+                      </select>
+                      <button class="btn btn-outline-danger btn-sm btn-block mt-1"
+                        @click.prevent="generateVAforUnpaidInstallment(data._id, terms)">Generate VA</button>
                     </li>
                   </ul>
                 </td>
@@ -403,6 +413,8 @@ export default {
       },
 
       bankBni: {},
+
+      generateVAforUnpaidInstallmentBankInput: '',
     };
   },
   watch: {
@@ -1150,10 +1162,13 @@ export default {
         paid_date: dat.paid.date
       }
 
+      responseObj.btnGenerateVA = false
+
       if ( dat.number !== 1 ) {
         if ( (dat.paid.status_code == 201 || dat.paid.status_code == 200) && dat.paid.status ) {
           responseObj.msg = 'Va telah dibayar'
           responseObj.dateLabel = 'Dibayar pada'
+          responseObj.btnGenerateVA = true
         } else if ( dat.paid.payment_id == '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA belum di buat'
         } else if ( dat.paid.payment_id != '' && dat.paid.status_code == 201 && !dat.paid.status ) {
@@ -1166,7 +1181,33 @@ export default {
       }
 
       return responseObj
-    }
+    },
+
+    /**
+     * Generate VA for unpaid installment
+     * 
+     * @param  ObjectId transactionId
+     * @param  ObjectId terminId
+     */
+    generateVAforUnpaidInstallment(transactionId, terminId) {
+      let vm = this
+
+      let dataInput = {
+        terminId: terminId._id,
+        bank: vm.generateVAforUnpaidInstallmentBankInput,
+      }
+
+      axios
+        .post(`/api/approvedtransactions/injectva/${transactionId}`, dataInput, vm.requestedHeaders)
+        .then(res => {
+          alert('Success...')
+          console.log('success', res.data)
+        })
+        .catch(function (error) {
+          alert( error.response.data.message )
+          console.log(error.response);
+        })
+    },
 
   }
 };
@@ -1507,10 +1548,6 @@ export default {
 
         }
       }
-
-
-
-
 
   }
 

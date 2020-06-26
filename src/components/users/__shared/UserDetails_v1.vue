@@ -53,7 +53,8 @@
               <tr>
                 <th>Apakah nomor ini terkait dengan IMEI lainnya?</th>
                 <!-- Is this number associated with any other IMEI?  -->
-                <td :style="`background-color: ${userDetails.checkImeiUserNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkImeiUserNumber ? '#fff' : 'black'};`"> {{ userDetails.checkImeiUserNumber ? 'YES' : 'NO'  }} </td>
+                <!-- <td :style="`background-color: ${userDetails.checkImeiUserNumber ? 'red' : '#70AD47'}; text-align: center; font-weight: bold; color: ${userDetails.checkImeiUserNumber ? '#fff' : 'black'};`"> {{ userDetails.checkImeiUserNumber ? 'YES' : 'NO'  }} </td> -->
+                <td class="text-center"><strong>N/A</strong></td>
               </tr>
               <tr>
                 <th>Wajah serupa terdeteksi dengan NIK yang berbeda?</th>

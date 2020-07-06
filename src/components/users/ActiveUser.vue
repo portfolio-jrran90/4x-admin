@@ -244,21 +244,23 @@
                           VA Number: <strong> {{terms.paid.payment_id}}</strong>
                         </span>
                         <span style="display: block">
-                          VA Berlaku Sampai <strong> {{ new Date(terms.paid.date) | date }}</strong>
+                          VA Berlaku Sampai&nbsp;
+                          <strong v-if="terms.paid.date">{{ new Date(terms.paid.date) | date }}</strong>
+                          <strong v-else>---</strong>
                         </span>
                       </small>
                     </li>
 
                     <li v-if="mapTransactionTerms(terms).btnGenerateVA" style="border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
-                      <select class="form-control form-control-sm" v-model="generateVAforUnpaidInstallmentBankInput">
+                      <select class="form-control form-control-sm" v-model="generateVAforUnpaidInstallmentBankInput[terms._id]">
                         <option value="">Select a bank</option>
                         <option value="BNI">BNI</option>
                         <option value="MANDIRI">Mandiri</option>
                         <option value="PERMATA">Permata</option>
                         <option value="BRI">BRI</option>
                       </select>
-                      <button class="btn btn-outline-danger btn-sm btn-block mt-1"
-                        @click.prevent="generateVAforUnpaidInstallment(data._id, terms)">Generate VA</button>
+                      <button class="btn btn-danger btn-sm btn-block mt-1"
+                        @click.prevent="generateVAforUnpaidInstallment(data, terms)">Generate VA</button>
                     </li>
                   </ul>
                 </td>
@@ -414,7 +416,7 @@ export default {
 
       bankBni: {},
 
-      generateVAforUnpaidInstallmentBankInput: '',
+      generateVAforUnpaidInstallmentBankInput: [],
     };
   },
   watch: {
@@ -538,29 +540,7 @@ export default {
           // clear all fields
           vm.modalUserTransactionInfo = {}
           vm.modalShowViewTransactions = true
-
-          axios.get(`${process.env.VUE_APP_API_URL}/api/approvedtransactions?skip=0&limit=0&user=${user._id}`,{
-            headers: {
-              'Authorization': process.env.VUE_APP_AUTHORIZATION,
-              'x-access-token': localStorage.getItem("auth_token")
-            }
-          }).then(res => {
-            vm.modalUserTransactionInfo = res.data
-
-            console.log('trans', res.data)
-
-            // check reverse i.e. from the last terms down to the downpayment (4-1)
-            // check status if its paid, if so, check the number field, that'll be the total terms
-            vm.modalUserTransactionInfo.forEach(item => {
-              for (let i=item.termins.length-1; i>=0; i--) {
-                if (item.termins[i].paid.status === true) {
-                  item.terms_paid = item.termins[i].number
-                  return
-                }
-              }
-            })
-
-          })
+          vm.indexTransactions(user._id)
           break;
         default:
           alert("error!, contact administrator");
@@ -1162,15 +1142,18 @@ export default {
         paid_date: dat.paid.date
       }
 
+      // reset value of select
+      this.generateVAforUnpaidInstallmentBankInput[dat._id] = ''
+
       responseObj.btnGenerateVA = false
 
       if ( dat.number !== 1 ) {
         if ( (dat.paid.status_code == 201 || dat.paid.status_code == 200) && dat.paid.status ) {
           responseObj.msg = 'Va telah dibayar'
           responseObj.dateLabel = 'Dibayar pada'
-          responseObj.btnGenerateVA = true
         } else if ( dat.paid.payment_id == '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA belum di buat'
+          responseObj.btnGenerateVA = true
         } else if ( dat.paid.payment_id != '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA telah di buat'
           responseObj.dateLabel = 'Dibuat pada'
@@ -1187,26 +1170,54 @@ export default {
     /**
      * Generate VA for unpaid installment
      * 
-     * @param  ObjectId transactionId
-     * @param  ObjectId terminId
+     * @param  ObjectId transaction
+     * @param  ObjectId terminObj
      */
-    generateVAforUnpaidInstallment(transactionId, terminId) {
+    generateVAforUnpaidInstallment(transaction, terminObj) {
       let vm = this
 
       let dataInput = {
-        terminId: terminId._id,
-        bank: vm.generateVAforUnpaidInstallmentBankInput,
+        terminId: terminObj._id,
+        bank: vm.generateVAforUnpaidInstallmentBankInput[terminObj._id],
+      }
+
+      if ( vm.generateVAforUnpaidInstallmentBankInput[terminObj._id] == '' ) {
+        alert('Please select a bank')
+        return false
+      }
+
+      vm.loader = {
+        has: true,
+        message: 'generating'
       }
 
       axios
-        .post(`/api/approvedtransactions/injectva/${transactionId}`, dataInput, vm.requestedHeaders)
+        .post(`/api/approvedtransactions/injectva/${transaction._id}`, dataInput, vm.requestedHeaders)
         .then(res => {
-          alert('Success...')
-          console.log('success', res.data)
+          vm.indexTransactions(transaction.user._id)
+          vm.loader.has = false
+          vm.generateVAforUnpaidInstallmentBankInput[terminObj._id] = ''
+          alert('Successfully generated!')
         })
         .catch(function (error) {
           alert( error.response.data.message )
           console.log(error.response);
+        })
+    },
+
+    /**
+     * Display User Transactions
+     * 
+     * @param  ObjectId userId
+     */
+    indexTransactions(userId) {
+      let vm = this
+      vm.loader.has = true
+      axios
+        .get(`${process.env.VUE_APP_API_URL}/api/approvedtransactions?skip=0&limit=0&user=${userId}`, vm.requestedHeaders)
+        .then(res => {
+          vm.modalUserTransactionInfo = res.data
+          vm.loader.has = false
         })
     },
 

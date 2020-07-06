@@ -182,13 +182,13 @@
       </div>
     </b-modal>
 
-    <b-modal v-model="modalShowViewTransactions" size="90" class="modal-transactions">
+    <b-modal v-model="modalShowViewTransactions" size="95" class="modal-transactions">
       <div slot="modal-header">
         <h4>Transaksi - {{ (modalUserInfo.data.detail)?modalUserInfo.data.detail.name: '' }}</h4>
       </div>
       <div class="row">
         <div class="col">
-          <table class="table table-sm table-bordered">
+          <table class="table table-sm table-bordered tbl-transaction">
             <thead>
               <tr>
                 <th rowspan="2">Transaction #</th>
@@ -214,39 +214,42 @@
                 <td>{{ data.store.name }}</td>
                 <td v-for="terms in data.termins" class="text-center"
                     :class="{
-                      'table-success': mapTransactionTerms(terms).paid_date
+                      'table-success': !mapTransactionTerms(terms).btnGenerateVA,
+                      'table-warning': mapTransactionTerms(terms).btnGenerateVA
                     }">
                   <ul class="list-unstyled mb-0">
                     <li>
                       <strong>{{ mapTransactionTerms(terms).msg }}</strong>
                     </li>
 
-                    <li v-if="mapTransactionTerms(terms).paid_date">
+                    <li v-if="mapTransactionTerms(terms).paid_date" style="line-height: normal" class="mb-2">
                       <small>
-                        {{ mapTransactionTerms(terms).dateLabel }}: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
+                        <strong style="display: block">{{ mapTransactionTerms(terms).dateLabel }}:</strong>
+                        {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
                       </small>
                     </li>
 
-                    <li v-if="terms.number!==1">
+                    <li v-if="terms.number!==1" style="line-height: normal" class="mb-2">
                       <small>
-                        <span style="display: block">
-                          {{ (parseFloat(terms.total) + parseFloat(terms.lateFee)) | currency }}
+                        <span style="display: block; font-size: 1.25rem; line-height: 1" class="my-3">
+                          <strong style="display: block">{{ mapTransactionTerms(terms).total | currency }}</strong>
+                          <small style="font-size: .85rem">Reimbursement: {{ terms.reimbursement }}</small>
                         </span>
                         <span style="display: block">
-                          <strong>Due: {{ new Date(terms.due.date) | date }}</strong>
+                          <strong class="text-danger">Due: {{ new Date(terms.due.date) | date }}</strong>
                         </span>
                       </small>
                     </li>
 
-                    <li v-if="terms.number!==1">
+                    <li v-if="terms.number!==1" style="line-height: normal;">
                       <small>
-                        <span style="display: block">
-                          VA Number: <strong> {{terms.paid.payment_id}}</strong>
+                        <span style="display: block" class="mb-2">
+                          <strong>VA Number:</strong> {{terms.paid.payment_id}}
                         </span>
                         <span style="display: block">
-                          VA Berlaku Sampai&nbsp;
-                          <strong v-if="terms.paid.date">{{ new Date(terms.paid.date) | date }}</strong>
-                          <strong v-else>---</strong>
+                          <strong>VA Berlaku Sampai</strong>&nbsp;
+                          <span v-if="terms.paid.date">{{ new Date(terms.paid.date) | date }}</span>
+                          <span v-else>---</span>
                         </span>
                       </small>
                     </li>
@@ -454,18 +457,6 @@ export default {
     async totalUsers() {
       let vm = this
       vm.showUsersPerPage(1) // initial
-
-      // try {
-      //   let totalRows = await axios.get(`/api/users?status=2&limit=3000`, vm.requestedHeaders)
-      //   vm.totalUserRows = totalRows.data.length
-      //
-      //   vm.showUsersPerPage(1) // initial
-      //
-      // } catch (e) {
-      //   alert(e)
-      //   vm.currentPage = 1
-      //   vm.loader.has = false
-      // }
     },
 
     /**
@@ -545,45 +536,6 @@ export default {
         default:
           alert("error!, contact administrator");
           break;
-      }
-    },
-    /**
-     * This will assign or deduct credit
-     *
-     * @param  obj userData
-     * @param  var @todo the values accepted are 'increase' and 'decrease'
-
-    topUpCredit(userData, todo) {
-      let vm = this
-      // let todo = "Assign" ? vm.inputCredit : -vm.inputCredit
-      let dataInput = { user: userData.data._id }
-
-      // Note: simplify
-      if (todo == "Assign") {
-        Object.assign(dataInput, { add: parseFloat(vm.inputCredit) })
-      } else {
-        Object.assign(dataInput, { subtract: parseFloat(vm.inputCredit) })
-      }
-
-      if (confirm(`${todo} ${vm.inputCredit} credit?`)) {
-        axios.post(`${process.env.VUE_APP_API_URL}/api/users/updatecredit`, dataInput, {
-          headers: {
-            'Authorization': process.env.VUE_APP_AUTHORIZATION,
-            'x-access-token': localStorage.getItem("auth_token")
-          }
-        }).then(() => {
-            alert("Credit Balance Updated!");
-            // vm.users[userData.index].credit = parseFloat(vm.users[userData.index].credit) + parseFloat(dataInput.credit)
-            axios.get(`${process.env.VUE_APP_API_URL}/api/users?limit=50&skip=0&status=2`, {
-              headers: {
-                'Authorization': process.env.VUE_APP_AUTHORIZATION,
-                'x-access-token': localStorage.getItem("auth_token")
-              }
-            }).then(res2 => vm.users = res2.data)
-
-            vm.inputCredit = 0
-            vm.modalAssignCredit = false
-          });
       }
     },
 
@@ -676,266 +628,7 @@ export default {
         })
 
     },
-    // refreshData(user) {
-    //   this.resetAdvanceAi()
-    //   this.getAI(user)
-    //   this.checkEmergencyNumber(user.mobileNumber)
-    //   this.checkImeiUser(user.mobileNumber)
-    //   this.getActivityMailUSer()
-    //   this.getAllTypeUserSalary()
-    //   this.getAllIndustry()
-    // },
-    // resetAdvanceAi() {
-    //   this.advanceAI = {
-    //     blacklist: {},
-    //     face_blackList: {},
-    //     face_comparison: {},
-    //     face_search: {},
-    //     fraud_score: {},
-    //     multi_platform: {},
-    //     tele_check: {},
-    //     ocr: {},
-    //     npwpCheck: ''
-    //   }
-    //
-    //   this.faceSeacrhResult = [],
-    //   this.multiPlatformResult = {},
-    //
-    //   this.scoreNameMatch = {
-    //     score: 0,
-    //     colorScore: 'red'
-    //   },
-    //   this.customStyleUser = {
-    //     userSalary: '#fff'
-    //   }
-    // },
-    // getAI(user) {
-    //   console.log('dada', user)
-    //   // debug user id
-    //   // let UserId = { userid: '5ceac5c88f057759ee805c49' }
-    //   // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
-    //   // let UserId = { userid: '5dcbbd079bd8c04f071a9e02' }
-    //   // let UserId = { userid: '5df0b2f1b9495d52e7d5e676' }
-    //   let UserId = { userid: user._id }
-    //
-    //   axios
-    //     .post('https://mon.empatkali.co.id/advanceai',
-    //       UserId
-    //     )
-    //     .then(res => {
-    //
-    //       if (res.data[0]) {
-    //         // console.log('res', res.data[0])
-    //
-    //         if (res.data[0].blacklist) this.advanceAI.blacklist = JSON.parse(res.data[0].blacklist)
-    //         if (res.data[0]['face blacklist']) this.advanceAI.face_blackList = JSON.parse(res.data[0]['face blacklist'])
-    //         if (res.data[0]['face comparison']) this.advanceAI.face_comparison = JSON.parse(res.data[0]['face comparison'])
-    //         if (res.data[0]['face search']) {
-    //             this.advanceAI.face_search = JSON.parse(res.data[0]['face search'])
-    //             this.faceSeacrhResult = this.advanceAI.face_search.data
-    //         }
-    //         if (res.data[0]['fraud score']) this.advanceAI.fraud_score = JSON.parse(res.data[0]['fraud score'])
-    //         if (res.data[0]['multi platform']) {
-    //           this.advanceAI.multi_platform = JSON.parse(res.data[0]['multi platform'])
-    //           // this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo
-    //           this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo.filter(data => data.queryCount <= 20).pop()
-    //         }
-    //         if (res.data[0]['tele check']) {
-    //             this.advanceAI.tele_check = JSON.parse(res.data[0]['tele check'])
-    //             const statusTeleCheck = this.advanceAI.tele_check.data.status
-    //             switch (statusTeleCheck) {
-    //               case 1:
-    //               this.advanceAI.tele_check.data.status_msg = 'Called number has ringer'
-    //               break;
-    //               case 2:
-    //               this.advanceAI.tele_check.data.status_msg = 'Empty Number'
-    //               break;
-    //               case 3:
-    //               this.advanceAI.tele_check.data.status_msg = 'Busy Line'
-    //               break;
-    //               case 4:
-    //               this.advanceAI.tele_check.data.status_msg = 'Powered Off'
-    //               break;
-    //               case 5:
-    //               this.advanceAI.tele_check.data.status_msg = 'Not Available'
-    //               break;
-    //               case 6:
-    //               this.advanceAI.tele_check.data.status_msg = 'Emporarily unable to connect'
-    //               break;
-    //               case -1:
-    //               this.advanceAI.tele_check.data.status_msg = 'Abnormal line, unknown state'
-    //               break;
-    //               default:
-    //             }
-    //         }
-    //         if (res.data[0].ocr) {
-    //           this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
-    //         }
-    //         if (res.data[0].npwp) {
-    //           this.advanceAI.npwpCheck = JSON.parse(res.data[0].npwp).data[0]
-    //           if (this.advanceAI.npwpCheck == undefined) {
-    //               this.advanceAI.npwpCheck = { nama: '--' }
-    //           }
-    //         }
-    //
-    //         let fixName = ''
-    //         if (this.advanceAI.ocr.data) {
-    //           fixName = this.advanceAI.ocr.data.name
-    //           console.log('ocr exist')
-    //         }
-    //
-    //         // if (this.advanceAI.npwpCheck) {
-    //         //   fixName = this.advanceAI.npwpCheck.nama
-    //         // }
-    //
-    //         console.log('fixName', fixName)
-    //
-    //         this.advanceAI.nameMatch = [
-    //           { data: 'phone', value: 0 },
-    //           { data: 'nameOcr', value: 0 },
-    //           { data: 'tele_id', value: 0 },
-    //           { data: 'nameNpwp', value: 0 }
-    //         ]
-    //
-    //         if (user.detail) {
-    //           user.detail.name = user.detail.name.trim()
-    //         }
-    //
-    //         console.log('refresh', user)
-    //
-    //         const dataNameToBeCompare = {
-    //           phone: user.detail.name.toUpperCase(),
-    //           nameOcr: this.advanceAI.ocr.data ? this.advanceAI.ocr.data.name.toUpperCase() : '-',
-    //           // tele_id: this.advanceAI.tele_check.data.name ? this.advanceAI.tele_check.data.name.toUpperCase() : this.advanceAI.tele_check.data.name = '-',
-    //           nameNpwp: this.advanceAI.npwpCheck ? this.advanceAI.npwpCheck.nama.toUpperCase() : '--'
-    //         }
-    //
-    //         console.log('npwp', dataNameToBeCompare.nameNpwp)
-    //
-    //         // dataNameToBeCompare.nameOcr = 'JAKA SUNTARA' //debug name similar
-    //         //condition to match all name
-    //         if (fixName == dataNameToBeCompare.phone) {
-    //           this.advanceAI.nameMatch[0].value = 33
-    //           console.log('=> phone')
-    //         }
-    //         if (fixName == dataNameToBeCompare.nameOcr) {
-    //           this.advanceAI.nameMatch[1].value = 33
-    //           console.log('=> nameOcr')
-    //         }
-    //         // if (fixName == dataNameToBeCompare.tele_id) this.advanceAI.nameMatch[2].value = 25
-    //
-    //         if (fixName == dataNameToBeCompare.nameNpwp) {
-    //           if (fixName != '--') {
-    //             this.advanceAI.nameMatch[3].value = 33
-    //             console.log('=> nameNpwp')
-    //           }
-    //         }
-    //
-    //         console.log('dataNameToBeCompare', dataNameToBeCompare)
-    //
-    //         const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
-    //           return sum + data.value;
-    //         }, 0);
-    //
-    //         this.scoreNameMatch.score = sumScoreNameMatch(this.advanceAI.nameMatch)
-    //
-    //         if (this.scoreNameMatch.score >= 80) {
-    //           this.scoreNameMatch.colorScore = '#70AD47'
-    //         }
-    //         else if (this.scoreNameMatch.score >= 60) {
-    //           this.scoreNameMatch.colorScore = 'yellow'
-    //         }
-    //         else {
-    //           this.scoreNameMatch.colorScore = 'red'
-    //         }
-    //
-    //         console.log('colorScore', this.scoreNameMatch)
-    //         console.log('advanceAI', this.advanceAI)
-    //         console.log('userDetails', this.userDetails)
-    //       }
-    //       else {
-    //         console.log('advanceAI', 'data null')
-    //       }
-    //
-    //     })
-    //     .catch(err => {
-    //       console.log(err.res)
-    //     })
-    // },
-    // getNpwp(params) {
-    //   let vm = this;
-    //
-    //   axios.get(`/api/users/npwpname/${params}`, vm.requestedHeaders)
-    //   .then(function (response) {
-    //     if (response) {
-    //       vm.userDetails.nameOfNpwp = response.data.data[0]
-    //       console.log('haha', vm.userDetails)
-    //     }
-    //
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   })
-    //
-    // },
-    // checkEmergencyNumber(params) {
-    //   let vm = this;
-    //
-    //   axios.get(`api/users/checkemergencyphone?mn=${params}`, vm.requestedHeaders)
-    //   .then(function (response) {
-    //     if (response) {
-    //       vm.userDetails.checkEmergencyNumber = response.data.data
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   })
-    // },
-    // checkImeiUser(params) {
-    //   let vm = this;
-    //
-    //   axios.get(`api/users/checkuserimei?mn=${params}`, vm.requestedHeaders)
-    //   .then(function (response) {
-    //     if (response) {
-    //       vm.userDetails.checkImeiUserNumber = response.data.data
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   })
-    // },
-    // getAllTypeUserSalary() {
-    //   let vm = this;
-    //
-    //   axios.get(`api/usersalary`, vm.requestedHeaders)
-    //   .then(function (response) {
-    //     if (response) {
-    //       let userSalary = vm.userDetails.detail.penghasilan
-    //       // userSalary = 'gol3' //debug userSalary
-    //       let findSalary = response.data.filter(data => data.type == userSalary)
-    //       if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
-    //         vm.customStyleUser.userSalary = 'orange'
-    //       }
-    //       vm.userDetails.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   })
-    // },
-    // getAllIndustry() {
-    //   // Industry
-		// 	fetch('__tmp-files/industry.json')
-		// 	  .then(resp => resp.json()) // Transform the data into JSON
-		// 	  .then(resIndustry => {
-    //       if (this.userDetails.detail) {
-    //         // this.userDetails.detail.industri = 'industri11' //debug industry
-    //         let findIndustry = resIndustry.filter(data => data._id == this.userDetails.detail.industri)
-    //         this.userDetails.detail.industri_label = findIndustry[0].label
-    //         console.log('userDetails', this.userDetails.detail.industri_label)
-    //       }
-		// 	  })
-    // },
+
     openModalUserDetails(user, index) {
       let vm = this;
       // reset every time the modal is clicked
@@ -944,14 +637,6 @@ export default {
 
       vm.userDetails = user
       vm.userDetails.index = index
-      // user.mobileNumber = '087769675686'//debug mobileNumber already exist as user 4x, check Emergency Number
-      // user.mobileNumber = '08745468983'//debug check imei user already exist as imei number user 4x
-      // vm.getAI(user)
-      // vm.checkEmergencyNumber(user.mobileNumber)
-      // vm.checkImeiUser(user.mobileNumber)
-      // vm.getActivityMailUSer()
-      // vm.getAllTypeUserSalary()
-      // vm.getAllIndustry()
 
       vm.modalUserShow = true
 
@@ -983,68 +668,6 @@ export default {
         navbar: false, title: false, fullscreen: false
       }
     },
-    // getActivityMailUSer() {
-    //   let vm = this;
-    //   const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
-    //   axios
-    //     .post('https://mon.empatkali.co.id/jhon2', {
-    //       mobileNumber: vm.userDetails.mobileNumber,
-    //       'detail.email': vm.userDetails.detail.email,
-    //       'ktp.number': vm.userDetails.ktp.number,
-    //       npwp: vm.userDetails.npwp,
-    //       'detail.name': vm.userDetails.detail.name,
-    //       status: vm.userDetails.status,
-    //       adminLogin: {
-    //         _id: tokenAuth._id,
-    //         email: tokenAuth.email
-    //       }
-    //     })
-    //     .then(res => {
-    //       vm.logEmail = JSON.parse(res.data.email)
-    //       console.log('vm.logEmail', vm.logEmail[0])
-    //     })
-    //     .catch(err => {
-    //       console.log(err.response)
-    //     })
-    //
-    // },
-    // addCommentReview() {
-    //   let vm = this;
-    //
-    //   if (vm.commentReviewsText == '') {
-    //       vm.loader.has = false
-    //       // vm.$emit('listener', response.data)
-    //       vm.$swal(
-    //         'Failed!',
-    //         'Fill your comment',
-    //         'error'
-    //       )
-    //   } else {
-    //     axios.post(`api/users/comment-review-status`, {
-    //       user: vm.userDetails._id,
-    //       text: vm.commentReviewsText,
-    //       commentBy: vm.admins.username
-    //     }, vm.requestedHeaders)
-    //     .then((response) => {
-    //       vm.loader.has = false
-    //       vm.$emit('listener', response.data)
-    //       vm.$swal(
-    //         'Success!',
-    //         'adding comment',
-    //         'success'
-    //       )
-    //       vm.refreshHistoryComment(response.data._id)
-    //       vm.showUsersPerPage(1)
-    //       vm.commentReviewsText = ''
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     })
-    //   }
-    // },
-    // dateTime(date) {
-    //   return this.$moment(date).format('MMM D YYYY, h:mm:ss a')
-    // },
 
     /**
      * Identify Bank Bin
@@ -1141,6 +764,9 @@ export default {
         payment_id: dat.paid.payment_id,
         paid_date: dat.paid.date
       }
+
+      // Compute total, that may include reimbursement, late fee, etc
+      responseObj.total = ( parseFloat(dat.total) + parseFloat(dat.lateFee) ) + (dat.reimbursement)
 
       // reset value of select
       this.generateVAforUnpaidInstallmentBankInput[dat._id] = ''
@@ -1571,4 +1197,11 @@ export default {
     margin-right: 10px !important;
   }
   .c-step-3 .c-images figure:last-child { margin-right: 0 !important }
+
+  .tbl-transaction {
+    border: 1px solid #aaa;
+    th, td {
+      border: 1px solid #aaa;      
+    }
+  }
 </style>

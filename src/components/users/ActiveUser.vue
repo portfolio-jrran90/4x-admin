@@ -254,6 +254,13 @@
                       </small>
                     </li>
 
+
+                    <li v-if="mapTransactionTerms(terms).btnCheckPayment" style="border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
+                      <button class="btn btn-warning btn-sm btn-block"
+                        @click.prevent="checkPayment(data, terms)">Check Payment</button>
+                    </li>
+
+
                     <li v-if="mapTransactionTerms(terms).btnGenerateVA" style="border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
                       <select class="form-control form-control-sm" v-model="generateVAforUnpaidInstallmentBankInput[terms._id]">
                         <option value="">Select a bank</option>
@@ -771,6 +778,7 @@ export default {
       // reset value of select
       this.generateVAforUnpaidInstallmentBankInput[dat._id] = ''
 
+      responseObj.btnCheckPayment = false
       responseObj.btnGenerateVA = false
 
       if ( dat.number !== 1 ) {
@@ -779,10 +787,12 @@ export default {
           responseObj.dateLabel = 'Dibayar pada'
         } else if ( dat.paid.payment_id == '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA belum di buat'
+          responseObj.btnCheckPayment = true
           responseObj.btnGenerateVA = true
         } else if ( dat.paid.payment_id != '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA telah di buat'
           responseObj.dateLabel = 'Dibuat pada'
+          responseObj.btnCheckPayment = true
           responseObj.btnGenerateVA = true
         }
       } else {
@@ -829,6 +839,28 @@ export default {
           alert( error.response.data.message )
           console.log(error.response);
         })
+    },
+
+    async checkPayment(transaction, terminObj) {
+      let vm = this
+      let checkPaymentReq = {
+                              transactionNumber: transaction.transactionNumber,
+                              terminNumber: terminObj.number
+                            }
+      vm.loader = {
+        has: true,
+        message: 'checking'
+      }
+
+      try {
+        let checkPayment = await axios.post('/api/approvedtransactions/checkpayment', checkPaymentReq, vm.requestedHeaders)
+        vm.loader.has = false
+        alert(checkPayment.data)
+      } catch (err) {
+        console.log(err)
+        vm.loader.has = false
+        alert('Tidak ada pembayaran untuk transaksi ini.')
+      }
     },
 
     /**

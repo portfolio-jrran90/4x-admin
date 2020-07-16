@@ -279,8 +279,8 @@
               :center="{
                 /* lat: parseFloat(-6.349415014651284),
                 lng: parseFloat(106.9484114391151) */
-                lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
-                lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
+                lat: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[1] : 0),
+                lng: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[0] : 0)
               }"
               :zoom="10"
               style="height: 300px"
@@ -289,8 +289,8 @@
                 :position="{
                   /* lat: parseFloat(-6.349415014651284),
                   lng: parseFloat(106.9484114391151) */
-                  lat: parseFloat(userDetails.loc ? userDetails.loc.coordinates[1] : 0),
-                  lng: parseFloat(userDetails.loc ? userDetails.loc.coordinates[0] : 0)
+                  lat: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[1] : 0),
+                  lng: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[0] : 0)
                 }"
               />
             </GmapMap>

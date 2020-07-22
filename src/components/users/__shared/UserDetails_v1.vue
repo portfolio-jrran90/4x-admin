@@ -17,10 +17,8 @@
             <tr>
               <th class="customTh">Apakah nama user cocok dengan sumber lain?</th>
               <td class="customTd" :style="`background-color: ${ scoreNameMatch.colorScore }; font-weight: bold; text-align: center; color: black;`">{{ scoreNameMatch.score }}%</td>
-              <!-- <td :style="`background-color: #70AD47; font-weight: bold; text-align: center; width: 149px; color: black;`">-</td> -->
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ userDetails.detail ? userDetails.detail.name : '-' }} </td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.ocr.data ? advanceAI.ocr.data.name : '-' }} </td>
-              <!-- <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> - </td> -->
               <td :style="`background-color: ${customStyleUser.ktp_validation.bgColor}; text-transform: uppercase; font-weight: bold; text-align: center; color: ${customStyleUser.ktp_validation.colorText};`">{{ customStyleUser.ktp_validation.textValidation }}</td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;">{{ advanceAI.npwpCheck ? advanceAI.npwpCheck : '-' }}</td>
               <td style="background-color: #70AD47; text-transform: uppercase; font-weight: bold; text-align: center; color: black;"> {{ advanceAI.tele_check.data ? advanceAI.tele_check.data.status_msg : '-' }} </td>
@@ -112,6 +110,50 @@
 
     <div class="row col-xl-12 other-user-information" style="padding: 14px;">
       <div class="col-xl-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
+        
+  
+        <!-- awts -->
+        <div class="c-AFPI" v-if="status == 'pending'">
+          <h4 style="background-color: #4372C7; color: #fff" class="py-2 px-3 mb-0">AFPI Data Attribute</h4>
+          <table class="table table-striped">
+            <tr>
+              <th style="background-color: black; color: #fff; width: 200px">Attribute</th>
+              <th style="background-color: black; color: #fff;">Value</th>
+            </tr>
+            <tbody>
+              <tr>
+                <td><strong>Name Borrower</strong></td>
+                <td>{{ responseAFPI.pinjaman[0].nama_borrower }}</td>
+              </tr>
+              <tr>
+                <td><strong>Loan Amount</strong></td>
+                <td>{{ responseAFPI.pinjaman[0].nilai_pendanaan }}</td>
+              </tr>
+              <tr>
+                <td><strong>Loan Credit</strong></td>
+                <td>{{ responseAFPI.pinjaman[0].sisa_pinjaman_berjalan }}</td>
+              </tr>
+              <tr>
+                <td><strong>Due Date</strong></td>
+                <td>{{ responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman }}</td>
+              </tr>
+              <tr>
+                <td><strong>DPD Terakhir</strong></td>
+                <td>{{ responseAFPI.pinjaman[0].dpd_terakhir }}</td>
+              </tr>
+              <tr>
+                <td><strong>DPD Max</strong></td>
+                <td>{{ responseAFPI.pinjaman[0].dpd_max }}</td>
+              </tr>
+              <tr>
+                <td><strong>Loan Status</strong></td>
+                <td>{{ responseAFPI.pinjaman[0].status_pinjaman_ket }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
         <div class="user-info-left">
           <table class="table table-striped">
             <tr>
@@ -266,7 +308,7 @@
           <button class="col-5 btn btn-secondary btn-lg" @click="resendEmail('contract')">Resend Contract</button> -->
         </div>
     </div>
-      <div class="col-xl-5 user-location" style="padding-left: 0px; padding-right: 0px;">
+      <div class="col-xl-5 user-location" style="padding-left: 0px; padding-right: 0px;" :class="{ 'mt-44px':  status == 'pending' }">
         <table class="table table-striped" style="margin-bottom: 0px;">
           <tr>
             <th style="background-color: black; text-align: center; color: #fff;">Location</th>
@@ -277,8 +319,6 @@
           <div class="map-first" style="height:347px;">
             <GmapMap
               :center="{
-                /* lat: parseFloat(-6.349415014651284),
-                lng: parseFloat(106.9484114391151) */
                 lat: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[1] : 0),
                 lng: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[0] : 0)
               }"
@@ -287,8 +327,6 @@
             >
               <GmapMarker
                 :position="{
-                  /* lat: parseFloat(-6.349415014651284),
-                  lng: parseFloat(106.9484114391151) */
                   lat: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[1] : 0),
                   lng: parseFloat(userDetails.registrationLoc ? userDetails.registrationLoc.coordinates[0] : 0)
                 }"
@@ -590,6 +628,8 @@ export default {
       totalUserRows: 0,
       perPage: 12, // default
 
+      responseAFPI: {},
+
       // Search
       search: {
         filterByOption: {}, // ex. name, email, mobile number, etc.
@@ -684,6 +724,7 @@ export default {
     this.getAllTypeUserSalary()
     this.getAllIndustry()
     this.getDanaBalance()
+    this.getAFPI()
   },
   methods: {
     async totalUsers() {
@@ -1384,6 +1425,16 @@ export default {
         console.log(error);
       })
     },
+
+    /**
+     * Get AFPI data
+     */
+    async getAFPI() {
+      axios
+        .get(`https://mon.empatkali.co.id/dataafpi.php?ktp=XXXYYYYY`)
+        .then(res => this.responseAFPI = res.data)
+    },
+
   }
 }
 </script>
@@ -1763,4 +1814,22 @@ export default {
     margin-right: 10px !important;
   }
   .c-step-3 .c-images figure:last-child { margin-right: 0 !important }
+
+
+
+
+
+.c-AFPI {
+  tr, th, td {
+    padding: 4px 4px 4px 8px !important;
+    margin: 0 !important;
+  }
+  tbody tr {
+    border: 1px solid #C8C8C8;
+  }
+}
+
+.mt-44px { margin-top: 44px }
+
+
 </style>

@@ -95,22 +95,25 @@
               </tr>
               
               <!-- Only on status = pending -->
-              <tr v-if="status == 'pending'">
+              <tr>
                 <td colspan="2" style="background-color: #000; color: #fff">
                   <strong>What names are registered for an E-wallet using this number?</strong>
                 </td>
               </tr>
-              <tr v-if="status == 'pending'">
+              <tr>
                 <td><strong>GoPay</strong></td>
-                <td>XXXXXXX (Verified)</td>
+                <td v-if="advanceAI.gopay.ewallet_account_name != undefined">{{ `${advanceAI.gopay.ewallet_account_name} (${advanceAI.gopay.kyc_status})` }}</td>
+                <td v-if="advanceAI.gopay.ewallet_account_name == undefined">---</td>
               </tr>
-              <tr v-if="status == 'pending'">
+              <tr>
                 <td><strong>OVO</strong></td>
-                <td>XXXXXXX (Not Verified)</td>
+                <td v-if="advanceAI.ovo.ewallet_account_name != undefined">{{ `${advanceAI.ovo.ewallet_account_name} (missing kyc_status)` }}</td>
+                <td v-if="advanceAI.gopay.ewallet_account_name == undefined">---</td>
               </tr>
-              <tr v-if="status == 'pending'">
+              <tr>
                 <td><strong>LinkAja</strong></td>
-                <td>not registered</td>
+                <td v-if="advanceAI.linkaja.ewallet_account_name != undefined">{{ `${advanceAI.linkaja.ewallet_account_name} (${advanceAI.linkaja.kyc_status})` }}</td>
+                <td v-if="advanceAI.gopay.ewallet_account_name == undefined">---</td>
               </tr>
               <!-- ./ Only on status = pending -->
 
@@ -132,8 +135,6 @@
     <div class="row col-xl-12 other-user-information" style="padding: 14px;">
       <div class="col-xl-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
         
-  
-        <!-- awts -->
         <div class="c-AFPI" v-if="status == 'pending'">
           <h4 style="background-color: #4372C7; color: #fff" class="py-2 px-3 mb-0">AFPI Data Attribute</h4>
           <table class="table table-striped">
@@ -736,7 +737,7 @@ export default {
   },
   created() {
     // console.log('component', this.userDetails)
-    console.log('status', this.status)
+    // console.log('status', this.status)
     this.getAdmin()
     this.getAI(this.userDetails)
     this.checkEmergencyNumber(this.userDetails._id)
@@ -785,7 +786,7 @@ export default {
       try {
         let usersPerPage = await axios.get(url, vm.requestedHeaders)
         vm.users = usersPerPage.data
-        console.log('agung', usersPerPage.data)
+        // console.log('agung', usersPerPage.data)
         // if query string object is passed, load, otherwise, no changes
         if (queryStringObj!==undefined) {
           vm.search.showResult = true
@@ -958,7 +959,7 @@ export default {
       }
     },
     getAI(user) {
-      console.log('user props',user)
+      // console.log('user props',user)
       // debug user id
       // let UserId = { userid: '5ceac5c88f057759ee805c49' }
       // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
@@ -975,17 +976,27 @@ export default {
         .then(res => {
 
           if (res.data[0]) {
-            console.log( '1 FIRST GET', res.data[0] )
+            // console.log( '1 FIRST GET', res.data[0] )
+            console.log('awts', res.data[0])
+            // console.log('gopay', JSON.parse(res.data[0].GOPAY))
+            console.log('gopay', res.data[0].hasOwnProperty('GOPAY'))
+            console.log('ovo', res.data[0].hasOwnProperty('OVO'))
+            console.log('linkaja', res.data[0].hasOwnProperty('LINKAJA'))
+
+            this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
+            this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].GOPAY).result : '---'
+            this.advanceAI.linkaja = res.data[0].hasOwnProperty('LINKAJA') ? JSON.parse(res.data[0].GOPAY).result : '---'
+            // awts
 
             let fixName = 'empty'
             if (res.data[0].ocr) {
 
-              console.log('decode  FIRST GET', JSON.parse(res.data[0].ocr) )
+              // console.log('decode  FIRST GET', JSON.parse(res.data[0].ocr) )
 
               if ( JSON.parse(res.data[0].ocr).data ) {
                 this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
                 fixName = JSON.parse(res.data[0].ocr).data.name
-                console.log('2 ocr exist', this.advanceAI.ocr)
+                // console.log('2 ocr exist', this.advanceAI.ocr)
               }
               else {
                 // this.advanceAI.ocr.data.name = JSON.parse(res.data[0].ocr).code
@@ -994,7 +1005,7 @@ export default {
                     name: JSON.parse(res.data[0].ocr).code
                   }
                 }
-                console.log('2 ocr errorc data')
+                // console.log('2 ocr errorc data')
               }
 
               // this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
@@ -1004,7 +1015,7 @@ export default {
 
             if (res.data[0].ktp) {
 
-              console.log('ktp Validation', JSON.parse(res.data[0].ktp))
+              // console.log('ktp Validation', JSON.parse(res.data[0].ktp))
               let ktpCheck = JSON.parse(res.data[0].ktp)
               if (ktpCheck.name_matches)
               {
@@ -1026,15 +1037,15 @@ export default {
             // '{"data":[{"npwp":"921873758045000","nama":"SUPARMAN"}],"status":1,"ketStatus":null,"message":null}'
 
             if (res.data[0].npwp) {
-              console.log('npwp if', res.data[0].npwp)
+              // console.log('npwp if', res.data[0].npwp)
 
               if (typeof res.data[0].npwp == 'number') {
-                console.log('npwp is number')
+                // console.log('npwp is number')
                 this.advanceAI.npwpCheck = res.data[0].npwp
               }
 
               else if (typeof res.data[0].npwp == 'string') {
-                console.log('npwp is string data', 'length =>', res.data[0].npwp.length)
+                // console.log('npwp is string data', 'length =>', res.data[0].npwp.length)
 
                 if (res.data[0].npwp.length <= 16) {
                   this.advanceAI.npwpCheck = res.data[0].npwp
@@ -1056,7 +1067,7 @@ export default {
                   }
                 }
 
-                console.log('npwp lolos')
+                // console.log('npwp lolos')
               }
             }
 
@@ -1084,15 +1095,15 @@ export default {
               nameNpwp: this.advanceAI.npwpCheck
             }
 
-            console.log('npwp from davin', dataNameToBeCompare.nameNpwp)
+            // console.log('npwp from davin', dataNameToBeCompare.nameNpwp)
 
             // let fixName = JSON.parse(res.data[0].ocr).data.name
-            console.log('FIX NAME', fixName)
-            console.log('3')
+            // console.log('FIX NAME', fixName)
+            // console.log('3')
 
             if (fixName == dataNameToBeCompare.phone) {
               this.advanceAI.nameMatch[0].value = 33
-              console.log('=> phone')
+              // console.log('=> phone')
             }
             if (fixName == dataNameToBeCompare.nameOcr) {
               if (fixName == '') {
@@ -1100,18 +1111,18 @@ export default {
                 this.advanceAI.ocr.data.name = '-'
               } else {
                 this.advanceAI.nameMatch[1].value = 33
-                console.log('=> nameOcr')
+                // console.log('=> nameOcr')
               }
             }
 
             if (fixName == dataNameToBeCompare.nameNpwp) {
               if (fixName != '--') {
                 this.advanceAI.nameMatch[3].value = 33
-                console.log('=> nameNpwp')
+                // console.log('=> nameNpwp')
               }
             }
 
-            console.log('dataNameToBeCompare', dataNameToBeCompare)
+            // console.log('dataNameToBeCompare', dataNameToBeCompare)
 
             const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
               return sum + data.value;
@@ -1140,7 +1151,7 @@ export default {
                 this.faceSeacrhResult = this.advanceAI.face_search.data
             }
             if (res.data[0]['fraud score']) {
-              console.log('fraud score', res.data[0]['fraud score'])
+              // console.log('fraud score', res.data[0]['fraud score'])
 
             }
             if (res.data[0]['trusting']) {
@@ -1160,23 +1171,23 @@ export default {
                 this.customStyleUser.trusting_social.colorText = '#fff';
               }
 
-              console.log('trustingSocial', trustingSocial)
-              console.log('customStyleUser.trusting_social', this.customStyleUser.trusting_social.bgColor)
+              // console.log('trustingSocial', trustingSocial)
+              // console.log('customStyleUser.trusting_social', this.customStyleUser.trusting_social.bgColor)
             }
 
 
             if (res.data[0]['multi platform']) {
-              console.log('multi platform init', JSON.parse(res.data[0]['multi platform']))
+              // console.log('multi platform init', JSON.parse(res.data[0]['multi platform']))
 
               if (JSON.parse(res.data[0]['multi platform']).data == null) {
-                console.log('multi_platform kosong')
+                // console.log('multi_platform kosong')
                 this.multiPlatformResult = {}
               } else {
-                console.log('multi_platform existing')
+                // console.log('multi_platform existing')
                 this.advanceAI.multi_platform = JSON.parse(res.data[0]['multi platform'])
                 this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo.pop()
                 // this.multiPlatformResult = this.advanceAI.multi_platform.data.statistics.statisticCustomerInfo.filter(data => data.queryCount <= 20).pop()
-                console.log('result multiPlatformResult', this.multiPlatformResult)
+                // console.log('result multiPlatformResult', this.multiPlatformResult)
                 if (this.multiPlatformResult.queryCount > 20) {
                   this.customStyleUser.multiPlatform.bgColor = 'red'
                   this.customStyleUser.multiPlatform.colorText = '#fff'
@@ -1185,8 +1196,8 @@ export default {
 
             }
 
-            console.log('colorScore', this.scoreNameMatch)
-            console.log('advanceAI', this.advanceAI)
+            // console.log('colorScore', this.scoreNameMatch)
+            // console.log('advanceAI', this.advanceAI)
 
             if (res.data[0]['tele check']) {
                 this.advanceAI.tele_check = JSON.parse(res.data[0]['tele check'])
@@ -1221,7 +1232,7 @@ export default {
                 }
             }
 
-            console.log('FINISH')
+            // console.log('FINISH')
           }
           else {
             console.log('advanceAI', 'data null')
@@ -1239,7 +1250,7 @@ export default {
       .then(function (response) {
         if (response) {
           vm.userDetails.nameOfNpwp = response.data.data[0]
-          console.log('haha', vm.userDetails)
+          // console.log('haha', vm.userDetails)
         }
 
       })
@@ -1251,7 +1262,7 @@ export default {
     showResultCheckEmergency() {
       let vm = this
       vm.modalCheckLIstEmergency = true
-      console.log('check', vm.userDetails.listOfCheckEmergencyNumber)
+      // console.log('check', vm.userDetails.listOfCheckEmergencyNumber)
     },
     showResultBlackList() {
       let vm = this
@@ -1263,7 +1274,7 @@ export default {
       .then(function (response) {
         if (response) {
           if (response.data.isUsedAsEmergencyContact.length > 0) {
-            console.log('checkEmergencyNumber', response.data)
+            // console.log('checkEmergencyNumber', response.data)
             vm.userDetails.checkEmergencyNumber = true
             vm.userDetails.listOfCheckEmergencyNumber = response.data.isUsedAsEmergencyContact
           }
@@ -1362,7 +1373,7 @@ export default {
         .then(res => {
           // vm.dataPendukung = res.data.kontrak
 
-          console.log('dataPendukung', res.data)
+          // console.log('dataPendukung', res.data)
 
           if (res.data)
           {
@@ -1455,7 +1466,6 @@ export default {
         .get(`https://mon.empatkali.co.id/dataafpi.php?ktp=XXXYYYYY`)
         .then(res => this.responseAFPI = res.data)
     },
-
   }
 }
 </script>
@@ -1835,10 +1845,6 @@ export default {
     margin-right: 10px !important;
   }
   .c-step-3 .c-images figure:last-child { margin-right: 0 !important }
-
-
-
-
 
 .c-AFPI {
   tr, th, td {

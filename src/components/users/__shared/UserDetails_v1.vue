@@ -93,6 +93,27 @@
                 <th>Apakah user tidak membayar kembali pinjaman lainnya?</th>
                 <td style="background-color: #FFC004; text-align: center; font-weight: bold; color: black;">No Record</td>
               </tr>
+              
+              <!-- Only on status = pending -->
+              <tr v-if="status == 'pending'">
+                <td colspan="2" style="background-color: #000; color: #fff">
+                  <strong>What names are registered for an E-wallet using this number?</strong>
+                </td>
+              </tr>
+              <tr v-if="status == 'pending'">
+                <td><strong>GoPay</strong></td>
+                <td>XXXXXXX (Verified)</td>
+              </tr>
+              <tr v-if="status == 'pending'">
+                <td><strong>OVO</strong></td>
+                <td>XXXXXXX (Not Verified)</td>
+              </tr>
+              <tr v-if="status == 'pending'">
+                <td><strong>LinkAja</strong></td>
+                <td>not registered</td>
+              </tr>
+              <!-- ./ Only on status = pending -->
+
             </tbody>
           </table>
 

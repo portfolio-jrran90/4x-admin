@@ -135,7 +135,7 @@
     <div class="row col-xl-12 other-user-information" style="padding: 14px;">
       <div class="col-xl-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
         
-        <div class="c-AFPI" v-if="status == 'pending'">
+        <!-- <div class="c-AFPI" v-if="status == 'pending'">
           <h4 style="background-color: #4372C7; color: #fff" class="py-2 px-3 mb-0">AFPI Data Attribute</h4>
           <table class="table table-striped">
             <tr>
@@ -173,7 +173,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </div> -->
 
 
         <div class="user-info-left">
@@ -330,7 +330,8 @@
           <button class="col-5 btn btn-secondary btn-lg" @click="resendEmail('contract')">Resend Contract</button> -->
         </div>
     </div>
-      <div class="col-xl-5 user-location" style="padding-left: 0px; padding-right: 0px;" :class="{ 'mt-44px':  status == 'pending' }">
+      <!-- <div class="col-xl-5 user-location" style="padding-left: 0px; padding-right: 0px;" :class="{ 'mt-44px':  status == 'pending' }"> -->
+      <div class="col-xl-5 user-location" style="padding-left: 0px; padding-right: 0px;">
         <table class="table table-striped" style="margin-bottom: 0px;">
           <tr>
             <th style="background-color: black; text-align: center; color: #fff;">Location</th>

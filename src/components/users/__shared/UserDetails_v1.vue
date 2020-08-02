@@ -102,18 +102,21 @@
               </tr>
               <tr>
                 <td><strong>GoPay</strong></td>
-                <td v-if="advanceAI.gopay.ewallet_account_name != undefined">{{ `${advanceAI.gopay.ewallet_account_name} (${advanceAI.gopay.kyc_status})` }}</td>
-                <td v-if="advanceAI.gopay.ewallet_account_name == undefined">---</td>
+                <td v-if="advanceAI.gopay && advanceAI.gopay.ewallet_account_name != undefined">{{ `${advanceAI.gopay.ewallet_account_name} (${advanceAI.gopay.kyc_status})` }}</td>
+                <!-- <td v-if="advanceAI.gopay && advanceAI.gopay.ewallet_account_name == undefined">---</td> -->
+                <td v-else>---</td>
               </tr>
               <tr>
                 <td><strong>OVO</strong></td>
-                <td v-if="advanceAI.ovo.ewallet_account_name != undefined">{{ `${advanceAI.ovo.ewallet_account_name} (missing kyc_status)` }}</td>
-                <td v-if="advanceAI.ovo.ewallet_account_name == undefined">---</td>
+                <td v-if="advanceAI.ovo && advanceAI.ovo.ewallet_account_name != undefined">{{ `${advanceAI.ovo.ewallet_account_name} (missing kyc_status)` }}</td>
+                <!-- <td v-if="advanceAI.ovo && advanceAI.ovo.ewallet_account_name == undefined">---</td> -->
+                <td v-else>---</td>
               </tr>
               <tr>
                 <td><strong>LinkAja</strong></td>
-                <td v-if="advanceAI.linkaja.ewallet_account_name != undefined">{{ `${advanceAI.linkaja.ewallet_account_name} (${advanceAI.linkaja.kyc_status})` }}</td>
-                <td v-if="advanceAI.linkaja.ewallet_account_name == undefined">---</td>
+                <td v-if="advanceAI.linkaja && advanceAI.linkaja.ewallet_account_name != undefined">{{ `${advanceAI.linkaja.ewallet_account_name} (${advanceAI.linkaja.kyc_status})` }}</td>
+                <!-- <td v-if="advanceAI.linkaja && advanceAI.linkaja.ewallet_account_name == undefined">---</td> -->
+                <td v-else>---</td>
               </tr>
               <!-- ./ Only on status = pending -->
 
@@ -969,17 +972,28 @@ export default {
       let UserId = { userid: user._id }
 
       // "{"data":[{"npwp":"248519761033000","nama":"OEI ACHMAD WIRIA"}],"status":1,"ketStatus":null,"message":null}"
+      
+      console.log('UserId', UserId)
 
       axios
         .post('https://minion.empatkali.co.id/advanceai.php',
           UserId
         )
         .then(res => {
+          console.log('advanceai result', res.data)
 
           if (res.data[0]) {
             console.log('gopay', res.data[0].hasOwnProperty('GOPAY'))
             console.log('ovo', res.data[0].hasOwnProperty('OVO'))
             console.log('linkaja', res.data[0].hasOwnProperty('LINKAJA'))
+
+            console.log('gopay1', JSON.parse(res.data[0].GOPAY))
+            console.log('ovo1', JSON.parse(res.data[0].OVO))
+            console.log('linkaja1', JSON.parse(res.data[0].LINKAJA))
+
+            console.log('gopay2', JSON.parse(res.data[0].GOPAY).result)
+            console.log('ovo2', JSON.parse(res.data[0].OVO).result)
+            console.log('linkaja2', JSON.parse(res.data[0].LINKAJA).result)
 
             this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
             this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].OVO).result : '---'

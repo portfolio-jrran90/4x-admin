@@ -108,12 +108,12 @@
               <tr>
                 <td><strong>OVO</strong></td>
                 <td v-if="advanceAI.ovo.ewallet_account_name != undefined">{{ `${advanceAI.ovo.ewallet_account_name} (missing kyc_status)` }}</td>
-                <td v-if="advanceAI.gopay.ewallet_account_name == undefined">---</td>
+                <td v-if="advanceAI.ovo.ewallet_account_name == undefined">---</td>
               </tr>
               <tr>
                 <td><strong>LinkAja</strong></td>
                 <td v-if="advanceAI.linkaja.ewallet_account_name != undefined">{{ `${advanceAI.linkaja.ewallet_account_name} (${advanceAI.linkaja.kyc_status})` }}</td>
-                <td v-if="advanceAI.gopay.ewallet_account_name == undefined">---</td>
+                <td v-if="advanceAI.linkaja.ewallet_account_name == undefined">---</td>
               </tr>
               <!-- ./ Only on status = pending -->
 
@@ -977,17 +977,13 @@ export default {
         .then(res => {
 
           if (res.data[0]) {
-            // console.log( '1 FIRST GET', res.data[0] )
-            console.log('awts', res.data[0])
-            // console.log('gopay', JSON.parse(res.data[0].GOPAY))
             console.log('gopay', res.data[0].hasOwnProperty('GOPAY'))
             console.log('ovo', res.data[0].hasOwnProperty('OVO'))
             console.log('linkaja', res.data[0].hasOwnProperty('LINKAJA'))
 
             this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
-            this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].GOPAY).result : '---'
-            this.advanceAI.linkaja = res.data[0].hasOwnProperty('LINKAJA') ? JSON.parse(res.data[0].GOPAY).result : '---'
-            // awts
+            this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].OVO).result : '---'
+            this.advanceAI.linkaja = res.data[0].hasOwnProperty('LINKAJA') ? JSON.parse(res.data[0].LINKAJA).result : '---'
 
             let fixName = 'empty'
             if (res.data[0].ocr) {

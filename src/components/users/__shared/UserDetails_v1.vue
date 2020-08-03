@@ -138,7 +138,8 @@
     <div class="row col-xl-12 other-user-information" style="padding: 14px;">
       <div class="col-xl-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
         
-        <!-- <div class="c-AFPI" v-if="status == 'pending'">
+        <!-- <div class="c-AFPI" v-if="status == 'pending'"> -->
+        <div class="c-AFPI">
           <h4 style="background-color: #4372C7; color: #fff" class="py-2 px-3 mb-0">AFPI Data Attribute</h4>
           <table class="table table-striped">
             <tr>
@@ -176,7 +177,7 @@
               </tr>
             </tbody>
           </table>
-        </div> -->
+        </div>
 
 
         <div class="user-info-left">
@@ -1473,9 +1474,11 @@ export default {
      * Get AFPI data
      */
     async getAFPI() {
+      // console.log('aaa', vm.userDetails.ktp.number)
+      let vm = this
       axios
-        .get(`https://mon.empatkali.co.id/dataafpi.php?ktp=XXXYYYYY`)
-        .then(res => this.responseAFPI = res.data)
+        .get(`https://mon.empatkali.co.id/dataafpi.php?ktp=${vm.userDetails.ktp.number}`)
+        .then(res => vm.responseAFPI = res.data)
     },
   }
 }

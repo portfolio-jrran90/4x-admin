@@ -149,31 +149,31 @@
             <tbody>
               <tr>
                 <td><strong>Name Borrower</strong></td>
-                <td>{{ responseAFPI.pinjaman[0].nama_borrower }}</td>
+                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nama_borrower : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Amount</strong></td>
-                <td>{{ responseAFPI.pinjaman[0].nilai_pendanaan }}</td>
+                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nilai_pendanaan : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Credit</strong></td>
-                <td>{{ responseAFPI.pinjaman[0].sisa_pinjaman_berjalan }}</td>
+                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].sisa_pinjaman_berjalan : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Due Date</strong></td>
-                <td>{{ responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman }}</td>
+                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>DPD Terakhir</strong></td>
-                <td>{{ responseAFPI.pinjaman[0].dpd_terakhir }}</td>
+                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_terakhir : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>DPD Max</strong></td>
-                <td>{{ responseAFPI.pinjaman[0].dpd_max }}</td>
+                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_max : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Status</strong></td>
-                <td>{{ responseAFPI.pinjaman[0].status_pinjaman_ket }}</td>
+                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].status_pinjaman_ket : '---' }}</td>
               </tr>
             </tbody>
           </table>
@@ -1474,11 +1474,21 @@ export default {
      * Get AFPI data
      */
     async getAFPI() {
-      // console.log('aaa', vm.userDetails.ktp.number)
       let vm = this
-      axios
-        .get(`https://mon.empatkali.co.id/dataafpi.php?ktp=${vm.userDetails.ktp.number}`)
-        .then(res => vm.responseAFPI = res.data)
+
+      try {
+        let afpi = await axios.get(`https://mon.empatkali.co.id/dataafpi.php?ktp=${vm.userDetails.ktp.number}`)
+        let pinjaman = []
+        for (let i=0; i<afpi.data.pinjaman.length; i++ ) {
+          if ( afpi.data.pinjaman[i].status_pinjaman_ket != 'Delete' ) {
+            pinjaman.push( afpi.data.pinjaman[i] )
+          }
+        }
+        vm.responseAFPI = Object.assign(afpi.data, { pinjaman: pinjaman })        
+      } catch (e) {
+        console.log('AFPI Error: ', e)
+      }
+
     },
   }
 }

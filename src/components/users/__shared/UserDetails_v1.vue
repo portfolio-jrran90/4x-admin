@@ -103,22 +103,18 @@
               <tr>
                 <td><strong>GoPay</strong></td>
                 <td v-if="advanceAI.gopay && advanceAI.gopay.ewallet_account_name != undefined">{{ `${advanceAI.gopay.ewallet_account_name} (${advanceAI.gopay.kyc_status})` }}</td>
-                <!-- <td v-if="advanceAI.gopay && advanceAI.gopay.ewallet_account_name == undefined">---</td> -->
                 <td v-else>---</td>
               </tr>
               <tr>
                 <td><strong>OVO</strong></td>
                 <td v-if="advanceAI.ovo && advanceAI.ovo.ewallet_account_name != undefined">{{ `${advanceAI.ovo.ewallet_account_name} (missing kyc_status)` }}</td>
-                <!-- <td v-if="advanceAI.ovo && advanceAI.ovo.ewallet_account_name == undefined">---</td> -->
                 <td v-else>---</td>
               </tr>
               <tr>
                 <td><strong>LinkAja</strong></td>
                 <td v-if="advanceAI.linkaja && advanceAI.linkaja.ewallet_account_name != undefined">{{ `${advanceAI.linkaja.ewallet_account_name} (${advanceAI.linkaja.kyc_status})` }}</td>
-                <!-- <td v-if="advanceAI.linkaja && advanceAI.linkaja.ewallet_account_name == undefined">---</td> -->
                 <td v-else>---</td>
               </tr>
-              <!-- ./ Only on status = pending -->
 
             </tbody>
           </table>
@@ -149,31 +145,31 @@
             <tbody>
               <tr>
                 <td><strong>Name Borrower</strong></td>
-                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nama_borrower : '---' }}</td>
+                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nama_borrower : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Amount</strong></td>
-                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nilai_pendanaan : '---' }}</td>
+                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nilai_pendanaan : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Credit</strong></td>
-                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].sisa_pinjaman_berjalan : '---' }}</td>
+                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].sisa_pinjaman_berjalan : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Due Date</strong></td>
-                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman : '---' }}</td>
+                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>DPD Terakhir</strong></td>
-                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_terakhir : '---' }}</td>
+                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_terakhir : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>DPD Max</strong></td>
-                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_max : '---' }}</td>
+                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_max : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Status</strong></td>
-                <td>{{ responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].status_pinjaman_ket : '---' }}</td>
+                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].status_pinjaman_ket : '---') : '---' }}</td>
               </tr>
             </tbody>
           </table>
@@ -984,7 +980,7 @@ export default {
           console.log('advanceai result', res.data)
 
           if (res.data[0]) {
-            console.log('gopay', res.data[0].hasOwnProperty('GOPAY'))
+            /*console.log('gopay', res.data[0].hasOwnProperty('GOPAY'))
             console.log('ovo', res.data[0].hasOwnProperty('OVO'))
             console.log('linkaja', res.data[0].hasOwnProperty('LINKAJA'))
 
@@ -994,7 +990,7 @@ export default {
 
             console.log('gopay2', JSON.parse(res.data[0].GOPAY).result)
             console.log('ovo2', JSON.parse(res.data[0].OVO).result)
-            console.log('linkaja2', JSON.parse(res.data[0].LINKAJA).result)
+            console.log('linkaja2', JSON.parse(res.data[0].LINKAJA).result)*/
 
             this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
             this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].OVO).result : '---'
@@ -1484,7 +1480,8 @@ export default {
             pinjaman.push( afpi.data.pinjaman[i] )
           }
         }
-        vm.responseAFPI = Object.assign(afpi.data, { pinjaman: pinjaman })        
+        vm.responseAFPI = Object.assign(afpi.data, { pinjaman: pinjaman })
+        console.log('response AFPI', vm.responseAFPI)
       } catch (e) {
         console.log('AFPI Error: ', e)
       }

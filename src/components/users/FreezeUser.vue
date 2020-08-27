@@ -134,38 +134,48 @@
                 <td>{{ data.store.name }}</td>
                 <td v-for="terms in data.termins" class="text-center"
                     :class="{
-                      'table-success': mapTransactionTerms(terms).paid_date
+                      'table-success': !mapTransactionTerms(terms).btnGenerateVA,
+                      'table-warning': mapTransactionTerms(terms).btnGenerateVA
                     }">
                   <ul class="list-unstyled mb-0">
                     <li>
                       <strong>{{ mapTransactionTerms(terms).msg }}</strong>
                     </li>
-                    <li v-if="mapTransactionTerms(terms).paid_date">
+
+                    <li v-if="mapTransactionTerms(terms).paid_date" style="line-height: normal" class="mb-2">
                       <small>
-                        {{ mapTransactionTerms(terms).dateLabel }}: {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
+                        <strong style="display: block">{{ mapTransactionTerms(terms).dateLabel }}:</strong>
+                        {{ new Date(mapTransactionTerms(terms).paid_date) | date }}
                       </small>
                     </li>
-                    <li v-if="terms.number!==1">
+
+                    <li v-if="terms.number!==1" style="line-height: normal" class="mb-2">
                       <small>
-                        <span style="display: block">
+                        <strong style="display: block; font-size: 1.25rem; line-height: 1" class="my-3">
                           {{ (parseFloat(terms.total) + parseFloat(terms.lateFee)) | currency }}
-                        </span>
+                        </strong>
                         <span style="display: block">
                           <strong>Due: {{ new Date(terms.due.date) | date }}</strong>
                         </span>
                       </small>
                     </li>
-                    <li v-if="terms.number!==1">
+
+                    <li v-if="terms.number!==1" style="line-height: normal;">
                       <small>
-                        <span style="display: block">
-                          VA Number: <strong>{{terms.paid.payment_id}}</strong>
+                        <span style="display: block" class="mb-2">
+                          <strong>VA Number:</strong> {{terms.paid.payment_id}}
                         </span>
                         <span style="display: block">
-                          VA Berlaku Sampai&nbsp;
-                          <strong v-if="terms.paid.date">{{ new Date(terms.paid.date) | date }}</strong>
-                          <strong v-else>---</strong>
+                          <strong>VA Berlaku Sampai</strong>&nbsp;
+                          <span v-if="terms.paid.date">{{ new Date(terms.paid.date) | date }}</span>
+                          <span v-else>---</span>
                         </span>
                       </small>
+                    </li>
+
+                    <li v-if="mapTransactionTerms(terms).btnCheckPayment" style="border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
+                      <button class="btn btn-warning btn-sm btn-block"
+                        @click.prevent="checkPayment(data, terms)">Check Payment</button>
                     </li>
 
                     <li v-if="mapTransactionTerms(terms).btnGenerateVA" style="border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
@@ -645,9 +655,13 @@ export default {
         paid_date: dat.paid.date
       }
 
+      // Compute total, that may include reimbursement, late fee, etc
+      responseObj.total = ( parseFloat(dat.total) + parseFloat(dat.lateFee) ) + (dat.reimbursement)
+
       // reset value of select
       this.generateVAforUnpaidInstallmentBankInput[dat._id] = ''
 
+      responseObj.btnCheckPayment = false
       responseObj.btnGenerateVA = false
 
       if ( dat.number !== 1 ) {
@@ -656,10 +670,12 @@ export default {
           responseObj.dateLabel = 'Dibayar pada'
         } else if ( dat.paid.payment_id == '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA belum di buat'
+          responseObj.btnCheckPayment = true
           responseObj.btnGenerateVA = true
         } else if ( dat.paid.payment_id != '' && dat.paid.status_code == 201 && !dat.paid.status ) {
           responseObj.msg = 'VA telah di buat'
           responseObj.dateLabel = 'Dibuat pada'
+          responseObj.btnCheckPayment = true
           responseObj.btnGenerateVA = true
         }
       } else {
@@ -748,6 +764,28 @@ export default {
           console.log(error.response);
         })
     },
+
+    async checkPayment(transaction, terminObj) {
+      let vm = this
+      let checkPaymentReq = {
+                              transactionNumber: transaction.transactionNumber,
+                              terminNumber: terminObj.number
+                            }
+      vm.loader = {
+        has: true,
+        message: 'checking'
+      }
+
+      try {
+        let checkPayment = await axios.post('/api/approvedtransactions/checkpayment', checkPaymentReq, vm.requestedHeaders)
+        vm.loader.has = false
+        alert(checkPayment.data)
+      } catch (err) {
+        console.log(err)
+        vm.loader.has = false
+        alert('Tidak ada pembayaran untuk transaksi ini.')
+      }
+    },    
 
     /**
      * Display User Transactions

@@ -186,8 +186,14 @@
                         <option value="PERMATA">Permata</option>
                         <option value="BRI">BRI</option>
                       </select>
-                      <button class="btn btn-danger btn-sm btn-block mt-1"
+                      <button class="btn btn-info btn-sm btn-block mt-1"
                         @click.prevent="generateVAforUnpaidInstallment(data, terms)">Generate VA</button>
+                    </li>
+
+                    <li v-if="terms.lateFee != 0" style="border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
+                      <input type="number" class="form-control form-control-sm mb-1 text-right" v-model="reqAdjustLateFee[terms._id]">
+                      <button class="btn btn-danger btn-sm btn-block"
+                        @click.prevent="adjustLateFee(data._id, terms._id)">Adjust Late Fee</button>
                     </li>
 
                   </ul>
@@ -313,6 +319,8 @@ export default {
       bankBni: {},
 
       generateVAforUnpaidInstallmentBankInput: [],
+
+      reqAdjustLateFee: [],
     };
   },
   watch: {
@@ -650,6 +658,7 @@ export default {
      * @param  Object dat
      */
     mapTransactionTerms(dat) {
+      let vm = this
       let responseObj = {
         payment_id: dat.paid.payment_id,
         paid_date: dat.paid.date
@@ -658,8 +667,10 @@ export default {
       // Compute total, that may include reimbursement, late fee, etc
       responseObj.total = ( parseFloat(dat.total) + parseFloat(dat.lateFee) ) + (dat.reimbursement)
 
+      vm.reqAdjustLateFee[dat._id] = dat.lateFee
+
       // reset value of select
-      this.generateVAforUnpaidInstallmentBankInput[dat._id] = ''
+      vm.generateVAforUnpaidInstallmentBankInput[dat._id] = ''
 
       responseObj.btnCheckPayment = false
       responseObj.btnGenerateVA = false
@@ -801,6 +812,44 @@ export default {
           vm.modalUserTransactionInfo = res.data
           vm.loader.has = false
         })
+    },
+
+    /**
+     * Adjust Late Fee
+     *
+     * @param  Object transId
+     * @param  Object terminId
+     */
+    adjustLateFee(transId, terminId) {
+      let vm = this
+
+      vm.$swal({
+        title: 'Adjust late fee?',
+        text: `Late fee will be adjusted to ${vm.reqAdjustLateFee[terminId]}, sure?`,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Adjust'
+      }).then((result) => {
+        if (result.value) {
+
+          let requestLateFee = {
+            terminId: terminId,
+            amount: vm.reqAdjustLateFee[terminId]
+          }
+
+          axios
+            .post(`/api/approvedtransactions/${transId}/adjustlatefee`, requestLateFee, vm.requestedHeaders)
+            .then(resLateFee => {
+              vm.indexTransactions(vm.modalUserInfo.data._id)
+              vm.$swal.fire(
+                'Success!',
+                `Late fee adjusted accordingly.`,
+                'success'
+              )
+            })
+        }
+      })
     },
 
   }

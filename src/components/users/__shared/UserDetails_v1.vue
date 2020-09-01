@@ -145,31 +145,31 @@
             <tbody>
               <tr>
                 <td><strong>Name Borrower</strong></td>
-                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nama_borrower : '---') : '---' }}</td>
+                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nama_borrower : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Amount</strong></td>
-                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nilai_pendanaan : '---') : '---' }}</td>
+                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nilai_pendanaan : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Credit</strong></td>
-                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].sisa_pinjaman_berjalan : '---') : '---' }}</td>
+                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].sisa_pinjaman_berjalan : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Due Date</strong></td>
-                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman : '---') : '---' }}</td>
+                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>DPD Terakhir</strong></td>
-                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_terakhir : '---') : '---' }}</td>
+                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_terakhir : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>DPD Max</strong></td>
-                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_max : '---') : '---' }}</td>
+                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_max : '---') : '---' }}</td>
               </tr>
               <tr>
                 <td><strong>Loan Status</strong></td>
-                <td>{{ responseAFPI.length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].status_pinjaman_ket : '---') : '---' }}</td>
+                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].status_pinjaman_ket : '---') : '---' }}</td>
               </tr>
             </tbody>
           </table>

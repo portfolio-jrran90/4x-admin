@@ -1022,19 +1022,25 @@ export default {
             }
 
             if (res.data[0].ktp) {
-
               // console.log('ktp Validation', JSON.parse(res.data[0].ktp))
               let ktpCheck = JSON.parse(res.data[0].ktp)
-              if (ktpCheck.name_matches)
-              {
-                this.customStyleUser.ktp_validation.bgColor = '#70AD47';
-                this.customStyleUser.ktp_validation.textValidation = 'valid';
-                this.customStyleUser.ktp_validation.colorText = 'black';
-              }
-              else
-              {
+
+              if ( ktpCheck.status == "FOUND" ) {
+                if (ktpCheck.name_matches)
+                {
+                  this.customStyleUser.ktp_validation.bgColor = '#70AD47';
+                  this.customStyleUser.ktp_validation.textValidation = 'Found/Match';
+                  this.customStyleUser.ktp_validation.colorText = 'black';
+                }
+                else
+                {
+                  this.customStyleUser.ktp_validation.bgColor = 'red';
+                  this.customStyleUser.ktp_validation.textValidation = 'Found/Not Match';
+                  this.customStyleUser.ktp_validation.colorText = '#ffffff';
+                }
+              } else {
                 this.customStyleUser.ktp_validation.bgColor = 'red';
-                this.customStyleUser.ktp_validation.textValidation = 'no valid';
+                this.customStyleUser.ktp_validation.textValidation = 'Not Found';
                 this.customStyleUser.ktp_validation.colorText = '#ffffff';
               }
             }

@@ -214,9 +214,11 @@
                 <td>{{ data.store.name }}</td>
                 <td v-for="terms in data.termins" class="text-center"
                     :class="{
+                      'table-danger': terms.number == 1 && !mapTransactionTerms(terms).paymentStatus,
                       'table-success': !mapTransactionTerms(terms).btnGenerateVA,
                       'table-warning': mapTransactionTerms(terms).btnGenerateVA
                     }">
+
                   <ul class="list-unstyled mb-0">
                     <li>
                       <strong>{{ mapTransactionTerms(terms).msg }}</strong>
@@ -796,8 +798,15 @@ export default {
           responseObj.btnGenerateVA = true
         }
       } else {
-        responseObj.msg = 'Paid'
-        responseObj.dateLabel = 'Dibuat pada'
+        // awts
+        if ( dat.paid.status ) {
+          responseObj.msg = 'Paid'
+          responseObj.dateLabel = 'Dibuat pada'
+          responseObj.paymentStatus = true
+        } else {
+          responseObj.msg = 'Not Paid'
+          responseObj.paymentStatus = false
+        }
       }
 
       return responseObj

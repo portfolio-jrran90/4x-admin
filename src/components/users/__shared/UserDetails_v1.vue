@@ -980,49 +980,28 @@ export default {
           console.log('advanceai result', res.data)
 
           if (res.data[0]) {
-            /*console.log('gopay', res.data[0].hasOwnProperty('GOPAY'))
-            console.log('ovo', res.data[0].hasOwnProperty('OVO'))
-            console.log('linkaja', res.data[0].hasOwnProperty('LINKAJA'))
-
-            console.log('gopay1', JSON.parse(res.data[0].GOPAY))
-            console.log('ovo1', JSON.parse(res.data[0].OVO))
-            console.log('linkaja1', JSON.parse(res.data[0].LINKAJA))
-
-            console.log('gopay2', JSON.parse(res.data[0].GOPAY).result)
-            console.log('ovo2', JSON.parse(res.data[0].OVO).result)
-            console.log('linkaja2', JSON.parse(res.data[0].LINKAJA).result)*/
-
-            this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
+            /*this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
             this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].OVO).result : '---'
-            this.advanceAI.linkaja = res.data[0].hasOwnProperty('LINKAJA') ? JSON.parse(res.data[0].LINKAJA).result : '---'
+            this.advanceAI.linkaja = res.data[0].hasOwnProperty('LINKAJA') ? JSON.parse(res.data[0].LINKAJA).result : '---'*/
+
 
             let fixName = 'empty'
             if (res.data[0].ocr) {
-
-              // console.log('decode  FIRST GET', JSON.parse(res.data[0].ocr) )
-
               if ( JSON.parse(res.data[0].ocr).data ) {
                 this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
                 fixName = JSON.parse(res.data[0].ocr).data.name
-                // console.log('2 ocr exist', this.advanceAI.ocr)
               }
               else {
-                // this.advanceAI.ocr.data.name = JSON.parse(res.data[0].ocr).code
                 this.advanceAI.ocr = {
                   data: {
                     name: JSON.parse(res.data[0].ocr).code
                   }
                 }
-                // console.log('2 ocr errorc data')
               }
-
-              // this.advanceAI.ocr = JSON.parse(res.data[0].ocr)
-              // fixName = JSON.parse(res.data[0].ocr).data.name
-              // console.log('2 ocr exist', this.advanceAI.ocr)
             }
 
             if (res.data[0].ktp) {
-              // console.log('ktp Validation', JSON.parse(res.data[0].ktp))
+              console.log('ktp Validation', JSON.parse(res.data[0].ktp))
               let ktpCheck = JSON.parse(res.data[0].ktp)
 
               if ( ktpCheck.status == "FOUND" ) {
@@ -1045,14 +1024,7 @@ export default {
               }
             }
 
-            // debug
-            // res.data[0].npwp = 1234334444
-            // res.data[0].npwp = '{"data":[{"npwp":"248519761033000","nama":"OEI ACHMAD WIRIA"}],"status":1,"ketStatus":null,"message":null}'
-            // '{"data":[{"npwp":"921873758045000","nama":"SUPARMAN"}],"status":1,"ketStatus":null,"message":null}'
-
             if (res.data[0].npwp) {
-              // console.log('npwp if', res.data[0].npwp)
-
               if (typeof res.data[0].npwp == 'number') {
                 // console.log('npwp is number')
                 this.advanceAI.npwpCheck = res.data[0].npwp
@@ -1084,6 +1056,11 @@ export default {
                 // console.log('npwp lolos')
               }
             }
+
+            this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
+            this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].OVO).result : '---'
+            this.advanceAI.linkaja = res.data[0].hasOwnProperty('LINKAJA') ? JSON.parse(res.data[0].LINKAJA).result : '---'
+
 
             this.advanceAI.nameMatch = [
               { data: 'phone', value: 0 },

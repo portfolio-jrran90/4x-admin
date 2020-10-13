@@ -63,9 +63,20 @@
               </tr>
               <tr>
                 <th>Fraud Score</th>
-                <!-- <td style="background-color: #70AD47; text-align: center; font-weight: bold; color: black;">{{ advanceAI.fraud_score.data ? advanceAI.fraud_score.data.score : '-' }}</td> -->
                 <td style="background-color: #FFC004; text-align: center; font-weight: bold; color: black;">No Record</td>
               </tr>
+
+              <tr>
+                <th>Apakah nomor hp sama dengan nomor darurat</th>
+                <td class="text-center text-uppercase"
+                    :class="{
+                      'bg-unsuccessful': !isContactNumberMatch,
+                      'bg-successful': isContactNumberMatch}
+                    ">
+                  <strong>{{ isContactNumberMatch ? 'yes' : 'no' }}</strong>
+                </td>
+              </tr>
+
               <tr>
                 <th style="background-color: black; color: #fff;">Apakah user memiliki riwayat kredit yang buruk</th>
                 <td style="background-color: black; font-weight: bold; text-align: center; color: #fff;"></td>
@@ -486,7 +497,6 @@
       </div>
     </div>
 
-    <!-- <div class="" v-html="dataPendukung.kontrak"></div> -->
     <div class="">
       Status Kontrak : <span class="font-weight-bold">{{ dataPendukung.kontrak }}</span>
     </div>
@@ -639,6 +649,13 @@ export default {
       required: true
     }
   },
+  computed: {
+    // Check whether the contact # and the emergency # matchees or not
+    isContactNumberMatch() {
+      let vm = this
+      return vm.userDetails.mobileNumber == vm.userDetails.emergencyContact.mobileNumber;
+    },
+  },
   data() {
     return {
       requestedHeaders: {
@@ -732,13 +749,10 @@ export default {
       ktpViewerOption: {},
       selfieKtpViewerOption: {},
       dataPendukung: {},
-      resultOfBlackList: []
-
+      resultOfBlackList: [],
     }
   },
   created() {
-    // console.log('component', this.userDetails)
-    // console.log('status', this.status)
     this.getAdmin()
     this.getAI(this.userDetails)
     this.checkEmergencyNumber(this.userDetails._id)
@@ -960,31 +974,14 @@ export default {
       }
     },
     getAI(user) {
-      // console.log('user props',user)
-      // debug user id
-      // let UserId = { userid: '5ceac5c88f057759ee805c49' }
-      // let UserId = { userid: '5dd7eda9b1d8414121e45555' }
-      // let UserId = { userid: '5dcbbd079bd8c04f071a9e02' }
-      // let UserId = { userid: '5df0b2f1b9495d52e7d5e676' }
       let UserId = { userid: user._id }
-
-      // "{"data":[{"npwp":"248519761033000","nama":"OEI ACHMAD WIRIA"}],"status":1,"ketStatus":null,"message":null}"
-      
-      console.log('UserId', UserId)
-
       axios
         .post('https://minion.empatkali.co.id/advanceai.php',
           UserId
         )
         .then(res => {
-          console.log('advanceai result', res.data)
-
+          // console.log('advanceai result', res.data)
           if (res.data[0]) {
-            /*this.advanceAI.gopay = res.data[0].hasOwnProperty('GOPAY') ? JSON.parse(res.data[0].GOPAY).result : '---'
-            this.advanceAI.ovo = res.data[0].hasOwnProperty('OVO') ? JSON.parse(res.data[0].OVO).result : '---'
-            this.advanceAI.linkaja = res.data[0].hasOwnProperty('LINKAJA') ? JSON.parse(res.data[0].LINKAJA).result : '---'*/
-
-
             let fixName = 'empty'
             if (res.data[0].ocr) {
               if ( JSON.parse(res.data[0].ocr).data ) {
@@ -1086,15 +1083,8 @@ export default {
               nameNpwp: this.advanceAI.npwpCheck
             }
 
-            // console.log('npwp from davin', dataNameToBeCompare.nameNpwp)
-
-            // let fixName = JSON.parse(res.data[0].ocr).data.name
-            // console.log('FIX NAME', fixName)
-            // console.log('3')
-
             if (fixName == dataNameToBeCompare.phone) {
               this.advanceAI.nameMatch[0].value = 33
-              // console.log('=> phone')
             }
             if (fixName == dataNameToBeCompare.nameOcr) {
               if (fixName == '') {
@@ -1102,7 +1092,6 @@ export default {
                 this.advanceAI.ocr.data.name = '-'
               } else {
                 this.advanceAI.nameMatch[1].value = 33
-                // console.log('=> nameOcr')
               }
             }
 
@@ -1112,8 +1101,6 @@ export default {
                 // console.log('=> nameNpwp')
               }
             }
-
-            // console.log('dataNameToBeCompare', dataNameToBeCompare)
 
             const sumScoreNameMatch = datas => datas.reduce((sum, data) => {
               return sum + data.value;
@@ -1222,8 +1209,6 @@ export default {
                   default:
                 }
             }
-
-            // console.log('FINISH')
           }
           else {
             console.log('advanceAI', 'data null')
@@ -1241,19 +1226,16 @@ export default {
       .then(function (response) {
         if (response) {
           vm.userDetails.nameOfNpwp = response.data.data[0]
-          // console.log('haha', vm.userDetails)
         }
 
       })
       .catch(function (error) {
         console.log(error);
       })
-
     },
     showResultCheckEmergency() {
       let vm = this
       vm.modalCheckLIstEmergency = true
-      // console.log('check', vm.userDetails.listOfCheckEmergencyNumber)
     },
     showResultBlackList() {
       let vm = this
@@ -1468,7 +1450,6 @@ export default {
       } catch (e) {
         console.log('AFPI Error: ', e)
       }
-
     },
   }
 }
@@ -1861,6 +1842,17 @@ export default {
 }
 
 .mt-44px { margin-top: 44px }
+
+
+
+.bg-unsuccessful {
+  background-color: #f00;
+  color: #000;
+}
+.bg-successful {
+  background-color: #70AD47;
+  color: #000;
+}
 
 
 </style>

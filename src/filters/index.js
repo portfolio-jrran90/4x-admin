@@ -34,4 +34,3 @@ Vue.filter('age', date => {
 Vue.filter('number', number => {
 	return number.toLocaleString()
 })
-

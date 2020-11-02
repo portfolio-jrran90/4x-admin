@@ -784,16 +784,16 @@ export default {
       resultOfBlackList: [],
     }
   },
-  created() {
+  async created() {
     this.getAdmin()
     this.getAI(this.userDetails)
     this.checkEmergencyNumber(this.userDetails._id)
     this.checkImeiUser(this.userDetails.mobileNumber)
     this.getActivityMailUSer()
-    this.getAllTypeUserSalary()
     this.getAllIndustry()
     this.getDanaBalance()
-    this.getAFPI()
+    await this.getAllTypeUserSalary()
+    await this.getAFPI()
   },
   methods: {
     async totalUsers() {
@@ -1302,24 +1302,23 @@ export default {
         console.log(error);
       })
     },
-    getAllTypeUserSalary() {
+    async getAllTypeUserSalary() {
       let vm = this;
 
-      axios.get(`api/usersalary`, vm.requestedHeaders)
-      .then(function (response) {
-        if (response) {
+      try {
+        let userSalaryResponse = await axios.get(`api/usersalary`, vm.requestedHeaders)
+        if (userSalaryResponse.data) {
           let userSalary = vm.userDetails.detail.penghasilan
           // userSalary = 'gol3' //debug userSalary
-          let findSalary = response.data.filter(data => data.type == userSalary)
+          let findSalary = userSalaryResponse.data.filter(data => data.type == userSalary)
           if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
             vm.customStyleUser.userSalary = 'orange'
           }
           vm.userDetails.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
         }
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
+      } catch (e) {
+        console.log('Error - getAllTypeUserSalary: ', e);
+      }
     },
     getAllIndustry() {
       // Industry
@@ -1470,7 +1469,6 @@ export default {
       let vm = this
       try {
         let afpi = await axios.get(`https://mon.empatkali.co.id/dataafpi2.php?ktp=${vm.userDetails.ktp.number}`)
-
         let extractValueFromString = vm.userDetails.detail.descriptionOfsalary
                                         .replaceAll(/(rp\s)|(\.)/gi, '')
                                         .replaceAll(/(\s-\s)|(<\s)|(>\s)/gi, '~')

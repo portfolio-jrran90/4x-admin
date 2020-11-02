@@ -68,7 +68,7 @@
 
               <tr>
                 <th>Apakah nomor hp sama dengan nomor darurat</th>
-                <td class="text-center text-uppercase"
+                <td class="text-center text-uppercase text-black"
                     :class="{
                       'bg-unsuccessful': !isContactNumberMatch,
                       'bg-successful': isContactNumberMatch}
@@ -143,44 +143,72 @@
     </div>
 
     <div class="row col-xl-12 other-user-information" style="padding: 14px;">
-      <div class="col-xl-7" style="padding-left: 0px; padding-right: 0px; display: inline-block; height: 770px; overflow: auto;">
+      <div class="col-xl-7" style="padding-left: 0px; padding-right: 5px; display: inline-block; height: 770px; overflow: auto;">
         
         <!-- <div class="c-AFPI" v-if="status == 'pending'"> -->
         <div class="c-AFPI">
           <h4 style="background-color: #4372C7; color: #fff" class="py-2 px-3 mb-0">AFPI Data Attribute</h4>
           <table class="table table-striped">
-            <tr>
-              <th style="background-color: black; color: #fff; width: 200px">Attribute</th>
-              <th style="background-color: black; color: #fff;">Value</th>
-            </tr>
             <tbody>
               <tr>
-                <td><strong>Name Borrower</strong></td>
-                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nama_borrower : '---') : '---' }}</td>
+                <th class="table-warning">Income</th>
+                <td class="text-right">{{ responseAFPI.income | currency }}</td>
+                <td></td>
               </tr>
               <tr>
-                <td><strong>Loan Amount</strong></td>
-                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].nilai_pendanaan : '---') : '---' }}</td>
+                <th class="table-warning">Limit</th>
+                <td class="text-right">{{ userDetails.remainingCredit | currency }}</td>
+                <td></td>
+              </tr>
+              <!-- <tr>
+                <td colspan="3">&nbsp;</td>
+              </tr> -->
+              <tr>
+                <th class="table-dark w-50">Loan Info</th>
+                <th class="table-dark text-right">#</th>
+                <th class="table-dark text-right">Rp.</th>
               </tr>
               <tr>
-                <td><strong>Loan Credit</strong></td>
-                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].sisa_pinjaman_berjalan : '---') : '---' }}</td>
+                <td class="table-secondary font-weight-bold">Total Number of Loans</td>
+                <td class="text-right">{{ responseAFPI.numloan }}</td>
+                <td></td>
               </tr>
               <tr>
-                <td><strong>Due Date</strong></td>
-                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].tgl_jatuh_tempo_pinjaman : '---') : '---' }}</td>
+                <td class="table-secondary font-weight-bold">Total Amount of Loans</td>
+                <td></td>
+                <td class="text-right">{{ responseAFPI.totloan | currency }}</td>
               </tr>
               <tr>
-                <td><strong>DPD Terakhir</strong></td>
-                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_terakhir : '---') : '---' }}</td>
+                <td colspan="3">&nbsp;</td>
               </tr>
               <tr>
-                <td><strong>DPD Max</strong></td>
-                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].dpd_max : '---') : '---' }}</td>
+                <td class="table-secondary font-weight-bold">Total Paid</td>
+                <td class="text-right">{{ responseAFPI.numpaid }}</td>
+                <td class="text-right">{{ responseAFPI.totpaid | currency }}</td>
               </tr>
               <tr>
-                <td><strong>Loan Status</strong></td>
-                <td>{{ Object.keys(responseAFPI).length > 0 ? (responseAFPI.pinjaman.length > 0 ? responseAFPI.pinjaman[0].status_pinjaman_ket : '---') : '---' }}</td>
+                <td class="table-secondary font-weight-bold">Total Outstanding</td>
+                <td class="text-right">{{ responseAFPI.numout }}</td>
+                <td class="text-right">{{ responseAFPI.totout | currency }}</td>
+              </tr>
+              <tr>
+                <td class="table-secondary font-weight-bold">Total Default</td>
+                <td class="text-right">{{ responseAFPI.numdefault }}</td>
+                <td class="text-right">{{ responseAFPI.totdefault | currency }}</td>
+              </tr>
+              <tr>
+                <td colspan="3">&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="table-secondary font-weight-bold">Current Capacity</td>
+                <td class="text-right">
+                  {{ (((responseAFPI.totout + userDetails.remainingCredit) / responseAFPI.income) * 100).toFixed(2) }}%</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="table-secondary font-weight-bold">Default Rate</td>
+                <td class="text-right">{{ parseFloat(responseAFPI.defrate).toFixed(2) }}%</td>
+                <td></td>
               </tr>
             </tbody>
           </table>
@@ -650,7 +678,11 @@ export default {
     }
   },
   computed: {
-    // Check whether the contact # and the emergency # matchees or not
+    /**
+     * Check whether the contact # and the emergency # matchees or not
+     * 
+     * @return {Boolean} [description]
+     */
     isContactNumberMatch() {
       let vm = this
       return vm.userDetails.mobileNumber == vm.userDetails.emergencyContact.mobileNumber;
@@ -1201,7 +1233,7 @@ export default {
                   this.advanceAI.tele_check.data.status_msg = 'Not Available'
                   break;
                   case 6:
-                  this.advanceAI.tele_check.data.status_msg = 'Emporarily unable to connect'
+                  this.advanceAI.tele_check.data.status_msg = 'Temporarily unable to connect'
                   break;
                   case -1:
                   this.advanceAI.tele_check.data.status_msg = 'Abnormal line, unknown state'
@@ -1436,17 +1468,20 @@ export default {
      */
     async getAFPI() {
       let vm = this
-
       try {
-        let afpi = await axios.get(`https://mon.empatkali.co.id/dataafpi.php?ktp=${vm.userDetails.ktp.number}`)
-        let pinjaman = []
-        for (let i=0; i<afpi.data.pinjaman.length; i++ ) {
-          if ( afpi.data.pinjaman[i].status_pinjaman_ket != 'Delete' ) {
-            pinjaman.push( afpi.data.pinjaman[i] )
-          }
-        }
-        vm.responseAFPI = Object.assign(afpi.data, { pinjaman: pinjaman })
-        console.log('response AFPI', vm.responseAFPI)
+        let afpi = await axios.get(`https://mon.empatkali.co.id/dataafpi2.php?ktp=${vm.userDetails.ktp.number}`)
+
+        let extractValueFromString = vm.userDetails.detail.descriptionOfsalary
+                                        .replaceAll(/(rp\s)|(\.)/gi, '')
+                                        .replaceAll(/(\s-\s)|(<\s)|(>\s)/gi, '~')
+                                        .split('~')
+
+        // This will get the median value, but for those value that has "<" and ">", just retain the
+        // amount value and don't apply median formula
+        let getMedian = extractValueFromString.reduce((acc, val) => {
+          return isNaN(acc) ? parseInt(val) : acc + parseInt(val) / 2
+        }, 0)
+        vm.responseAFPI = Object.assign(afpi.data, { income: getMedian })
       } catch (e) {
         console.log('AFPI Error: ', e)
       }
@@ -1708,8 +1743,6 @@ export default {
 
                   td {
                     width: 25%;
-                    // padding: 0px 0px 0px 8px !important;
-                    // margin: 0 !important;
                   }
 
                   th {
@@ -1784,11 +1817,6 @@ export default {
               tbody tr {
                 border: 1px solid #C8C8C8;
               }
-
-              tbody {
-                // overflow: auto;
-                // height: 500px;
-              }
             }
 
             .user-location {
@@ -1844,14 +1872,14 @@ export default {
 .mt-44px { margin-top: 44px }
 
 
-
+.text-black {
+  color: #000;
+}
 .bg-unsuccessful {
   background-color: #f00;
-  color: #000;
 }
 .bg-successful {
   background-color: #70AD47;
-  color: #000;
 }
 
 

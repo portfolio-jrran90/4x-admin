@@ -1468,7 +1468,7 @@ export default {
     async getAFPI() {
       let vm = this
       try {
-        let afpi = await axios.get(`https://mon.empatkali.co.id/dataafpi2.php?ktp=${vm.userDetails._id}`)
+        let afpi = await axios.get(`https://minion.empatkali.co.id/dataafpi2.php?ktp=${vm.userDetails._id}`)
         let extractValueFromString = vm.userDetails.detail.descriptionOfsalary
                                         .replaceAll(/(rp\s)|(\.)/gi, '')
                                         .replaceAll(/(\s-\s)|(<\s)|(>\s)/gi, '~')

@@ -202,7 +202,7 @@
               <tr>
                 <td class="table-secondary font-weight-bold">Current Capacity</td>
                 <td class="text-right">
-                  {{ (((responseAFPI.totout + userDetails.remainingCredit) / responseAFPI.income) * 100).toFixed(2) }}%</td>
+                  {{ ((responseAFPI.totout / responseAFPI.income) * 100).toFixed(2) }}%</td>
                 <td></td>
               </tr>
               <tr>

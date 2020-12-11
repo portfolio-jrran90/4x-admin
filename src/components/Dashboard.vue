@@ -16,6 +16,13 @@
             </a>
           </router-link>
 
+          <router-link tag="li" :to="`/change-limit`">
+            <a class="nav-link" href="#">
+              <font-awesome-icon :icon="['fas', 'user-edit']" class="mr-2" size="lg" />
+              <p>Change Limit</p>
+            </a>
+          </router-link>
+
           <router-link tag="li" :to="{ name: 'merchant' }">
             <a class="nav-link" href="#">
               <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" />

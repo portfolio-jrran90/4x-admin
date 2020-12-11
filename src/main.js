@@ -43,19 +43,23 @@ import {
   faUserFriends,
   faSearch,
   faUserSlash,
+  faUserEdit,
   faPlusSquare,
   faCog,
   faEnvelope,
   faCoins,
   faEdit,
   faPlus,
-  faTrashAlt
+  faTrashAlt,
+  faTimes,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(
   faSignInAlt,
   faUser,
+  faUserEdit,
   faStore,
   faHandshake,
   faBullhorn,
@@ -68,7 +72,9 @@ library.add(
   faCoins,
   faEdit,
   faPlus,
-  faTrashAlt
+  faTrashAlt,
+  faTimes,
+  faCheck
   )
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
@@ -136,6 +142,13 @@ Vue.component('rejected-user', require('./components/users/Rejected').default)
 Vue.component('approved-user', require('./components/users/Approved').default)
 require('./components/users') // this is for shared components
 
+// Change Limit
+import ChangeLimit from './components/change-limit/Index.vue'
+Vue.component('pending-change-limit', require('./components/change-limit/PendingUser').default)
+Vue.component('rejected-change-limit', require('./components/change-limit/Rejected').default)
+Vue.component('approved-change-limit', require('./components/change-limit/Approved').default)
+require('./components/change-limit') // this is for shared components
+
 // Merchants
 import Merchant from './components/merchants/Index.vue'
 import MerchantFee from './components/merchants/MerchantFee.vue'
@@ -172,6 +185,7 @@ const routes = [
       { path: '/merchants', component: Merchant, name: 'merchant' },
       // { path: '/merchant-fee', component: MerchantFee, name: 'merchant-fee' },
       { path: '/users', component: User },
+      { path: '/change-limit', component: ChangeLimit },
       { path: '/transactions', component: Transaction },
       { path: '/approvepromo', component: ApprovePromo },
       { path: '/addmerchantuser', component: AddMerchantUser },

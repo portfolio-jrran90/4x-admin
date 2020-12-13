@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="img-container">
-      <div v-if="false" class="text-center mb-4">
+      <div v-if="true" class="text-center mb-4">
         <img :src="'../assets/img/message.png'" class="w-25" alt="">
-        <p class="text-center fs-18 my-4">Belum ada yang<br>komentar sebelumnya</p>
+        <p class="text-center fs-20 my-4">Belum ada yang<br>komentar sebelumnya</p>
       </div>
-      <div v-if="true" class="mb-4">
+      <div v-if="false" class="mb-4">
         <div class="comments-container mt-3">
 
           <!-- Comments List -->

@@ -34,7 +34,7 @@
             <tr>
               <th>Name</th>
               <th>Mobile</th>
-              <th>Excisting Credit</th>
+              <th>Existing Credit</th>
               <th>Detail Credit</th>
               <th>Request Credit</th>
               <th class="text-center">Aksi</th>
@@ -61,11 +61,11 @@
               <td>
                 <div class="d-flex credit-div">
                   <span class="credit-div__label">Used Credit</span>
-                  <span class="flex-fill">{{ data.credit | currency }}</span>
+                  <span class="flex-fill">{{ (data.credit - data.remainingCredit) | currency }}</span>
                 </div>
                 <div class="d-flex credit-div">
                   <span class="credit-div__label">Remaining</span>
-                  <span class="flex-fill">{{ data.credit | currency }}</span>
+                  <span class="flex-fill">{{ data.remainingCredit | currency }}</span>
                 </div>
               </td>
               <td class="font-weight-bold">{{ data.credit | currency }}</td>
@@ -98,7 +98,11 @@
       no-close-on-esc
       no-close-on-backdrop
       hide-footer>
-      <user-change-limit :user="userDetails" :viewCommentModal="viewCommentModal" status="pending"/>
+      <user-change-limit 
+        :user="userDetails" 
+        :viewCommentModal="viewCommentModal" 
+        :toggleTransactionsModal="toggleTransactionsModal"
+        status="pending"/>
       <div class="d-flex mt-4 custom-box-shadow modal-footer-custom">
         <div class="flex-1">
           <a 
@@ -190,8 +194,7 @@
       <detail-comment :user="userDetails" :viewCommentModal="viewCommentModal" />
     </b-modal>
 
-    <b-modal 
-      v-model="limitOptionModal" 
+    <b-modal v-model="limitOptionModal" 
       modal-class="modal-option" 
       size="35" 
       :title="selectedLimitOption" 
@@ -201,6 +204,24 @@
       no-close-on-backdrop
       hide-footer>
       <limit-option-modal :user="userDetails" :modalOptButton="modalOptButton"  />
+    </b-modal>
+
+    <b-modal v-model="modalShowViewTransactions" 
+      modal-class="modal-option" 
+      size="95" 
+      title="Transaksi" 
+      centered
+      no-close-on-esc
+      no-close-on-backdrop>
+      <div slot="modal-header">
+        <h4>Transaksi - {{ (modalUserInfo.data.detail)?modalUserInfo.data.detail.name: '' }}</h4>
+      </div>
+
+      <limit-transaction-details :user="modalUserInfo.data"/>
+
+      <div slot="modal-footer">
+        <button class="btn btn-secondary" @click="modalShowViewTransactions = false">Close</button>
+      </div>
     </b-modal>
 
   </div>
@@ -246,6 +267,7 @@ export default {
       modalUserShowV1: false,
       komentarModal: false,
       limitOptionModal: false,
+      modalShowViewTransactions: false,
       selectedLimitOption: 'Approve',
       users: {},
       admins: {},
@@ -300,8 +322,10 @@ export default {
       commentReviewsText: '',
       ktpViewerOption: {},
       selfieKtpViewerOption: {},
-      dataPendukung: {}
-
+      dataPendukung: {},
+      modalUserInfo: {
+        data: {}
+      },
     }
   },
   watch: {
@@ -735,7 +759,27 @@ export default {
       }else{
         vm.limitOptionModal = true;
       }
-    }
+    },
+
+    /*
+    *view transactions modal
+    */
+    toggleTransactionsModal(opt, index) {
+      let vm = this;
+      let user = vm.userDetails;
+      vm.modalShowViewTransactions = opt;
+
+      if(opt){
+        vm.modalUserInfo = {
+          data: user,
+          index: index
+        };
+
+        vm.modalShowViewTransactions = true
+      }
+    },
+
+    
   }
 };
 </script>

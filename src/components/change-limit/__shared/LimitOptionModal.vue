@@ -264,7 +264,7 @@ export default {
     position: absolute;
     width: 100%;
     left: 0;
-    bottom: -95px;
+    bottom: -80px;
     display: flex;
     justify-content: center;
 

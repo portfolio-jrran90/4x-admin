@@ -28,63 +28,63 @@
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>NIK</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ user.ktp.number ? user.ktp.number : '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Tempat/ Tgl Lahir</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ user.detail.birthplace }}/ {{ new Date(user.detail.birthdate) | moment("DD MMMM YYYY")  }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Jenis Kelamin</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ user.detail.gender }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Golongan Darah</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Alamat</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>RT/RW</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Kelurahan</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Kecamatan</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Agama</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Status Pernikahan</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Kewarganegaraan</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ '---' }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Nomor HP</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ user.mobileNumber }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Email</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ user.detail.email }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Nomor NPWP</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ user.npwp }}</span>
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Penghasilan</label>
-                  <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                  <span>{{ salaryDetail.description }}</span>
                 </div>
               </div>
             </div>
@@ -92,14 +92,14 @@
         
           <div class="flex-3 d-flex flex-column">
             <!-- white box 2 -->
-            <div class="card shadow-sm p-4 rounded-xl border-0 mb-2 flex-3">
+            <div class="limit-box card shadow-sm p-4 rounded-xl border-0 mb-2 flex-3">
               <div class="d-flex align-items-start mb-2">
                 <div class="col p-0">
                   <p class="section-title mb-2"><b class="">Total Transactions</b></p>
-                  <h3>18</h3>
+                  <h3>{{ '---' }}</h3>
                 </div>
                 <div class="col-3 p-0 text-right">
-                  <a href="#" class="see-details-text text-decoration-none">Lihat Detail</a>
+                  <a href="#" @click="toggleTransactionsModal(true)" class="see-details-text text-decoration-none">Lihat Detail</a>
                 </div>
               </div>
 
@@ -107,12 +107,12 @@
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Completed</label>
                   <p class="section-subtitle mb-2">Finished 4th payment</p>
-                  <h4 class="font-weight-light">6</h4>
+                  <h4 class="font-weight-light">{{ '---' }}</h4>
                 </div>
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Ongoing</label>
                   <p class="section-subtitle mb-2">Unpaid on track</p>
-                  <h4 class="font-weight-light">2</h4>
+                  <h4 class="font-weight-light">{{ '---' }}</h4>
                 </div>
               </div>
 
@@ -120,12 +120,12 @@
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Late Payment</label>
                   <p class="section-subtitle mb-2">Late but paid</p>
-                  <h4 class="font-weight-light m-0">6</h4>
+                  <h4 class="font-weight-light m-0">{{ '---' }}</h4>
                 </div>
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Overdue</label>
                   <p class="section-subtitle mb-2">Late and not paid</p>
-                  <h4 class="font-weight-light m-0">2</h4>
+                  <h4 class="font-weight-light m-0">{{ '---' }}</h4>
                 </div>
               </div>
             </div>
@@ -140,19 +140,29 @@
                     <label class="fs-10 text-dark"><b>Validasi KTP</b></label>
                   </div>
                   <div class="col p-0 text-center">
-                    <button class="btn btn-no-record">
+                    <button v-if="!user.ktp" class="btn btn-no-record">
                       <font-awesome-icon :icon="['fas', 'times']" class="mr-2" size="lg" />
                       No Record
+                    </button>
+
+                    <button v-if="user.ktp" class="btn btn-pass">
+                      <font-awesome-icon :icon="['fas', 'check']" class="mr-2" size="lg" />
+                      Pass
                     </button>
                   </div>
                 </div>
 
                 <div class="col p-0 d-flex">
-                  <div class="col-7 p-0">
+                  <div class="col-6 p-0">
                     <label class="fs-10 text-dark"><b>Face Recognition</b></label>
                   </div>
                   <div class="col p-0 text-center">
-                    <button class="btn btn-pass">
+                    <button v-if="!user.npwp || user.npwp == ''" class="btn btn-no-record">
+                      <font-awesome-icon :icon="['fas', 'times']" class="mr-2" size="lg" />
+                      No Record
+                    </button>
+
+                    <button v-if="user.npwp && user.npwp != ''" class="btn btn-pass">
                       <font-awesome-icon :icon="['fas', 'check']" class="mr-2" size="lg" />
                       Pass
                     </button>
@@ -164,22 +174,31 @@
               <div class="d-flex flex-wrap">
                 <div class="col p-0">
                   <h5 class="mb-3 section-title"><b>Foto KTP</b></h5>
-                  <img :src="'../assets/img/passport.png'" class="rounded-lg w-100" alt="">
+                  <div v-viewer="{}" class="w-100">
+                    <img :src="((user.ktp)?user.ktp.image:'') || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                    
+                  </div>
                 </div>
 
                 <div class="col pl-2 pr-1">
                   <h5 class="mb-3 section-title"><b>Selfie KTP</b></h5>
-                  <img :src="'../assets/img/passport.png'" class="rounded-lg w-100" alt="">
+                  <div v-viewer="{}" class="w-100">
+                    <img :src="user.selfie || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                  </div>
                 </div>
 
                 <div class="col pr-2 pl-1">
                   <h5 class="mb-3 section-title"><b>Foto NPWP</b></h5>
-                  <img :src="'../assets/img/passport.png'" class="rounded-lg w-100" alt="">
+                  <div v-viewer="{}" class="w-100">
+                    <img :src="'/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                  </div>
                 </div>
 
                 <div class="col p-0">
                   <h5 class="mb-3 section-title"><b>Slip Gaji</b></h5>
-                  <img :src="'../assets/img/passport.png'" class="rounded-lg w-100" alt="">
+                  <div v-viewer="{}" class="w-100">
+                    <img :src="'/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                  </div>
                 </div>
               </div>
             </div>
@@ -194,7 +213,8 @@
             <div class="flex-3 card shadow-sm p-4 rounded-xl border-0 d-flex flex-row mb-0">
               <h5 class="col-3 mb-0 flex-sm-fill p-0 section-title"><b>Sign</b></h5>
               <div class="col sign-img flex-md-fill p-0 text-center">
-                <img :src="'../assets/img/sample-sig.png'" class="mw-150px" alt="">
+                <img :src="'/assets/img/no-image.png'" class="mw-150px border" alt="">
+                <!-- <img :src="'../assets/img/sample-sig.png'" class="mw-150px" alt=""> -->
               </div>
             </div>
           </div>
@@ -234,7 +254,10 @@
             <div class="d-flex">
               <div class="flex-4">
                 <h5 class="mb-3 section-title"><b>Pengajuan Limit baru</b></h5>
-                <h2 class="submission-new-limits-text">Rp5.000.000</h2>
+                <h2 class="submission-new-limits-text">
+                  <!-- Rp5.000.000 -->
+                  {{ '---' }}
+                </h2>
               </div>
               <div class="flex-3">
                 <h5 class="mb-3 section-title"><b>Waktu Request</b></h5>
@@ -243,7 +266,8 @@
                     <img :src="'../assets/img/calendar-icon.png'" class="w-100 d-block" alt="">
                   </div>
                   <div class="flex-1 detail-value fs-14">
-                    19 Agu 2020
+                    <!-- 19 Agu 2020 -->
+                    {{ '---' }}
                   </div>
                 </div>
                 <div class="d-flex align-items-center">
@@ -251,7 +275,8 @@
                     <img :src="'../assets/img/clock-icon.png'" class="w-100 d-block" alt="">
                   </div>
                   <div class="flex-1 detail-value fs-14">
-                    14:59:09 WIB
+                    <!-- 14:59:09 WIB -->
+                    {{ '---' }}
                   </div>
                 </div>
               </div>
@@ -261,15 +286,24 @@
             <div class="item-details-container">
               <div class="item-div d-flex mb-1">
                 <label>Limit Sekarang</label>
-                <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                <span>
+                  <!-- Rp5.000.000 -->
+                  {{ '---' }}
+                </span>
               </div>
               <div class="item-div d-flex mb-1">
                 <label>Outstanding</label>
-                <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                <span>
+                  <!-- Rp5.000.000 -->
+                  {{ '---' }}
+                </span>
               </div>
               <div class="item-div d-flex mb-1">
                 <label>Sisa Limit</label>
-                <span>{{ user.detail ? user.detail.name : '---' }}</span>
+                <span>
+                  <!-- Rp5.000.000 -->
+                  {{ '---' }}
+                </span>
               </div>
             </div>
           </div>
@@ -282,62 +316,62 @@
             <div class="d-flex border-bottom pb-2 mb-2">
               <div class="flex-1">
                 <label class="m-0">Income</label>
-                <p class="m-0">Rp550.000.000</p>
+                <p class="m-0">{{ (responseAFPI.income ? (responseAFPI.income) : 'n/a') | currency }}</p>
               </div>
               <div class="flex-1">
                 <label class="m-0">Limit</label>
-                <p class="m-0">Rp550.000.000</p>
+                <p class="m-0">{{ user.remainingCredit | currency }}</p>
               </div>
             </div>
 
             <div class="d-flex ">
               <div class="flex-1">
                 <label class="m-0">Total number of loan</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ (responseAFPI.numloan != NaN ? (responseAFPI.numloan) : 'n/a') | currency }}</p>
               </div>
               <div class="flex-1">
                 <label class="m-0">Total amount of loan</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ responseAFPI.totloan | currency }}</p>
               </div>
             </div>
 
             <div class="d-flex ">
               <div class="flex-1">
                 <label class="m-0">Total paid</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ responseAFPI.totpaid | currency }}</p>
               </div>
               <div class="flex-1">
                 <label class="m-0">Total outstanding</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ responseAFPI.totout | currency }}</p>
               </div>
             </div>
 
             <div class="d-flex ">
               <div class="flex-1">
                 <label class="m-0">Total default</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ responseAFPI.totdefault | currency }}</p>
               </div>
               <div class="flex-1">
                 <label class="m-0">Current Capacity</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ ((responseAFPI.totout / responseAFPI.income) * 100).toFixed(2) + '%' }}</p>
               </div>
             </div>
             
             <div class="d-flex ">
               <div class="flex-1">
                 <label class="m-0">Default Rate</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ parseFloat(responseAFPI.defrate).toFixed(2) + '%' }}</p>
               </div>
               <div class="flex-1">
                 <label class="m-0">Total default (6 Months)</label>
-                <p class="m-0 mb-2">n/a</p>
+                <p class="m-0 mb-2">{{ '---' }}</p>
               </div>
             </div>
 
             <div class="d-flex ">
               <div class="flex-1">
-                <label class="m-0">Default Rate</label>
-                <p class="m-0 mb-2">n/a</p>
+                <label class="m-0">Max DPD</label>
+                <p class="m-0 mb-2">{{ '---' }}</p>
               </div>
               <div class="flex-1">
                 <img :src="'../assets/img/afpi.png'" class="w-100 mt-4" alt="">
@@ -366,6 +400,9 @@ export default {
     viewCommentModal: { 
       type: Function 
     },
+    toggleTransactionsModal: { 
+      type: Function 
+    },
   },
   data() {
   	return {
@@ -387,6 +424,7 @@ export default {
       },
       note: '',
       dataPendukung: '',
+      responseAFPI: {},
   	}
   },
   computed: {
@@ -436,9 +474,11 @@ export default {
       }
     },
   },
-  created() {
+  async created() {
   	let vm = this
-		vm.getOtherDetails()
+    await vm.getOtherDetails()
+    await vm.getAllTypeUserSalary();
+		await vm.getAFPI()
   },
   watch: {
   	user(value) {
@@ -576,6 +616,49 @@ export default {
         vm.bankBni = json
       }
     },
+
+    async getAllTypeUserSalary() {
+      let vm = this;
+
+      try {
+        let userSalaryResponse = await axios.get(`api/usersalary`, vm.requestedHeaders)
+        if (userSalaryResponse.data) {
+          let userSalary = vm.user.detail.penghasilan
+          userSalary = 'gol3' //debug userSalary
+          let findSalary = userSalaryResponse.data.filter(data => data.type == userSalary)
+          // if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
+          //   vm.customStyleUser.userSalary = 'orange'
+          // }
+          vm.user.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
+        }
+      } catch (e) {
+        console.log('Error - getAllTypeUserSalary: ', e);
+      }
+    },
+
+    /**
+     * Get AFPI data
+     */
+    async getAFPI() {
+      let vm = this
+      try {
+        let afpi = await axios.get(`https://minion.empatkali.co.id/dataafpi2.php?ktp=${vm.user._id}`)
+        console.log(afpi);
+        let extractValueFromString = vm.user.detail.descriptionOfsalary
+                                        .replaceAll(/(rp\s)|(\.)/gi, '')
+                                        .replaceAll(/(\s-\s)|(<\s)|(>\s)/gi, '~')
+                                        .split('~')
+
+        // This will get the median value, but for those value that has "<" and ">", just retain the
+        // amount value and don't apply median formula
+        let getMedian = extractValueFromString.reduce((acc, val) => {
+          return isNaN(acc) ? parseInt(val) : acc + parseInt(val) / 2
+        }, 0)
+        vm.responseAFPI = Object.assign(afpi.data, { income: getMedian })
+      } catch (e) {
+        console.log('AFPI Error: ', e)
+      }
+    },
   }
 }
 </script>
@@ -626,6 +709,7 @@ export default {
       flex: 1;
       color: #020D18;
       font-size: 14px;
+      word-break: break-word;
     }
   }
 }
@@ -677,6 +761,8 @@ export default {
 }
 .limit-box{
   height: 335.91px;
+  max-height: 335.91px;
+  min-height: 335.91px;
 }
 .fixed-top-notification{
   position: absolute;

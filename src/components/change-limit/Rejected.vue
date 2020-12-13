@@ -37,7 +37,7 @@
               <th>Mobile</th>
               <th>Past Credit</th>
               <th>Request Credit</th>
-              <th>Time Approved</th>
+              <th>Time Rejected</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>

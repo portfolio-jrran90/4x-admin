@@ -887,14 +887,14 @@ export default {
 			actionAdmin = JSON.stringify(actionAdmin)
 
 			axios
-        .post('https://mon.empatkali.co.id/cs', {
+        .post('https://zz.empatkali.co.id/cs', {
 					actionAdmin
         })
         .then(res => {
-					console.log('res', res)
+					console.log('cs res', res)
         })
         .catch(err => {
-          console.log(err.res)
+          console.log('cs API error', err.res)
         })
 
     },

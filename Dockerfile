@@ -1,11 +1,7 @@
-FROM node:12.16.1-alpine3.11 as build-stage
+FROM node:12.16.1-alpine3.11
 WORKDIR /app
-COPY package*.json ./
+ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json /app/package.json
 RUN npm install
-COPY ./ .
-RUN npm run build
-
-FROM nginx as production-stage
-RUN mkdir /app
-COPY --from=build-stage /app/dist /app
-COPY nginx.conf /etc/nginx/nginx.conf
+RUN npm install @vue/cli@3.7.0 -g
+CMD ["npm", "run", "serve"]

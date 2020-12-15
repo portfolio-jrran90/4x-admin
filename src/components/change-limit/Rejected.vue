@@ -49,16 +49,16 @@
                     href="#" 
                     class="font-weight-bold text-blue-custom"
                   >
-                      {{ data.detail?data.detail.name:'--' }}
+                    {{ data.otherDetails ? data.otherDetails.detail.name : '---' }}
                   </a>
                 </p>
-                <p class="m-0">{{ data.detail.email }}</p>
+                <p class="m-0 custom-limitter d-inline-block">{{ data.otherDetails ? data.otherDetails.detail.email : '---'}}</p>
               </td>
-              <td>{{ data.mobileNumber }}</td>
-              <td>{{ data.credit | currency }}</td>
-              <td>{{ data.credit | currency }}</td>
-              <td>{{ new Date(data.createdAt) | moment("DD MMM YYYY HH:MM:SS") }}</td>
-              <td class="text-center"> <button type="button" class="btn btn-blue-custom btn-sm" name="button" @click="openModalUserDetailsV1(data, index)"> Detail </button> </td>
+              <td>{{ data.user.mobileNumber }}</td>
+              <td>{{ data.user.credit | currency }}</td>
+              <td>{{ data.creditNew | currency }}</td>
+              <td>{{ new Date(data.updatedAt) | moment("DD MMM YYYY HH:MM:SS") + ' WIB' }}</td>
+              <td class="text-center"> <button type="button" class="btn btn-blue-custom btn-sm" name="button" @click="openModalUserDetails(data, index)"> Detail </button> </td>
             </tr>
             <tr v-if="users.total==0">
               <td colspan="7">No active user(s) found!</td>
@@ -82,45 +82,141 @@
 		|	 Modals
     | =============================================================================
     -->
-    <b-modal v-model="modalUserShow" size="80" title="[Rejected] User Detail"
+    <!-- Details Modal -->
+    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="99" title="Detail Rejected Change Limit"
+      no-close-on-esc
+      no-close-on-backdrop
       hide-footer>
-      <user-details :user="userDetails" status="rejected"></user-details>
-      <div class="mb-2">
-        <button class="btn btn-secondary btn-lg px-5" @click="modalUserShow=false">Close</button>
+      <user-change-limit 
+        :user="userDetails" 
+        :viewCommentModal="viewCommentModal" 
+        :toggleTransactionsModal="toggleTransactionsModal"
+        :isNotificationShow="isNotificationShow"
+        status="rejected"/>
+      <div class="d-flex mt-4 custom-box-shadow modal-footer-custom">
+        <div class="flex-1">
+          <a 
+            href="#" 
+            class="text-decoration-none back-arrow"
+            @click="(modalUserShow=false, showUsersPerPage(1), actionAdmin('close in review user'))">
+
+            <img :src="'../assets/img/blue-arrow-left.png'" class="blue-arrow-img" alt="">
+            Kembali ke list
+          </a>
+        </div>
+
+        <div v-if="userDetails.status == 0 && !isNotificationShow.show" class="flex-6 modal-btn-container text-right">
+          <button 
+            class="btn btn-reject ml-4 px-5" 
+            @click="modalOptButton('reject', {user: userDetails, index: userDetails.index})"
+          >
+            Reject
+          </button>
+          <button 
+            class="btn btn-approve-limits ml-4 px-5" 
+            @click="modalOptButton('approve-limit', 'dataApp', {user: userDetails, index: userDetails.index})"
+          >
+            Approve dengan limit lain
+          </button>
+          <button 
+            class="btn btn-approve ml-4 px-5" 
+            @click="modalOptButton('approve', 'dataApp', {user: userDetails, index: userDetails.index})"
+          >
+            Approve
+          </button>
+        </div>
+        
+        <div v-if="userDetails.status > 0 || isNotificationShow.show" class="flex-6 modal-btn-container justify-content-end align-items-center d-flex">
+          <div v-if="userDetails.status == 4 || userDetails.reason" class="flex-1 d-flex text-truncate">
+            <label class="flex-none mr-3 mb-0">
+              <b>
+                Alasan :
+              </b>
+            </label>
+            <div class="flex-auto mr-2 text-truncate">
+              {{ userDetails.reason ? userDetails.reason : '---' }}
+            </div>
+          </div>
+          <div class="flex-none d-flex justify-content-end align-items-center ml-3">
+            <label class="mr-3 mb-0">
+              <b>
+                Di {{ userDetails.status == 4 ? 'Reject' : 'Approve' }} oleh :
+              </b>
+            </label>
+            <div class="mr-2">
+              {{ userDetails.sideDetails && userDetails.sideDetails.name ? userDetails.sideDetails.name : '---' }}
+            </div>
+          </div>
+          <div class="flex-none d-flex justify-content-end align-items-center border-left pl-3 ml-3">
+            <label for="" class="mr-3 mb-0">
+              <b>
+                Waktu di {{ userDetails.status == 4 ? 'Reject' : 'Approve' }} :
+              </b>
+            </label>
+            <div class="d-flex mr-2 align-items-center">
+              <div class="img-icon">
+                <img :src="'../assets/img/calendar-icon.png'" class="w-100 d-block align-middle" alt="">
+              </div>
+              <div class="flex-1 detail-value fs-14">
+                <!-- 19 Agu 2020 -->
+                {{ new Date( userDetails.updatedAt ) | moment("DD MMM YYYY") }}
+              </div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="img-icon">
+                <img :src="'../assets/img/clock-icon.png'" class="w-100 d-block align-middle" alt="">
+              </div>
+              <div class="flex-1 detail-value fs-14">
+                <!-- 14:59:09 WIB -->
+                {{ new Date( userDetails.updatedAt ) | moment("HH:MM:SS") + ' WIB' }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </b-modal>
 
+    <b-modal v-model="komentarModal" modal-class="modal-comments" size="40" title="Komentar"
+      centered
+      no-close-on-esc
+      no-close-on-backdrop
+      hide-footer>
+      <detail-comment :user="userDetails" :viewCommentModal="viewCommentModal" />
+    </b-modal>
 
-    <b-modal v-model="modalUserShowV1" modal-class="modal-pending-steps" size="95" title="Rejected Users"
-    no-close-on-esc
-    no-close-on-backdrop
-    hide-footer>
+    <b-modal v-model="limitOptionModal" 
+      modal-class="modal-option" 
+      size="35" 
+      :title="selectedLimitOption" 
+      title-class=""
+      centered
+      no-close-on-esc
+      no-close-on-backdrop
+      hide-footer>
+      <limit-option-modal 
+        :user="userDetails" 
+        :modalOptButton="modalOptButton" 
+        :status="selectedStatus"  
+        :showNotificationPopUp="showNotificationPopUp"
+      />
+    </b-modal>
 
-    <!-- <div class="" style="display: inline-flex; margin-top: -60px; float: right;">
-      <button type="button" class="close_modify btn" data-dismiss="modal" aria-label="Close" style="background: #fff;" @click="(modalUserShow=false, userDetails={}, resetAdvanceAi(), actionAdmin('close in review user'))">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div> -->
-
-    <header class="col-12 row" style="padding-right: 0px">
-      <div class="col-6 title">
-        <h4>User Approval Decision</h4>
+    <b-modal v-model="modalShowViewTransactions" 
+      modal-class="modal-option" 
+      size="95" 
+      title="Transaksi" 
+      centered
+      no-close-on-esc
+      no-close-on-backdrop>
+      <div slot="modal-header">
+        <h4>Transaksi - {{ (modalUserInfo.data.detail)?modalUserInfo.data.detail.name: '' }}</h4>
       </div>
-      <div class="buttonRight col-6 text-right" style="padding-right: 4px; padding-top: 4px;">
-        <!-- <button class="btn btn-warning btn-md px-5" @click="refreshData(userDetails)"> <strong>Refresh</strong> </button> -->
-        <!-- <button class="btn btn-danger btn-md px-5" @click="actionBtn('reject', 'dataApp', {user: userDetails, index: userDetails.index})"> <strong>Decline</strong> </button> -->
+
+      <limit-transaction-details :user="modalUserInfo.data"/>
+
+      <div slot="modal-footer">
+        <button class="btn btn-secondary" @click="modalShowViewTransactions = false">Close</button>
       </div>
-    </header>
-
-    <user-details-v1 :userDetails="userDetails" status="rejected"/>
-
-      <div class="col-12 row" style="margin-top: 20px;">
-        <div class="col-12 text-right">
-          <!-- <button class="btn btn-dark btn-lg px-5" @click="(modalUserShow=false, userDetails={}, resetAdvanceAi(), actionAdmin('close in review user'))">Close</button> -->
-          <button class="btn btn-dark btn-lg px-5" @click="(modalUserShowV1=false, actionAdmin('close in review user'))">Close</button>
-        </div>
-      </div>
-
     </b-modal>
 
   </div>
@@ -164,6 +260,10 @@ export default {
 
       modalUserShow: false,
       modalUserShowV1: false,
+      komentarModal: false,
+      limitOptionModal: false,
+      modalShowViewTransactions: false,
+      selectedLimitOption: 'Reject',
       users: {},
       admins: {},
       inputCredit: 0,
@@ -218,6 +318,12 @@ export default {
       ktpViewerOption: {},
       selfieKtpViewerOption: {},
 
+      modalUserInfo: {
+        data: {}
+      },
+      allUsers: [],
+      selectedStatus: '',
+      isNotificationShow: {},
     }
   },
   watch: {
@@ -225,7 +331,7 @@ export default {
       this.showUsersPerPage(newPage)
     }
   },
-  created() {
+  async created() {
     let vm = this
     vm.search.filterByOption = {
       name: 'Name',
@@ -236,8 +342,9 @@ export default {
       card: 'Card', // it has optional params, see Postman
       cardnumber: 'Card Number'
     }
-    vm.totalUsers()
-    vm.getAdmin()
+    await vm.getAllUsers()
+    await vm.totalUsers()
+    await vm.getAdmin()
     // vm.index()
   },
   mounted() {
@@ -456,12 +563,17 @@ export default {
       }
 
       // if query string object is passed it'll be appended, otherwise no changes
-      let url = `/api/users?status=4&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
+      let url = `/api/users/getuserupdatecredit?status=4&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
 
       // Limit display per page
       try {
         let usersPerPage = await axios.get(url, vm.requestedHeaders)
         vm.users = usersPerPage.data
+        console.log(vm.users);
+        _.map(vm.users.data, async (value, index)  =>  {
+          value.otherDetails = await vm.getOtherDetails(value);
+          this.$forceUpdate();
+        })
         // if query string object is passed, load, otherwise, no changes
         if (queryStringObj!==undefined) {
           vm.search.showResult = true
@@ -473,6 +585,18 @@ export default {
         // vm.currentPage = oldPage
         vm.loader.has = false
       }
+    },
+
+    async getAllUsers() {
+      let vm = this
+      let url = `/api/users?skip=0&limit=3000`;
+      let results = await axios.get(url, vm.requestedHeaders);
+      vm.allUsers = results.data.data;
+    },
+
+    async getOtherDetails(user) {
+      let vm = this
+      return _.find(vm.allUsers, { _id: user.user._id }) ;
     },
 
     /**
@@ -668,6 +792,78 @@ export default {
       vm.showUsersPerPage(1)
     },
 
+    /**
+     * show comment modal button
+     */
+    viewCommentModal(opt)  {
+      let vm = this
+      vm.komentarModal = opt;
+    },
+
+    /**
+     * modal Approve, Approve with limit and Reject button
+     */
+    async modalOptButton(opt)  {
+      let vm = this
+      if(opt == 'approve'){
+        vm.selectedLimitOption = 'Approve Confirmation';
+        vm.selectedStatus = 'approve';
+      }
+      if(opt == 'approve-limit'){
+        vm.selectedLimitOption = 'Approve with other nominal Confirmation';
+        vm.selectedStatus = 'approve-limit';
+      }
+      if(opt == 'reject'){
+        vm.selectedLimitOption = 'Reject Confirmation';
+        vm.selectedStatus = 'reject';
+      }
+      if(opt == 'close'){
+        vm.limitOptionModal = false;
+      }else{
+        vm.limitOptionModal = true;
+      }
+    },
+
+    /*
+    *view transactions modal
+    */
+    toggleTransactionsModal(opt, index) {
+      let vm = this;
+      let user = vm.userDetails;
+      vm.modalShowViewTransactions = opt;
+
+      if(opt){
+        vm.modalUserInfo = {
+          data: user,
+          index: index
+        };
+
+        vm.modalShowViewTransactions = true
+      }
+    },
+
+    /*
+    *refresh data from modals updates
+    */
+    async refreshData() {
+      let vm = this;
+      
+      await vm.getAllUsers()
+      await vm.totalUsers()
+    },
+
+    /*
+    *activateNotification Pop up
+    */
+    async showNotificationPopUp() {
+      let vm = this;
+      
+      vm.isNotificationShow = {
+        show: true,
+        status: vm.selectedStatus
+      };
+      await vm.refreshData();
+    }
   }
 };
 </script>
@@ -1057,5 +1253,55 @@ export default {
     height: 36px;
     width: 110px;
     font-size: 14px;
+  }
+
+  .custom-limitter{
+    max-width: 300px;
+    // overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+  }
+  .back-arrow{
+    color: #393C8E;
+    font-weight: 700;
+    vertical-align: middle;
+    font-size: 18px;
+    .blue-arrow-img{
+      width: 25px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+  }
+  .custom-box-shadow{
+    box-shadow: 0px -1px 4px 1px rgba(0, 0, 0, 0.1);
+  }
+  .modal-footer-custom{
+    align-items: center;
+    margin: 0 -24px -14px -24px;
+    padding: 14px 24px;
+
+    .img-icon{
+      width: 20px;
+      margin-right: 10px;
+    }
+
+    .btn{
+      font-weight: 700;
+      box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.05);
+      border-radius: 5px;
+      color: #fff;
+      opacity: 1;
+      border: none;
+      &-approve{
+        background: #28B867;
+        width: 250px;
+      }
+      &-approve-limits{
+        background: #393C8E;
+      }
+      &-reject{
+        background: #E24949;
+      }
+    }
   }
 </style>

@@ -51,24 +51,24 @@
                     href="#" 
                     class="font-weight-bold text-blue-custom"
                   >
-                      {{ data.detail?data.detail.name:'--' }}
+                    {{ data.otherDetails ? data.otherDetails.detail.name : '---' }}
                   </a>
                 </p>
-                <p class="m-0 custom-limitter d-inline-block">{{ data.detail.email }}</p>
+                <p class="m-0 custom-limitter d-inline-block">{{ data.otherDetails ? data.otherDetails.detail.email : '---'}}</p>
               </td>
-              <td>{{ data.mobileNumber }}</td>
-              <td>{{ data.credit | currency }}</td>
+              <td>{{ data.user.mobileNumber }}</td>
+              <td>{{ data.user.credit | currency }}</td>
               <td>
                 <div class="d-flex credit-div">
                   <span class="credit-div__label">Used Credit</span>
-                  <span class="flex-fill">{{ (data.credit - data.remainingCredit) | currency }}</span>
+                  <span class="flex-fill">{{ (data.user.credit - data.user.remainingCredit) | currency }}</span>
                 </div>
                 <div class="d-flex credit-div">
                   <span class="credit-div__label">Remaining</span>
-                  <span class="flex-fill">{{ data.remainingCredit | currency }}</span>
+                  <span class="flex-fill">{{ data.user.remainingCredit | currency }}</span>
                 </div>
               </td>
-              <td class="font-weight-bold">{{ data.credit | currency }}</td>
+              <td class="font-weight-bold">{{ data.creditNew | currency }}</td>
               <td class="text-center"> <button type="button" class="btn btn-blue-custom btn-sm" name="button" @click="openModalUserDetails(data, index)"> Detail </button> </td>
             </tr>
           </tbody>
@@ -102,6 +102,7 @@
         :user="userDetails" 
         :viewCommentModal="viewCommentModal" 
         :toggleTransactionsModal="toggleTransactionsModal"
+        :isNotificationShow="isNotificationShow"
         status="pending"/>
       <div class="d-flex mt-4 custom-box-shadow modal-footer-custom">
         <div class="flex-1">
@@ -115,7 +116,7 @@
           </a>
         </div>
 
-        <div v-if="true" class="flex-6 modal-btn-container text-right">
+        <div v-if="userDetails.status == 0 && !isNotificationShow.show" class="flex-6 modal-btn-container text-right">
           <button 
             class="btn btn-reject ml-4 px-5" 
             @click="modalOptButton('reject', {user: userDetails, index: userDetails.index})"
@@ -136,33 +137,31 @@
           </button>
         </div>
         
-        <div v-if="false" class="flex-6 modal-btn-container justify-content-end align-items-center d-flex">
-          <div v-if="true" class="flex-1 d-flex text-truncate">
+        <div v-if="userDetails.status > 0 || isNotificationShow.show" class="flex-6 modal-btn-container justify-content-end align-items-center d-flex">
+          <div v-if="userDetails.status == 4 || userDetails.reason" class="flex-1 d-flex text-truncate">
             <label class="flex-none mr-3 mb-0">
               <b>
                 Alasan :
               </b>
             </label>
             <div class="flex-auto mr-2 text-truncate">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pe...
+              {{ userDetails.reason ? userDetails.reason : '---' }}
             </div>
           </div>
           <div class="flex-none d-flex justify-content-end align-items-center ml-3">
             <label class="mr-3 mb-0">
               <b>
-                Di Approve oleh :
-                <!-- Di Reject oleh : -->
+                Di {{ selectedStatus == 'reject' ? 'Reject' : 'Approve' }} oleh :
               </b>
             </label>
             <div class="mr-2">
-              Sandy Putra Pratama
+              {{ userDetails.sideDetails && userDetails.sideDetails.name ? userDetails.sideDetails.name : '---' }}
             </div>
           </div>
           <div class="flex-none d-flex justify-content-end align-items-center border-left pl-3 ml-3">
             <label for="" class="mr-3 mb-0">
               <b>
-                Waktu di Approve :
-                <!-- Waktu di Reject : -->
+                Waktu di {{ selectedStatus == 'reject' ? 'Reject' : 'Approve' }} :
               </b>
             </label>
             <div class="d-flex mr-2 align-items-center">
@@ -170,7 +169,8 @@
                 <img :src="'../assets/img/calendar-icon.png'" class="w-100 d-block align-middle" alt="">
               </div>
               <div class="flex-1 detail-value fs-14">
-                19 Agu 2020
+                <!-- 19 Agu 2020 -->
+                {{ new Date( userDetails.updatedAt ) | moment("DD MMM YYYY") }}
               </div>
             </div>
             <div class="d-flex align-items-center">
@@ -178,7 +178,8 @@
                 <img :src="'../assets/img/clock-icon.png'" class="w-100 d-block align-middle" alt="">
               </div>
               <div class="flex-1 detail-value fs-14">
-                14:59:09 WIB
+                <!-- 14:59:09 WIB -->
+                {{ new Date( userDetails.updatedAt ) | moment("HH:MM:SS") + ' WIB' }}
               </div>
             </div>
           </div>
@@ -203,7 +204,12 @@
       no-close-on-esc
       no-close-on-backdrop
       hide-footer>
-      <limit-option-modal :user="userDetails" :modalOptButton="modalOptButton"  />
+      <limit-option-modal 
+        :user="userDetails" 
+        :modalOptButton="modalOptButton" 
+        :status="selectedStatus"  
+        :showNotificationPopUp="showNotificationPopUp"
+      />
     </b-modal>
 
     <b-modal v-model="modalShowViewTransactions" 
@@ -268,7 +274,7 @@ export default {
       komentarModal: false,
       limitOptionModal: false,
       modalShowViewTransactions: false,
-      selectedLimitOption: 'Approve',
+      selectedLimitOption: 'Pending',
       users: {},
       admins: {},
       inputCredit: 0,
@@ -326,6 +332,9 @@ export default {
       modalUserInfo: {
         data: {}
       },
+      allUsers: [],
+      selectedStatus: '',
+      isNotificationShow: {},
     }
   },
   watch: {
@@ -333,7 +342,7 @@ export default {
       this.showUsersPerPage(newPage)
     }
   },
-  created() {
+  async created() {
     let vm = this
     vm.search.filterByOption = {
       name: 'Name',
@@ -344,8 +353,9 @@ export default {
       card: 'Card', // it has optional params, see Postman
       cardnumber: 'Card Number'
     }
-    vm.totalUsers()
-    vm.getAdmin()
+    await vm.getAllUsers()
+    await vm.totalUsers()
+    await vm.getAdmin()
     // vm.index()
   },
   mounted() {
@@ -457,9 +467,8 @@ export default {
       let vm = this
 
       try {
-        let totalRows = await axios.get(`/api/users?status=1&limit=3000`, vm.requestedHeaders)
+        let totalRows = await axios.get(`/api/users/getuserupdatecredit?status=0&skip=0&limit=3000`, vm.requestedHeaders)
         vm.totalUserRows = totalRows.data.length
-
         vm.showUsersPerPage(1) // initial
 
       } catch (e) {
@@ -493,13 +502,20 @@ export default {
       }
 
       // if query string object is passed it'll be appended, otherwise no changes
-      let url = `/api/users?status=1&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
+      let url = `/api/users/getuserupdatecredit?status=0&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
+      // let url = `/api/users/getuserupdatecredit?status=1&skip=0&limit=3000`;
 
       // Limit display per page
       try {
         let usersPerPage = await axios.get(url, vm.requestedHeaders)
         console.log('usersPerPage', usersPerPage)
         vm.users = usersPerPage.data
+
+        _.map(vm.users.data, async (value, index)  =>  {
+          value.otherDetails = await vm.getOtherDetails(value);
+          this.$forceUpdate();
+        })
+
         // if query string object is passed, load, otherwise, no changes
         if (queryStringObj!==undefined) {
           vm.search.showResult = true
@@ -511,6 +527,18 @@ export default {
         // vm.currentPage = oldPage
         vm.loader.has = false
       }
+    },
+
+    async getAllUsers() {
+      let vm = this
+      let url = `/api/users?skip=0&limit=3000`;
+      let results = await axios.get(url, vm.requestedHeaders);
+      vm.allUsers = results.data.data;
+    },
+
+    async getOtherDetails(user) {
+      let vm = this
+      return _.find(vm.allUsers, { _id: user.user._id }) ;
     },
 
     /**
@@ -741,18 +769,19 @@ export default {
     /**
      * modal Approve, Approve with limit and Reject button
      */
-    modalOptButton(opt)  {
+    async modalOptButton(opt)  {
       let vm = this
-      console.log(opt);
-      
       if(opt == 'approve'){
         vm.selectedLimitOption = 'Approve Confirmation';
+        vm.selectedStatus = 'approve';
       }
       if(opt == 'approve-limit'){
         vm.selectedLimitOption = 'Approve with other nominal Confirmation';
+        vm.selectedStatus = 'approve-limit';
       }
       if(opt == 'reject'){
         vm.selectedLimitOption = 'Reject Confirmation';
+        vm.selectedStatus = 'reject';
       }
       if(opt == 'close'){
         vm.limitOptionModal = false;
@@ -779,7 +808,28 @@ export default {
       }
     },
 
-    
+    /*
+    *refresh data from modals updates
+    */
+    async refreshData() {
+      let vm = this;
+      
+      await vm.getAllUsers()
+      await vm.totalUsers()
+    },
+
+    /*
+    *activateNotification Pop up
+    */
+    async showNotificationPopUp() {
+      let vm = this;
+      
+      vm.isNotificationShow = {
+        show: true,
+        status: vm.selectedStatus
+      };
+      await vm.refreshData();
+    }
   }
 };
 </script>

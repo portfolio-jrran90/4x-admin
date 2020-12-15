@@ -1,15 +1,18 @@
 <template>
   <div>
-    <div v-if="false" class="d-flex fixed-top-notification">
+    <div v-if="isNotificationShow.show" class="d-flex fixed-top-notification">
+      <a href="#" @click="isNotificationShow.show = false" class="close-icon">
+        <font-awesome-icon :icon="['fas', 'times']" class="mr-2" size="lg" />
+      </a>
       <div class="flex-none img-icon-check mr-3">
         <img :src="'../assets/img/check-green-circle.png'" class="mw-40px" alt="">
       </div>
       <div class="flex-1">
-        <p v-if="false"class="mb-1"><b>Change Limit Approved</b></p>
-        <p v-if="false" class="mb-0">Kamu berhasil menyetujui request ini. User sudah memiliki limit baru.</p>
-
-        <p v-if="true" class="mb-1"><b>Change Limit Rejected</b></p>
-        <p v-if="true" class="mb-0">Kamu berhasil tidak menyetujui request ini.</p>
+        <p class="mb-1">
+          <b>Change Limit {{ isNotificationShow.status != 'reject' ? 'Approved' : 'Rejected' }}</b>
+        </p>
+        <p v-if="isNotificationShow.status != 'reject'" class="mb-0">Kamu berhasil menyetujui request ini. User sudah memiliki limit baru.</p>
+        <p v-if="isNotificationShow.status == 'reject'" class="mb-0">Kamu berhasil tidak menyetujui request ini.</p>
       </div>
     </div>
 
@@ -24,67 +27,123 @@
               <div class="item-details-container">
                 <div class="item-div d-flex mb-1">
                   <label>Nama</label>
-                  <span><b>{{ user.detail ? user.detail.name : '---' }}</b></span>
+                  <span v-if="!isEditInfoShow"><b>{{ user.sideDetails && user.sideDetails.name ? user.sideDetails.name : '---' }}</b></span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.name">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>NIK</label>
-                  <span>{{ user.ktp.number ? user.ktp.number : '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.idNumber ? user.sideDetails.idNumber : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="number" v-model="updateInfoData.idNumber">
                 </div>
-                <div class="item-div d-flex mb-1">
+                <div v-if="!isEditInfoShow"class="item-div d-flex mb-1">
                   <label>Tempat/ Tgl Lahir</label>
-                  <span>{{ user.detail.birthplace }}/ {{ new Date(user.detail.birthdate) | moment("DD MMMM YYYY")  }}</span>
+                  <span>{{ user.sideDetails && user.sideDetails.birthPlaceBirthday ? user.sideDetails.birthPlaceBirthday : '---' }}</span>
+                </div>
+                <div v-if="isEditInfoShow" class="item-div d-flex mb-1">
+                  <label>Tempat</label>
+                  <input type="text" v-model="updateInfoData.birthPlace">
+                </div>
+                <div v-if="isEditInfoShow" class="item-div d-flex mb-1">
+                  <label>Tgl Lahir</label>
+                  <input type="date" v-model="updateInfoData.dob">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Jenis Kelamin</label>
-                  <span>{{ user.detail.gender }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.gender ? user.sideDetails.gender : '---' }}</span>
+                  <!-- <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.gender"> -->
+                  <select v-if="isEditInfoShow" v-model="updateInfoData.gender">
+                    <option>LAKI-LAKI</option>
+                    <option>PEREMPUAN</option>
+                  </select>
+                </div>
+                <div v-if="isEditInfoShow" class="item-div d-flex mb-1">
+                  <label>Pendudukan</label>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.occupation">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Golongan Darah</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.bloodType ? user.sideDetails.bloodType : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.bloodType">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Alamat</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.address ? user.sideDetails.address : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.address">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>RT/RW</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.rtrw ? user.sideDetails.rtrw : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.rtrw">
+                </div>
+                <div v-if="isEditInfoShow" class="item-div d-flex mb-1">
+                  <label>Kota</label>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.city">
+                </div>
+                <div v-if="isEditInfoShow" class="item-div d-flex mb-1">
+                  <label>Propinsi</label>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.province">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Kelurahan</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.village ? user.sideDetails.village : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.village">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Kecamatan</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.district ? user.sideDetails.district : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.district">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Agama</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.religion ? user.sideDetails.religion : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.religion">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Status Pernikahan</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.maritalStatus ? user.sideDetails.maritalStatus : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.maritalStatus">
                 </div>
                 <div class="item-div d-flex mb-1">
                   <label>Kewarganegaraan</label>
-                  <span>{{ '---' }}</span>
+                  <span v-if="!isEditInfoShow">{{ user.sideDetails && user.sideDetails.nationality ? user.sideDetails.nationality : '---' }}</span>
+                  <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.nationality">
                 </div>
-                <div class="item-div d-flex mb-1">
+                <div v-if="!isEditInfoShow" class="item-div d-flex mb-1">
                   <label>Nomor HP</label>
-                  <span>{{ user.mobileNumber }}</span>
+                  <span>{{ user.otherDetails.mobileNumber }}</span>
                 </div>
-                <div class="item-div d-flex mb-1">
+                <div v-if="!isEditInfoShow" class="item-div d-flex mb-1">
                   <label>Email</label>
-                  <span>{{ user.detail.email }}</span>
+                  <span>{{ user.otherDetails.detail ? user.otherDetails.detail.email : '---' }}</span>
                 </div>
-                <div class="item-div d-flex mb-1">
+                <div v-if="!isEditInfoShow" class="item-div d-flex mb-1">
                   <label>Nomor NPWP</label>
-                  <span>{{ user.npwp }}</span>
+                  <span>{{ user.otherDetails.npwp }}</span>
                 </div>
-                <div class="item-div d-flex mb-1">
+                <div v-if="!isEditInfoShow" class="item-div d-flex mb-1">
                   <label>Penghasilan</label>
                   <span>{{ salaryDetail.description }}</span>
+                </div>
+                <div v-if="isEditInfoShow" class="item-div d-flex mb-1">
+                  <label>Tanggal Kadaluarsa</label>
+                  <input v-if="isEditInfoShow" type="date" v-model="updateInfoData.expiryDate">
+                </div>
+                
+              </div>
+
+              <div v-if="!isEditInfoShow" class="d-flex mt-4">
+                <div class="flex-1"></div>
+                <div class="flex-1 text-right">
+                  <button class="btn btn-submit" @click="toggleEditInfo(true)">Edit</button>
+                </div>
+              </div>
+              
+              <div v-if="isEditInfoShow" class="d-flex mt-4">
+                <div class="flex-1 text-center">
+                  <button class="btn btn-cancel" @click="toggleEditInfo(false)">Cancel</button>
+                </div>
+                <div class="flex-1 text-center">
+                  <button class="btn btn-submit" @click="updatePersonalInfo()">Update</button>
                 </div>
               </div>
             </div>
@@ -140,12 +199,12 @@
                     <label class="fs-10 text-dark"><b>Validasi KTP</b></label>
                   </div>
                   <div class="col p-0 text-center">
-                    <button v-if="!user.ktp" class="btn btn-no-record">
+                    <button v-if="!user.otherDetails.ktp" class="btn btn-no-record">
                       <font-awesome-icon :icon="['fas', 'times']" class="mr-2" size="lg" />
                       No Record
                     </button>
 
-                    <button v-if="user.ktp" class="btn btn-pass">
+                    <button v-if="user.otherDetails.ktp" class="btn btn-pass">
                       <font-awesome-icon :icon="['fas', 'check']" class="mr-2" size="lg" />
                       Pass
                     </button>
@@ -157,12 +216,12 @@
                     <label class="fs-10 text-dark"><b>Face Recognition</b></label>
                   </div>
                   <div class="col p-0 text-center">
-                    <button v-if="!user.npwp || user.npwp == ''" class="btn btn-no-record">
+                    <button v-if="!user.otherDetails.npwp || user.otherDetails.npwp == ''" class="btn btn-no-record">
                       <font-awesome-icon :icon="['fas', 'times']" class="mr-2" size="lg" />
                       No Record
                     </button>
 
-                    <button v-if="user.npwp && user.npwp != ''" class="btn btn-pass">
+                    <button v-if="user.otherDetails.npwp && user.otherDetails.npwp != ''" class="btn btn-pass">
                       <font-awesome-icon :icon="['fas', 'check']" class="mr-2" size="lg" />
                       Pass
                     </button>
@@ -175,7 +234,7 @@
                 <div class="col p-0">
                   <h5 class="mb-3 section-title"><b>Foto KTP</b></h5>
                   <div v-viewer="{}" class="w-100">
-                    <img :src="((user.ktp)?user.ktp.image:'') || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                    <img :src="((user.otherDetails.ktp)?user.otherDetails.ktp.image:'') || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
                     
                   </div>
                 </div>
@@ -183,7 +242,7 @@
                 <div class="col pl-2 pr-1">
                   <h5 class="mb-3 section-title"><b>Selfie KTP</b></h5>
                   <div v-viewer="{}" class="w-100">
-                    <img :src="user.selfie || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                    <img :src="user.otherDetails.selfie || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
                   </div>
                 </div>
 
@@ -227,16 +286,16 @@
             <div class="flex-2 card shadow-sm p-0 rounded-xl border-0 mb-0">
               <GmapMap
                 :center="{
-                  lat: parseFloat(user.registrationLoc ? user.registrationLoc.coordinates[1] : 0),
-                  lng: parseFloat(user.registrationLoc ? user.registrationLoc.coordinates[0] : 0)
+                  lat: parseFloat(user.otherDetails.registrationLoc ? user.otherDetails.registrationLoc.coordinates[1] : 0),
+                  lng: parseFloat(user.otherDetails.registrationLoc ? user.otherDetails.registrationLoc.coordinates[0] : 0)
                 }"
                 :zoom="10"
                 style="height: 100%; border-radius: 20px;overflow: hidden;"
               >
                 <GmapMarker
                     :position="{
-                      lat: parseFloat(user.registrationLoc ? user.registrationLoc.coordinates[1] : 0),
-                      lng: parseFloat(user.registrationLoc ? user.registrationLoc.coordinates[0] : 0)
+                      lat: parseFloat(user.otherDetails.registrationLoc ? user.otherDetails.registrationLoc.coordinates[1] : 0),
+                      lng: parseFloat(user.otherDetails.registrationLoc ? user.otherDetails.registrationLoc.coordinates[0] : 0)
                     }"
                   />
               </GmapMap>
@@ -252,11 +311,10 @@
             <h5 class="mb-4 section-title"><b>Limit</b></h5>
 
             <div class="d-flex">
-              <div class="flex-4">
+              <div class="flex-4 mr-2 text-break">
                 <h5 class="mb-3 section-title"><b>Pengajuan Limit baru</b></h5>
                 <h2 class="submission-new-limits-text">
-                  <!-- Rp5.000.000 -->
-                  {{ '---' }}
+                  {{ user.remainingCreditNew | currency }}
                 </h2>
               </div>
               <div class="flex-3">
@@ -267,7 +325,7 @@
                   </div>
                   <div class="flex-1 detail-value fs-14">
                     <!-- 19 Agu 2020 -->
-                    {{ '---' }}
+                    {{ new Date( user.createdAt ) | moment("DD MMM YYYY") }}
                   </div>
                 </div>
                 <div class="d-flex align-items-center">
@@ -276,7 +334,7 @@
                   </div>
                   <div class="flex-1 detail-value fs-14">
                     <!-- 14:59:09 WIB -->
-                    {{ '---' }}
+                    {{ new Date( user.createdAt ) | moment("HH:MM:SS") + ' WIB' }}
                   </div>
                 </div>
               </div>
@@ -285,24 +343,21 @@
             <h5 class="mb-4 section-title"><b>Riwayat Limit</b></h5>
             <div class="item-details-container">
               <div class="item-div d-flex mb-1">
-                <label>Limit Sekarang</label>
+                <label>Limit Sebelumnya</label>
                 <span>
-                  <!-- Rp5.000.000 -->
-                  {{ '---' }}
+                  {{ user.user.credit | currency }}
                 </span>
               </div>
               <div class="item-div d-flex mb-1">
                 <label>Outstanding</label>
                 <span>
-                  <!-- Rp5.000.000 -->
-                  {{ '---' }}
+                  {{ (user.user.credit - user.user.remainingCredit) | currency }}
                 </span>
               </div>
               <div class="item-div d-flex mb-1">
                 <label>Sisa Limit</label>
                 <span>
-                  <!-- Rp5.000.000 -->
-                  {{ '---' }}
+                  {{ user.user.remainingCredit | currency }}
                 </span>
               </div>
             </div>
@@ -403,6 +458,9 @@ export default {
     toggleTransactionsModal: { 
       type: Function 
     },
+    isNotificationShow: {
+      type: Object
+    }
   },
   data() {
   	return {
@@ -425,6 +483,8 @@ export default {
       note: '',
       dataPendukung: '',
       responseAFPI: {},
+      isEditInfoShow: false,
+      updateInfoData: {},
   	}
   },
   computed: {
@@ -441,8 +501,8 @@ export default {
       let vm = this
   		let status
 
-      if ( !vm.user.ktp ) return '---'
-      switch(vm.user.ktp.status) {
+      if ( !vm.user.otherDetails.ktp ) return '---'
+      switch(vm.user.otherDetails.ktp.status) {
         case 0: 	status = 'tidak 100% valid'; 	break
         case 1: 	status = '100% valid'; 				break
         case 2: 	status = 'tidak valid'; 			break
@@ -454,8 +514,8 @@ export default {
       let vm = this
   		let status
 
-      if ( !vm.user.ktp ) return '---'
-      switch(vm.user.ktp.status) {
+      if ( !vm.user.otherDetails.ktp ) return '---'
+      switch(vm.user.otherDetails.ktp.status) {
         case 0: 	status = 'tidak 100% valid'; 	break
         case 1: 	status = '100% valid'; 				break
         case 2: 	status = 'tidak valid'; 			break
@@ -465,11 +525,11 @@ export default {
   	},
     ktpStatus() {
       let vm = this
-      if ( vm.user.ktp ) {
+      if ( vm.user.otherDetails.ktp ) {
         return {
-          'table-warning': vm.user.ktp.status == 0,
-          'table-success': vm.user.ktp.status == 1,
-          'table-danger': vm.user.ktp.status == 2,
+          'table-warning': vm.user.otherDetails.ktp.status == 0,
+          'table-success': vm.user.otherDetails.ktp.status == 1,
+          'table-danger': vm.user.otherDetails.ktp.status == 2,
         }
       }
     },
@@ -478,7 +538,9 @@ export default {
   	let vm = this
     await vm.getOtherDetails()
     await vm.getAllTypeUserSalary();
-		await vm.getAFPI()
+    vm.getAFPI()
+    
+    console.log(vm.user);
   },
   watch: {
   	user(value) {
@@ -525,7 +587,7 @@ export default {
         })
 			// console.log('actionAdmin', actionAdmin)
     },
-  	getOtherDetails() {
+  	async getOtherDetails() {
 			// Used the native approach since axios is currently bound to the
 			// baseURL of the API that needs authentication, etc.
 			// Note: There's should be a database for this
@@ -545,7 +607,7 @@ export default {
 			  .then(resp => resp.json()) // Transform the data into JSON
 			  .then(resIndustry => {
 			    vm.bidangKerja = resIndustry.filter(val => {
-			      return val._id == vm.user.detail.industri
+			      return val._id == vm.user.otherDetails.detail.industri
 			    })[0].label
 			  })
 
@@ -554,7 +616,7 @@ export default {
         .then(resp => resp.json()) // Transform the data into JSON
         .then(resSalary => {
           let salaryObj = resSalary
-                            .filter(f => f.type == vm.user.detail.penghasilan)
+                            .filter(f => f.type == vm.user.otherDetails.detail.penghasilan)
                             .map(v => {
                               return {
                                 description: v.description,
@@ -569,26 +631,26 @@ export default {
 
       vm.verify = {
         applicant: {
-          passed: vm.user.verify.applicant.passed,
-          notes: vm.user.verify.applicant.notes || ''
+          passed: vm.user.otherDetails.verify.applicant.passed,
+          notes: vm.user.otherDetails.verify.applicant.notes || ''
         },
         emergency: {
-          passed: vm.user.verify.emergencyContact.passed,
-          notes: vm.user.verify.emergencyContact.notes || ''
+          passed: vm.user.otherDetails.verify.emergencyContact.passed,
+          notes: vm.user.otherDetails.verify.emergencyContact.notes || ''
         }
       }
 
-      vm.identifyBankBin(vm.user.card)
+      vm.identifyBankBin(vm.user.otherDetails.card)
 
       // Step 8
       axios
         .post('https://mon.empatkali.co.id/jhon', {
-          mobileNumber: vm.user.mobileNumber,
-          'detail.email': vm.user.detail.email,
-          'ktp.number': vm.user.ktp.number,
-          npwp: vm.user.npwp,
-          'detail.name': vm.user.detail.name,
-          status: vm.user.status,
+          mobileNumber: vm.user.otherDetails.mobileNumber,
+          'detail.email': vm.user.otherDetails.detail.email,
+          'ktp.number': vm.user.otherDetails.ktp.number,
+          npwp: vm.user.otherDetails.npwp,
+          'detail.name': vm.user.otherDetails.detail.name,
+          status: vm.user.otherDetails.status,
           adminLogin: {
             _id: tokenAuth._id,
             email: tokenAuth.email
@@ -600,8 +662,22 @@ export default {
         .catch(err => {
           console.log(err.response)
         })
-  	},
+
+      await vm.getSideDetails();
+    },
     
+    /*
+    * getdetails for left side modal
+    *
+    */
+    async getSideDetails()  {
+      let vm = this
+      let url = `/api/users/getUserUpdateCreditDetail/${vm.user._id}`;
+      let result = await axios.get(url, vm.requestedHeaders);
+      console.log(result.data.data);
+      vm.user.sideDetails = result.data.data;
+    },
+         
     /**
      * Identify Bank Bin
      *
@@ -623,13 +699,13 @@ export default {
       try {
         let userSalaryResponse = await axios.get(`api/usersalary`, vm.requestedHeaders)
         if (userSalaryResponse.data) {
-          let userSalary = vm.user.detail.penghasilan
+          let userSalary = vm.user.otherDetails.detail.penghasilan
           userSalary = 'gol3' //debug userSalary
           let findSalary = userSalaryResponse.data.filter(data => data.type == userSalary)
           // if (findSalary[0].type == 'gol3' || findSalary[0].type == 'gol4' || findSalary[0].type == 'gol5') {
           //   vm.customStyleUser.userSalary = 'orange'
           // }
-          vm.user.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
+          vm.user.otherDetails.detail.descriptionOfsalary = findSalary[0].description //assign new object value of salary
         }
       } catch (e) {
         console.log('Error - getAllTypeUserSalary: ', e);
@@ -642,9 +718,9 @@ export default {
     async getAFPI() {
       let vm = this
       try {
-        let afpi = await axios.get(`https://minion.empatkali.co.id/dataafpi2.php?ktp=${vm.user._id}`)
+        let afpi = await axios.get(`https://minion.empatkali.co.id/dataafpi2.php?ktp=${vm.user.user._id}`)
         console.log(afpi);
-        let extractValueFromString = vm.user.detail.descriptionOfsalary
+        let extractValueFromString = vm.user.otherDetails.detail.descriptionOfsalary
                                         .replaceAll(/(rp\s)|(\.)/gi, '')
                                         .replaceAll(/(\s-\s)|(<\s)|(>\s)/gi, '~')
                                         .split('~')
@@ -659,6 +735,111 @@ export default {
         console.log('AFPI Error: ', e)
       }
     },
+
+    /*
+    * Toggle Edit info inputs
+    */
+    toggleEditInfo(opt) {
+      let vm = this
+      vm.isEditInfoShow = opt;
+      vm.updateInfoData = {};
+      if(opt == true){
+        vm.updateInfoData = vm.user.sideDetails;
+        vm.updateInfoData.birthPlace = vm.updateInfoData.birthPlaceBirthday.split(',')[0];
+        vm.updateInfoData.dob = this.$moment(vm.updateInfoData.birthPlaceBirthday.split(',')[1].replace(' ', ''), 'MM-DD-YYYY').format('YYYY-MM-DD');
+        console.log(vm.updateInfoData);
+      }
+    },
+
+    /*
+    * Toggle Edit info inputs
+    */
+    async updatePersonalInfo()  {
+      let vm = this
+      console.log(vm.updateInfoData);
+
+      if( await vm.validatePersonalInfoForm(vm.updateInfoData) == false ){
+        return false;
+      }
+
+      let params  = {
+        id: vm.user.user._id,
+        occupation: vm.updateInfoData.occupation,
+        address: vm.updateInfoData.address,
+        gender: vm.updateInfoData.gender,
+        city: vm.updateInfoData.city,
+        ktp: vm.updateInfoData.idNumber,
+        bloodType: vm.updateInfoData.bloodType,
+        birthPlaceBirthday: vm.updateInfoData.birthPlace + ', ' + this.$moment(vm.updateInfoData.dob).format('MM-DD-YYYY'),
+        religion: vm.updateInfoData.religion,
+        expiryDate: this.$moment(vm.updateInfoData.expiryDate).format('MM-DD-YYYY'),
+        rtrw: vm.updateInfoData.rtrw,
+        province: vm.updateInfoData.province,
+        nationality: vm.updateInfoData.nationality,
+        district: vm.updateInfoData.district,
+        name: vm.updateInfoData.name,
+        village: vm.updateInfoData.village,
+        maritalStatus: vm.updateInfoData.maritalStatus
+      }
+
+      await axios.put(`api/users/updateocr`, params, vm.requestedHeaders)
+      .then(async function (response) {
+        console.log(response);
+        if (response.data.status) {
+          vm.isEditInfoShow = false;
+          vm.getSideDetails();
+          vm.$swal.fire('Success!', response.data.message, 'success');
+        }else{
+          vm.$swal.fire('Error!', response.data.message, 'error');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        console.log(error.response);
+        vm.$swal.fire('Error!', error.response.data.message, 'error');
+      })
+    },
+
+    async validatePersonalInfoForm(formData){
+      let vm = this
+      let errCtr = 0;
+      let requiredKeys  = [
+        { name: 'Occupation', key: 'occupation' },
+        { name: 'Alamat', key: 'address' },
+        { name: 'Jenis Kelamin', key: 'gender' },
+        { name: 'Kota', key: 'city' },
+        { name: 'NIK', key: 'idNumber' },
+        { name: 'Golongan Darah', key: 'bloodType' },
+        { name: 'Tempat', key: 'birthPlace' },
+        { name: 'Tgl Lahir', key: 'dob' },
+        { name: 'Agama', key: 'religion' },
+        { name: 'Tanggal Kadaluarsa', key: 'expiryDate' },
+        { name: 'RT/RW', key: 'rtrw' },
+        { name: 'Propinsi', key: 'province' },
+        { name: 'Kewarganegaraan', key: 'nationality' },
+        { name: 'Kecamatan', key: 'district' },
+        { name: 'Name', key: 'name' },
+        { name: 'Kelurahan', key: 'village' },
+        { name: 'Status Pernikahan', key: 'maritalStatus' },
+      ];
+      let errorKeys = [];
+
+      await _.map( requiredKeys, async (value, key)  =>  {
+        // console.log(key);
+        // console.log(value);
+        if(!formData[value.key] || formData[value.key] == ""){
+          errCtr += 1;
+          errorKeys.push(value.name);
+        }
+      });
+      if(errCtr > 0){
+        vm.$swal("Error!", "These Items are required " + errorKeys.join(", "), 'error' );
+        return false;
+      }
+      return true;
+      
+    }
+    
   }
 }
 </script>
@@ -687,7 +868,7 @@ export default {
 .item-details-container{
   .item-div{
     label{
-      max-width: 200px;
+      max-width: 170px;
       flex: 1;
       color: #676E74;
       position: relative;
@@ -710,6 +891,15 @@ export default {
       color: #020D18;
       font-size: 14px;
       word-break: break-word;
+    }
+    input, select{
+      flex: 1;
+      font-size: 12px;
+      color: #414548;
+      width: 100%;
+      padding: 0;
+      border-width: 0 0 1px 0;
+      border-color: #c1bfbf;
     }
   }
 }
@@ -758,6 +948,7 @@ export default {
 .submission-new-limits-text{
   color: #393C8E;
   font-weight: 700;
+  font-size: 26px;
 }
 .limit-box{
   height: 335.91px;
@@ -774,5 +965,24 @@ export default {
   box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.11);
   background: #FFF;
   border-radius: 20px;
+}
+.close-icon{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 10px;
+  color: #aaa;
+}
+.btn-cancel{
+  border: 1px solid #ccc;
+  width: 95%;
+  font-size: 14px;
+  color: #666;
+}
+.btn-submit{
+  width: 95%;
+  font-size: 14px;
+  color: #fff !important;
+  background: #3438a9;
 }
 </style>

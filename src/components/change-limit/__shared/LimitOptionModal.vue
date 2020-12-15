@@ -4,18 +4,18 @@
       <p>Kamu yakin menyetujui pengajuan limit dari:</p>
       <div class="d-flex">
         <label for="">Nama</label>
-        <span><b>Jeff Benzos</b></span>
+        <span><b>{{ user.sideDetails && user.sideDetails.name ? user.sideDetails.name : '---' }}</b></span>
       </div>
       <div class="d-flex">
         <label for="">Limit Sekarang</label>
-        <span>Rp2.000.000</span>
+        <span>{{ user.user.credit | currency }}</span>
       </div>
       <div class="d-flex">
         <label for="">Pengajuan Limit baru</label>
-        <span class="blue-value"><b>Rp2.000.000</b></span>
+        <span class="blue-value"><b>{{ user.creditNew | currency }}</b></span>
       </div>
 
-      <div class="d-flex">
+      <div v-if="status == 'approve-limit'" class="d-flex">
         <label for="">Limit yang disetujui</label>
         <div class="custom-drop">
           <div class="img-icon">
@@ -31,16 +31,16 @@
             toggle-class="btn-limit-drop"
             no-caret
           >
-            <b-dropdown-item href="#" @click="selectDrop('Rp1.000.000')" :disabled="dropVal == 'Rp1.000.000'">Rp1.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('Rp2.000.000')" :disabled="dropVal == 'Rp2.000.000'">Rp2.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('Rp3.000.000')" :disabled="dropVal == 'Rp3.000.000'">Rp3.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('Rp4.000.000')" :disabled="dropVal == 'Rp4.000.000'">Rp4.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('Rp5.000.000')" :disabled="dropVal == 'Rp5.000.000'">Rp5.000.000</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('1000000')" :disabled="user.creditNew == '1000000'">Rp1.000.000</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('2000000')" :disabled="user.creditNew == '2000000'">Rp2.000.000</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('3000000')" :disabled="user.creditNew == '3000000'">Rp3.000.000</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('4000000')" :disabled="user.creditNew == '4000000'">Rp4.000.000</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('5000000')" :disabled="user.creditNew == '5000000'">Rp5.000.000</b-dropdown-item>
           </b-dropdown>
         </div>
       </div>
 
-      <div class="comment-input-container">
+      <div v-if="status == 'approve-limit' || status == 'reject'" class="comment-input-container">
         <div class="w-200px d-flex">
           <label for="">Alasan</label>
           <div class="flex-1 text-right">
@@ -65,8 +65,14 @@
         <a href="#" @click="modalOptButton('close')" class="back-btn fs-20"><b>Batal</b></a>
       </div>
       <div class="flex-none text-right ml-3">
-        <button class="btn btn-submit text-white green" @click="approveBtn()"><b>Approve</b></button>
-        <button v-if="false" class="btn btn-submit text-white red" @click="rejectBtn()"><b>Reject</b></button>
+        <button 
+          class="btn btn-submit text-white" 
+          v-bind:class="{'green' : status != 'reject', 'red' : status == 'reject'}" 
+          @click="approveOpt()"
+        >
+          <b v-if="status != 'reject'">Approve</b>
+          <b v-if="status == 'reject'">Reject</b>
+        </button>
       </div>
     </div>    
 
@@ -90,6 +96,15 @@ export default {
     modalOptButton: { 
       type: Function 
     },
+    user: {
+      type: Object
+    },
+    status: {
+      type: String
+    },
+    showNotificationPopUp:  {
+      type: Function
+    }
   },
   data() {
   	return {
@@ -109,7 +124,8 @@ export default {
   },
   created() {
     let vm = this
-
+    console.log(vm.user);
+    console.log(vm.status);
   },
   watch: {
   	
@@ -133,13 +149,43 @@ export default {
       let vm = this
       vm.dropVal = opt;
     },
-    approveBtn()  {
+    approveOpt()  {
       let vm = this
-      vm.isLimitDropErr = true;
-    },
-    rejectBtn()  {
-      let vm = this
-      vm.isLimitDropErr = true;
+
+      if(vm.status == 'approve-limit'){
+        if(vm.commentVal == '' || vm.dropVal == ''){
+          vm.isLimitDropErr = true;
+          return false;
+        }
+      }
+      if(vm.status == 'reject'){
+        if(vm.commentVal == ''){
+          vm.isLimitDropErr = true;
+          return false;
+        }
+      }
+
+      vm.isLimitDropErr = false;
+
+      let params  = {
+        reqId: vm.user._id,
+        approve:  vm.status == 'reject' ? 0 : 1,
+        nominal: vm.status == 'approve-limit' ? vm.dropVal : vm.user.creditNew
+      }
+      axios.put(`api/users/approvalupdatecredit`, params, vm.requestedHeaders)
+      .then(async function (response) {
+        console.log(response);
+        if (response.data.status) {
+          await vm.modalOptButton('close');
+          await vm.showNotificationPopUp();
+        }else{
+          vm.$swal.fire('Error!', response.data.message, 'error');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      
     },
   }
 }
@@ -221,6 +267,9 @@ export default {
         right: 10px;
         top: 0;
       }
+    }
+    span{
+      flex: 1;
     }
     .blue-value{
       color: #393C8E;

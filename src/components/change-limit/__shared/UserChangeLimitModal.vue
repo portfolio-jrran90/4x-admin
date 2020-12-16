@@ -128,10 +128,8 @@
                   <label>Tanggal Kadaluarsa</label>
                   <input v-if="isEditInfoShow" type="date" v-model="updateInfoData.expiryDate">
                 </div>
-                
               </div>
-
-              <div v-if="!isEditInfoShow" class="d-flex mt-4">
+              <div v-if="!isEditInfoShow && user.status == 0" class="d-flex mt-4">
                 <div class="flex-1"></div>
                 <div class="flex-1 text-right">
                   <button class="btn btn-submit" @click="toggleEditInfo(true)">Edit</button>
@@ -199,14 +197,15 @@
                     <label class="fs-10 text-dark"><b>Validasi KTP</b></label>
                   </div>
                   <div class="col p-0 text-center">
-                    <button v-if="!user.otherDetails.ktp" class="btn btn-no-record">
-                      <font-awesome-icon :icon="['fas', 'times']" class="mr-2" size="lg" />
-                      No Record
-                    </button>
-
-                    <button v-if="user.otherDetails.ktp" class="btn btn-pass">
-                      <font-awesome-icon :icon="['fas', 'check']" class="mr-2" size="lg" />
-                      Pass
+                    <button 
+                      class="btn" 
+                      v-bind:class="{
+                        'btn-no-record' : user.imageDocs.ktp.image == null,
+                        'btn-pass' : user.imageDocs.ktp.image != null,
+                      }"
+                    >
+                      <font-awesome-icon :icon="['fas', user.imageDocs.ktp.image == null ? 'times' : 'check']" class="mr-2" size="lg" />
+                      {{ user.imageDocs.ktp.image == null ? 'No Record' : 'Pass' }}
                     </button>
                   </div>
                 </div>
@@ -216,14 +215,15 @@
                     <label class="fs-10 text-dark"><b>Face Recognition</b></label>
                   </div>
                   <div class="col p-0 text-center">
-                    <button v-if="!user.otherDetails.npwp || user.otherDetails.npwp == ''" class="btn btn-no-record">
-                      <font-awesome-icon :icon="['fas', 'times']" class="mr-2" size="lg" />
-                      No Record
-                    </button>
-
-                    <button v-if="user.otherDetails.npwp && user.otherDetails.npwp != ''" class="btn btn-pass">
-                      <font-awesome-icon :icon="['fas', 'check']" class="mr-2" size="lg" />
-                      Pass
+                    <button 
+                      class="btn" 
+                      v-bind:class="{
+                        'btn-no-record' : user.imageDocs.npwpImage == null || user.imageDocs.slip.image == null,
+                        'btn-pass' : user.imageDocs.npwpImage != null || user.imageDocs.slip.image != null,
+                      }"
+                    >
+                      <font-awesome-icon :icon="['fas', user.imageDocs.npwpImage == null || user.imageDocs.slip.image == null  ? 'times' : 'check']" class="mr-2" size="lg" />
+                      {{ user.imageDocs.npwpImage == null || user.imageDocs.slip.image == null ? 'No Record' : 'Pass' }}
                     </button>
                   </div>  
                   
@@ -234,7 +234,7 @@
                 <div class="col p-0">
                   <h5 class="mb-3 section-title"><b>Foto KTP</b></h5>
                   <div v-viewer="{}" class="w-100">
-                    <img :src="((user.otherDetails.ktp)?user.otherDetails.ktp.image:'') || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                    <img :src="user.imageDocs.ktp.image || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
                     
                   </div>
                 </div>
@@ -249,14 +249,14 @@
                 <div class="col pr-2 pl-1">
                   <h5 class="mb-3 section-title"><b>Foto NPWP</b></h5>
                   <div v-viewer="{}" class="w-100">
-                    <img :src="'/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                    <img :src="user.imageDocs.npwpImage || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
                   </div>
                 </div>
 
                 <div class="col p-0">
                   <h5 class="mb-3 section-title"><b>Slip Gaji</b></h5>
                   <div v-viewer="{}" class="w-100">
-                    <img :src="'/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
+                    <img :src="user.imageDocs.slip.image || '/assets/img/no-image.png'" class="rounded-lg w-100 border" alt="">
                   </div>
                 </div>
               </div>
@@ -535,7 +535,12 @@ export default {
     },
   },
   async created() {
-  	let vm = this
+    let vm = this
+    vm.user.sideDetails = {}
+    vm.user.imageDocs = {
+      ktp: {},
+      slip: {}
+    }
     await vm.getOtherDetails()
     await vm.getAllTypeUserSalary();
     vm.getAFPI()
@@ -675,7 +680,8 @@ export default {
       let url = `/api/users/getUserUpdateCreditDetail/${vm.user._id}`;
       let result = await axios.get(url, vm.requestedHeaders);
       console.log(result.data.data);
-      vm.user.sideDetails = result.data.data;
+      vm.user.sideDetails = result.data.data.information;
+      vm.user.imageDocs = result.data.data.docs;
     },
          
     /**
@@ -836,6 +842,18 @@ export default {
         vm.$swal("Error!", "These Items are required " + errorKeys.join(", "), 'error' );
         return false;
       }
+      if(formData.idNumber){
+        if(formData.idNumber.length != 16){
+          vm.$swal("Error!", "NIK should be 16 digits", 'error' );
+          return false;
+        }
+      }
+      // if(formData.rtrw){
+      //   if(formData.idNumber.length != 15){
+      //     vm.$swal("Error!", "NPWP should be 15 digits", 'error' );
+      //     return false;
+      //   }
+      // }
       return true;
       
     }

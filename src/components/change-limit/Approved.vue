@@ -183,7 +183,11 @@
       no-close-on-esc
       no-close-on-backdrop
       hide-footer>
-      <detail-comment :user="userDetails" :viewCommentModal="viewCommentModal" />
+      <detail-comment 
+        :user="userDetails" 
+        :viewCommentModal="viewCommentModal" 
+        :adminUser="admins"
+      />
     </b-modal>
 
     <b-modal v-model="limitOptionModal" 

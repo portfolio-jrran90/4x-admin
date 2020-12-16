@@ -1,31 +1,33 @@
 <template>
   <div>
     <div class="img-container">
-      <div v-if="true" class="text-center mb-4">
-        <img :src="'../assets/img/message.png'" class="w-25" alt="">
+      <div v-if="commentArr.length == 0" class="text-center mb-4">
+        <img :src="'../assets/img/message-icon.png'" class="w-25" alt="">
         <p class="text-center fs-20 my-4">Belum ada yang<br>komentar sebelumnya</p>
       </div>
-      <div v-if="false" class="mb-4">
+      <div v-if="commentArr.length > 0" class="mb-4">
         <div class="comments-container mt-3">
 
           <!-- Comments List -->
-          <div v-for="(list, index) in commentArr" :key="index" class="comment-div d-flex p-3 mb-3" v-bind:class="{'current-user' : index >= 2}">
+          <div v-for="(list, index) in commentArr" :key="index" class="comment-div d-flex p-3 mb-3" v-bind:class="{'current-user' : list.commentBy == adminUser.displayName}">
 
             <div class="d-flex flex-column flex-10">
-              <div class="d-flex align-items-center" v-bind:class="{'flex-row-reverse' : index >= 2}">
+              <div class="d-flex align-items-center" v-bind:class="{'flex-row-reverse' : list.commentBy == adminUser.displayName}">
                 <div class="flex-1 mr-2">
-                  <div class="user-img-container mw-50px">
-                    <img :src="'../assets/img/sample-avatar.png'" class="w-100 rounded-circle border" alt="">
+                  <div class="user-img-container w-50px h-50px">
+                    <img :src="list.profile" class="w-100 h-100 rounded-circle border" alt="">
                   </div>
                 </div>
 
-                <p class="flex-10 fs-16 user-name m-0" v-bind:class="{'text-right' : index >= 2, 'mr-2' : index >= 2}">Jhon Ranario</p>
-                <span class="flex-3 fs-12 time-text" v-bind:class="{'text-right' : index < 2}">2 hari yang lalu</span>
+                <p class="flex-10 fs-16 user-name m-0" v-bind:class="{'text-right' : list.commentBy == adminUser.displayName, 'mr-2' : list.commentBy == adminUser.displayName}">
+                  {{ list.commentBy }}
+                </p>
+                <span class="flex-3 fs-12 time-text" v-bind:class="{'text-right' : list.commentBy != adminUser.displayName}">{{ list.createdAt | moment('from', 'now') }}</span>
               </div>
               <div class="d-flex">
-                <div v-if="index < 2" class="flex-1 mr-2"></div>
+                <div v-if="list.commentBy != adminUser.displayName" class="flex-1 mr-2"></div>
                 <p class="flex-13 user-comment fs-16 mt-1 mb-0">
-                  Lorem ipsum dolor sit amet, consectetur 
+                  {{ list.text }}
                 </p>
               </div>
             </div>
@@ -66,6 +68,12 @@ export default {
     viewCommentModal: { 
       type: Function 
     },
+    user: {
+      type: Object
+    },
+    adminUser: {
+      type: Object
+    }
   },
   data() {
   	return {
@@ -76,7 +84,7 @@ export default {
         }
       },
       
-      commentArr: [1,2,3],
+      commentArr: [],
       commentVal: ''
   	}
   },
@@ -85,7 +93,8 @@ export default {
   },
   created() {
     let vm = this
-  	vm.getCommentList();
+    vm.getCommentList();
+    console.log(vm.adminUser);
   },
   watch: {
   	
@@ -105,38 +114,34 @@ export default {
 
       return parseJwt(paramToken)
     },
-    getCommentList()  {
+    async getCommentList()  {
       let vm = this
+
+      let url = `/api/users/commentupdatecredit/${vm.user._id}`;
+      let result = await axios.get(url, vm.requestedHeaders);
+      console.log(result.data.data);
+      vm.commentArr = result.data.data;
     },
     submitComment(comment) {
       let vm = this
-      
-      // const tokenAuth = vm.decodeJwt(vm.requestedHeaders.headers['x-access-token'])
-      // let data  = {
-      //   mobileNumber: vm.user.mobileNumber,
-      //   'detail.email': vm.user.detail.email,
-      //   'ktp.number': vm.user.ktp.number,
-      //   npwp: vm.user.npwp,
-      //   'detail.name': vm.user.detail.name,
-      //   status: vm.user.status,
-      //   adminLogin: {
-      //     _id: tokenAuth._id,
-      //     email: tokenAuth.email
-      //   }
-      // }
-      // axios
-      //   .post('https://mon.empatkali.co.id/jhon', data)
-      //   .then(res => {
-      //     // vm.dataPendukung = res.data
-      //     vm.getCommentList();
-      //   })
-      //   .catch(err => {
-      //     console.log(err.response)
-      //   })
 
-      vm.commentArr.push(vm.commentArr.length + 1);
-      vm.commentVal = '';
+      if( vm.commentVal == '' ){
+        vm.$swal.fire('Error!', 'Comment is required.', 'error');
+        return false;
+      }
       
+      let params  = {
+        comment: vm.commentVal,
+      }
+      axios.post(`api/users/commentupdatecredit/${vm.user._id}`, params, vm.requestedHeaders)
+        .then(res => {
+          // vm.dataPendukung = res.data
+          vm.commentVal = '';
+          vm.getCommentList();
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
     }
   }
 }

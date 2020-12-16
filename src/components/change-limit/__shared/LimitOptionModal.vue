@@ -170,7 +170,8 @@ export default {
       let params  = {
         reqId: vm.user._id,
         approve:  vm.status == 'reject' ? 0 : 1,
-        nominal: vm.status == 'approve-limit' ? vm.dropVal : vm.user.creditNew
+        nominal: vm.status == 'approve-limit' ? vm.dropVal : vm.user.creditNew,
+        reason: vm.commentVal
       }
       axios.put(`api/users/approvalupdatecredit`, params, vm.requestedHeaders)
       .then(async function (response) {

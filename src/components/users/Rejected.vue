@@ -283,7 +283,7 @@ export default {
 			actionAdmin = JSON.stringify(actionAdmin)
 
 			axios
-        .post('https://mon.empatkali.co.id/cs', {
+        .post('https://zz.empatkali.co.id/cs', {
 					actionAdmin
         })
         .then(res => {

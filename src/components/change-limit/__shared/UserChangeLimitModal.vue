@@ -153,7 +153,7 @@
               <div class="d-flex align-items-start mb-2">
                 <div class="col p-0">
                   <p class="section-title mb-2"><b class="">Total Transactions</b></p>
-                  <h3>{{ '---' }}</h3>
+                  <h3>{{ user.transactionDetails.completed + user.transactionDetails.latePayment + user.transactionDetails.ongoing + user.transactionDetails.overdue }}</h3>
                 </div>
                 <div class="col-3 p-0 text-right">
                   <a href="#" @click="toggleTransactionsModal(true)" class="see-details-text text-decoration-none">Lihat Detail</a>
@@ -164,12 +164,12 @@
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Completed</label>
                   <p class="section-subtitle mb-2">Finished 4th payment</p>
-                  <h4 class="font-weight-light">{{ '---' }}</h4>
+                  <h4 class="font-weight-light">{{ user.transactionDetails.completed }}</h4>
                 </div>
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Ongoing</label>
                   <p class="section-subtitle mb-2">Unpaid on track</p>
-                  <h4 class="font-weight-light">{{ '---' }}</h4>
+                  <h4 class="font-weight-light">{{ user.transactionDetails.ongoing }}</h4>
                 </div>
               </div>
 
@@ -177,12 +177,12 @@
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Late Payment</label>
                   <p class="section-subtitle mb-2">Late but paid</p>
-                  <h4 class="font-weight-light m-0">{{ '---' }}</h4>
+                  <h4 class="font-weight-light m-0">{{ user.transactionDetails.latePayment }}</h4>
                 </div>
                 <div class="col p-0 ">
                   <label class="section-title mb-1">Overdue</label>
                   <p class="section-subtitle mb-2">Late and not paid</p>
-                  <h4 class="font-weight-light m-0">{{ '---' }}</h4>
+                  <h4 class="font-weight-light m-0">{{ user.transactionDetails.overdue }}</h4>
                 </div>
               </div>
             </div>
@@ -668,6 +668,7 @@ export default {
           console.log(err.response)
         })
 
+      await vm.getTransactionDetails();
       await vm.getSideDetails();
     },
     
@@ -682,6 +683,17 @@ export default {
       console.log(result.data.data);
       vm.user.sideDetails = result.data.data.information;
       vm.user.imageDocs = result.data.data.docs;
+    },
+
+    /*
+    * get transactions values
+    *
+    */
+    async getTransactionDetails()  {
+      let vm = this
+      let url = `/api/approvedtransactions/getusertransaction/${vm.user.user._id}`;
+      let result = await axios.get(url, vm.requestedHeaders);
+      vm.user.transactionDetails = result.data.data;
     },
          
     /**

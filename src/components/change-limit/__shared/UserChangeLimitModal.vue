@@ -541,6 +541,7 @@ export default {
       ktp: {},
       slip: {}
     }
+    vm.user.transactionDetails  = {};
     await vm.getOtherDetails()
     await vm.getAllTypeUserSalary();
     vm.getAFPI()

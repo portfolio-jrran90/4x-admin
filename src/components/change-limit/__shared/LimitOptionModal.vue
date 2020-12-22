@@ -52,7 +52,7 @@
           cols="30" 
           rows="3" 
           class="w-100 rounded-lg py-2 px-3 outline-none" 
-          v-bind:class="{'textarea-err' : isLimitDropErr}"
+          v-bind:class="{'textarea-err' : isReasonErr}"
           style="resize: none;" 
           placeholder="Tulis disini"
           v-model="commentVal"
@@ -76,13 +76,18 @@
       </div>
     </div>    
 
-    <div v-if="isLimitDropErr" class="error-message-fixed">
+    <div 
+      v-if="isLimitDropErr || isReasonErr" 
+      class="error-message-fixed" 
+      v-bind:class="{'reason-err' : isReasonErr && !isLimitDropErr, 'reason-limit-err' : isReasonErr && isLimitDropErr}"
+    >
       <div class="d-flex align-items-center message-content">
         <div class="flex-none mr-3">
           <img :src="'../assets/img/red-circle-times.png'" class="w-40px" alt="">
         </div>
         <div class="flex-1 fs-18">
-          Kamu belum memasukkan alasan
+          {{ isReasonErr && isLimitDropErr ? 'Kamu belum memilih Limit yang disetujui dan menulis alasan.' : 'Kamu belum memasukkan alasan' }}
+          
         </div>
       </div>
     </div>
@@ -117,6 +122,7 @@ export default {
       dropVal: '',
       commentVal: '',
       isLimitDropErr: false,
+      isReasonErr: false,
   	}
   },
   computed: {
@@ -153,8 +159,11 @@ export default {
       let vm = this
 
       if(vm.status == 'approve-limit'){
+        console.log(vm.commentVal);
+        console.log(vm.dropVal);
+        vm.isReasonErr = (vm.commentVal == '');
+        vm.isLimitDropErr = (vm.dropVal == '');
         if(vm.commentVal == '' || vm.dropVal == ''){
-          vm.isLimitDropErr = true;
           return false;
         }
       }
@@ -166,6 +175,7 @@ export default {
       }
 
       vm.isLimitDropErr = false;
+      vm.isReasonErr = false;
 
       let params  = {
         reqId: vm.user._id,
@@ -185,6 +195,8 @@ export default {
       })
       .catch(function (error) {
         console.log(error);
+        console.log(error.response);
+        vm.$swal.fire('Error!', error.response.data.message, 'error');
       })
       
     },
@@ -312,8 +324,6 @@ export default {
 
   .error-message-fixed{
     position: absolute;
-    width: 100%;
-    left: 0;
     bottom: -80px;
     display: flex;
     justify-content: center;
@@ -323,6 +333,18 @@ export default {
       width: 75%;
       border-radius: 32px;
       padding: 12px;
+    }
+
+    &.reason-err{
+      width: 100%;
+      left: 0;
+    }
+    &.reason-limit-err{
+      width: 580px;
+      left: -40px;
+    }
+    &.reason-limit-err .message-content{
+      width: 100%;
     }
   }
 </style>

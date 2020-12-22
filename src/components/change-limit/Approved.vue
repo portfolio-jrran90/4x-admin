@@ -829,7 +829,7 @@ export default {
       }
 
       // if query string object is passed it'll be appended, otherwise no changes
-      let url = `/api/users/getuserupdatecredit?status=1&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
+      let url = `/api/users/getuserupdatecredit?status=3&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
 
       // Limit display per page
       try {
@@ -837,8 +837,14 @@ export default {
         vm.users = usersPerPage.data
         console.log(vm.users);
         _.map(vm.users.data, async (value, index)  =>  {
-          value.otherDetails = await vm.getOtherDetails(value);
-          this.$forceUpdate();
+          if(value.user != null){
+            value.otherDetails = await vm.getOtherDetails(value);
+            this.$forceUpdate();
+          }else{
+            value.user = {
+              mobileNumber: 0
+            }
+          }
         })
         // if query string object is passed, load, otherwise, no changes
         if (queryStringObj!==undefined) {

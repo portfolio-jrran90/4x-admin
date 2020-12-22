@@ -575,8 +575,14 @@ export default {
         vm.users = usersPerPage.data
         console.log(vm.users);
         _.map(vm.users.data, async (value, index)  =>  {
-          value.otherDetails = await vm.getOtherDetails(value);
-          this.$forceUpdate();
+          if(value.user != null){
+            value.otherDetails = await vm.getOtherDetails(value);
+            this.$forceUpdate();
+          }else{
+            value.user = {
+              mobileNumber: 0
+            }
+          }
         })
         // if query string object is passed, load, otherwise, no changes
         if (queryStringObj!==undefined) {

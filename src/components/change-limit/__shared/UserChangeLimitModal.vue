@@ -314,7 +314,7 @@
               <div class="flex-4 mr-2 text-break">
                 <h5 class="mb-3 section-title"><b>Pengajuan Limit baru</b></h5>
                 <h2 class="submission-new-limits-text">
-                  {{ user.remainingCreditNew | currency }}
+                  {{ user.creditNew | currency }}
                 </h2>
               </div>
               <div class="flex-3">

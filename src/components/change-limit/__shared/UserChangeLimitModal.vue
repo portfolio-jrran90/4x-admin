@@ -263,7 +263,7 @@
             </div>
           </div>
         </div>
-        <div class="d-flex flex-1">
+        <div class="d-flex">
           <div class="d-flex flex-2 mr-3 ">
             <div class="flex-1 card shadow-sm mr-3 p-4 rounded-xl border-0 text-center mb-0">
               <h5 class="mb-4 section-title"><b>Score</b></h5>
@@ -536,12 +536,6 @@ export default {
   },
   async created() {
     let vm = this
-    vm.user.sideDetails = {}
-    vm.user.imageDocs = {
-      ktp: {},
-      slip: {}
-    }
-    vm.user.transactionDetails  = {};
     await vm.getOtherDetails()
     await vm.getAllTypeUserSalary();
     vm.getAFPI()
@@ -668,33 +662,6 @@ export default {
         .catch(err => {
           console.log(err.response)
         })
-
-      await vm.getTransactionDetails();
-      await vm.getSideDetails();
-    },
-    
-    /*
-    * getdetails for left side modal
-    *
-    */
-    async getSideDetails()  {
-      let vm = this
-      let url = `/api/users/getUserUpdateCreditDetail/${vm.user._id}`;
-      let result = await axios.get(url, vm.requestedHeaders);
-      console.log(result.data.data);
-      vm.user.sideDetails = result.data.data.information;
-      vm.user.imageDocs = result.data.data.docs;
-    },
-
-    /*
-    * get transactions values
-    *
-    */
-    async getTransactionDetails()  {
-      let vm = this
-      let url = `/api/approvedtransactions/getusertransaction/${vm.user.user._id}`;
-      let result = await axios.get(url, vm.requestedHeaders);
-      vm.user.transactionDetails = result.data.data;
     },
          
     /**

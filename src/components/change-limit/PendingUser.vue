@@ -29,7 +29,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <table class="table table-hover table-striped tbl-users">
+        <table class="table table-hover table-striped tbl-users mb-0">
           <thead>
             <tr>
               <th>Name</th>
@@ -74,7 +74,7 @@
           </tbody>
         </table>
 
-        <b-pagination
+        <!-- <b-pagination
           v-model="currentPage"
           :total-rows="users.total"
           :per-page="perPage"
@@ -88,8 +88,25 @@
           :per-page="perPage"
           size="sm"
           v-if="search.totalRows"
-        ></b-pagination>
+        ></b-pagination> -->
 
+        <div class="d-flex custom-pagination">
+          <div class="flex-1 d-flex total-results-div font-weight-bold">
+            <span class="mr-1">Terlihat</span>
+            <span class="mr-1">{{ pagiData.resultStart }}-{{ pagiData.resultEnd }}</span> 
+            <span class="mr-1">dari</span>
+            <span>{{ pagiData.overallTotal }}</span>
+          </div>
+          <div class="flex-1 d-flex page-item-div justify-content-end">
+            <div 
+              v-for="(list, index) in pagiData.totalPages" 
+              :key="list.index" 
+              class="item font-weight-bold" 
+              v-bind:class="{'active' : list == pagiData.currentPage}"
+              @click="selectPage(list)"
+            >{{ list }}</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -339,6 +356,13 @@ export default {
       allUsers: [],
       selectedStatus: '',
       isNotificationShow: {},
+      pagiData: {
+        resultStart: 0,
+        resultEnd: 0,
+        overallTotal: 0,
+        totalPages: 1,
+        currentPage: 1,
+      },
     }
   },
   watch: {
@@ -499,15 +523,14 @@ export default {
       }
 
       let skip
-      if (vm.currentPage == 1) {
+      if (vm.pagiData.currentPage == 1) {
         skip = 0
-      } else if (vm.currentPage == page) {
+      } else if (vm.pagiData.currentPage == page) {
         skip = (page - 1) * vm.perPage
       }
 
       // if query string object is passed it'll be appended, otherwise no changes
       let url = `/api/users/getuserupdatecredit?status=0&skip=${skip}&limit=${vm.perPage}${ (queryStringObj!==undefined)?`&${Object.keys(queryStringObj)}=${Object.values(queryStringObj)}`:'' }`
-      // let url = `/api/users/getuserupdatecredit?status=1&skip=0&limit=3000`;
 
       // Limit display per page
       try {
@@ -515,17 +538,27 @@ export default {
         console.log('usersPerPage', usersPerPage)
         vm.users = usersPerPage.data
 
+        vm.pagiData = {
+          resultStart: skip + 1,
+          resultEnd: skip + vm.users.data.length,
+          overallTotal: vm.users.total,
+          totalPages: Math.ceil(vm.users.total / vm.perPage),
+          currentPage: 1,
+        }
         
         _.map(vm.users.data, async (value, index)  =>  {
           if(value.user != null){
             value.otherDetails = await vm.getOtherDetails(value);
+            value.transactionDetails = await vm.getTransactionDetails(value);
+            let sideDetailsData = await vm.getSideDetails(value);
+            value.sideDetails = sideDetailsData.information;
+            value.imageDocs = sideDetailsData.docs;
             this.$forceUpdate();
           }else{
             value.user = {
               mobileNumber: 0
             }
           }
-          
         })
 
         // if query string object is passed, load, otherwise, no changes
@@ -539,6 +572,12 @@ export default {
         // vm.currentPage = oldPage
         vm.loader.has = false
       }
+    },
+
+    selectPage(page)  {
+      let vm = this
+      vm.pagiData.currentPage = page;
+      vm.showUsersPerPage(page);
     },
 
     async getAllUsers() {
@@ -841,7 +880,29 @@ export default {
         status: vm.selectedStatus
       };
       await vm.refreshData();
-    }
+    },
+
+    /*
+    * get transactions values
+    *
+    */
+    async getTransactionDetails(user)  {
+      let vm = this
+      let url = `/api/approvedtransactions/getusertransaction/${user.user._id}`;
+      let result = await axios.get(url, vm.requestedHeaders);
+      return result.data.data;
+    },
+
+    /*
+    * getdetails for left side modal
+    *
+    */
+    async getSideDetails(user)  {
+      let vm = this
+      let url = `/api/users/getUserUpdateCreditDetail/${user._id}`;
+      let result = await axios.get(url, vm.requestedHeaders);
+      return result.data.data;
+    },
   }
 };
 </script>
@@ -1281,5 +1342,23 @@ export default {
       }
     }
   }
+
+  .custom-pagination{
+    background: #FFF;
+    padding: 20px;
+
+    .page-item-div{
+      .item{
+        width: 25px;
+        text-align: center;
+        color: #393C8E;
+        cursor: pointer;
+        &.active{
+          color: #020D18;
+        }
+      }
+    }
+  }
+  
 </style>
 

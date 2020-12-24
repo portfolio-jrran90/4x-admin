@@ -2,31 +2,31 @@
   <div class="wrapper">
     <div class="sidebar" data-color="black">
       <div class="sidebar-wrapper">
-        <div class="logo">
-          <a href class="simple-text">
-            <img src="https://empatkali.co.id/assets/img/logo-final.png" alt="empatkali logo" style="width: 60px">
+        <div class="logo border-0">
+          <a href class="simple-text p-0">
+            <img :src="'../assets/img/EmpatKali_LG.png'" alt="empatkali logo" style="width: 60px">
           </a>
         </div>
-        <ul class="nav">
+        <ul class="nav mt-0">
 
           <router-link tag="li" :to="`/users`">
-            <a class="nav-link" href="#">
-              <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" />
-              <p>Users</p>
+            <a class="nav-link rounded-0" href="#">
+              <!-- <font-awesome-icon :icon="['far', 'user']" class="mr-2" size="lg" /> -->
+              <p class="font-weight-bold fs-14">Users</p>
             </a>
           </router-link>
 
           <router-link tag="li" :to="`/change-limit`">
-            <a class="nav-link" href="#">
-              <font-awesome-icon :icon="['fas', 'user-edit']" class="mr-2" size="lg" />
-              <p>Change Limit</p>
+            <a class="nav-link rounded-0" href="#">
+              <!-- <font-awesome-icon :icon="['fas', 'user-edit']" class="mr-2" size="lg" /> -->
+              <p class="font-weight-bold fs-14">Change Limit</p>
             </a>
           </router-link>
 
           <router-link tag="li" :to="{ name: 'merchant' }">
-            <a class="nav-link" href="#">
-              <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" />
-              <p>Merchants</p>
+            <a class="nav-link rounded-0" href="#">
+              <!-- <font-awesome-icon :icon="['fas', 'store']" class="mr-2" size="lg" /> -->
+              <p class="font-weight-bold fs-14">Merchants</p>
             </a>
           </router-link>
 
@@ -45,9 +45,9 @@
           </router-link> -->
 
           <router-link tag="li" :to="{ name: 'promotion' }">
-            <a class="nav-link" href="#">
-              <font-awesome-icon :icon="['fas', 'bullhorn']" class="mr-2" size="lg" />
-              <p>Promotions</p>
+            <a class="nav-link rounded-0" href="#">
+              <!-- <font-awesome-icon :icon="['fas', 'bullhorn']" class="mr-2" size="lg" /> -->
+              <p class="font-weight-bold fs-14">Promotions</p>
             </a>
           </router-link>
 
@@ -59,9 +59,9 @@
           </router-link> -->
 
           <router-link tag="li" :to="{ name: 'settings' }">
-            <a class="nav-link" href="#">
-              <font-awesome-icon icon="cog" class="mr-2" size="lg" />
-              <p>Settings</p>
+            <a class="nav-link rounded-0" href="#">
+              <!-- <font-awesome-icon icon="cog" class="mr-2" size="lg" /> -->
+              <p class="font-weight-bold fs-14">Settings</p>
             </a>
           </router-link>
 
@@ -69,9 +69,9 @@
       </div>
     </div>
     <div class="main-panel">
-      <nav class="navbar navbar-expand-lg" color-on-scroll="500">
+      <nav class="navbar navbar-expand-lg border-0" color-on-scroll="500">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#pablo">Admin Dashboard</a>
+          <a class="navbar-brand font-weight-bold" href="#pablo" style="color: #676E74;">Admin Dashboard</a>
           <button
             href
             class="navbar-toggler navbar-toggler-right"
@@ -88,15 +88,16 @@
           <div class="collapse navbar-collapse justify-content-end" id="navigation">
             <ul class="navbar-nav ml-auto">
               <li class="nav-item">
-                <a class="nav-link" href @click.prevent="logout()">
-                  <font-awesome-icon icon="sign-in-alt" class="mr-2" /> Log out
+                <a class="nav-link font-weight-bold" href @click.prevent="logout()" style="color: #676E74;">
+                  <!-- <font-awesome-icon icon="sign-in-alt" class="mr-2" />  -->
+                  Log out
                 </a>
               </li>
             </ul>
           </div>
         </div>
       </nav>
-      <div class="content">
+      <div class="content dynamic-body-content">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
@@ -207,3 +208,19 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .sidebar{
+    .nav-link{
+      p{
+
+      }
+    }
+  }
+  .dynamic-body-content{
+    padding: 20px;
+  }
+  .navbar{
+    box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.05);
+  }
+</style>

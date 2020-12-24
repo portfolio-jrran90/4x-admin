@@ -137,7 +137,7 @@ export default {
   async created() {
     let vm = this
     console.log(vm.user);
-    await vm.getUserTransactions(vm.user._id);
+    await vm.getUserTransactions(vm.user.user._id);
   },
   watch: {
 

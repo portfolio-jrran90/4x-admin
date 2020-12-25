@@ -5,7 +5,7 @@
     <h2>Approved Change Limit</h2>
     <h5>Total: {{ users.total ? users.total : 0 }}</h5>
 
-    <div class="alert alert-secondary">
+    <div class="alert alert-secondary border-0 rounded-0 search-bar">
       <form class="form-inline" @submit.prevent="searchFilterResult">
         <label class="my-1 mr-2" for="frmSearchFilter">
           <strong>Search by</strong>
@@ -81,7 +81,7 @@
           v-if="search.totalRows"
         ></b-pagination> -->
 
-        <div class="d-flex custom-pagination">
+        <div class="d-flex custom-pagination" v-bind:class="{'bg-gray' : users.data.length % 2 == 0}">
           <div class="flex-1 d-flex total-results-div font-weight-bold">
             <span class="mr-1">Terlihat</span>
             <span class="mr-1">{{ pagiData.resultStart }}-{{ pagiData.resultEnd }}</span> 
@@ -286,7 +286,9 @@ export default {
       limitOptionModal: false,
       modalShowViewTransactions: false,
       selectedLimitOption: 'Approve',
-      users: {},
+      users: {
+        data: []
+      },
       admins: {},
       inputCredit: 0,
       userDetails: {},
@@ -1207,6 +1209,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .search-bar{
+    background: #CDCFD1;
+  }
   .tbl-users {
     th:first-child,
     td:first-child {
@@ -1646,6 +1651,10 @@ export default {
   .custom-pagination{
     background: #FFF;
     padding: 20px;
+
+    &.bg-gray{
+      background: #F2F3F3;
+    }
 
     .page-item-div{
       .item{

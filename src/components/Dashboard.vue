@@ -217,6 +217,9 @@ export default {
       }
     }
   }
+  .main-panel{
+    
+  }
   .dynamic-body-content{
     padding: 20px;
   }

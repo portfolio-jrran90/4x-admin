@@ -325,8 +325,9 @@ export default {
   .error-message-fixed{
     position: absolute;
     bottom: -80px;
-    left: 0;
-    width: 100%;
+    left: -10%;
+    right: -10%;
+    // width: 100%;
     display: flex;
     justify-content: center;
 
@@ -337,16 +338,5 @@ export default {
       padding: 12px 22px 12px 12px;
     }
 
-    // &.reason-err{
-    //   width: 100%;
-    //   left: 0;
-    // }
-    // &.reason-limit-err{
-    //   width: 580px;
-    //   left: -40px;
-    // }
-    // &.reason-limit-err .message-content{
-    //   width: 100%;
-    // }
   }
 </style>

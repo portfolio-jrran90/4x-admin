@@ -70,8 +70,11 @@
           v-bind:class="{'green' : status != 'reject', 'red' : status == 'reject'}" 
           @click="approveOpt()"
         >
-          <b v-if="status != 'reject'">Approve</b>
-          <b v-if="status == 'reject'">Reject</b>
+          <span v-if="isSubmitClicked">
+            <font-awesome-icon :icon="['fas', 'spinner']" class="mr-2" size="lg" spin />
+          </span>
+          <b v-if="!isSubmitClicked && status != 'reject'">Approve</b>
+          <b v-if="!isSubmitClicked && status == 'reject'">Reject</b>
         </button>
       </div>
     </div>    
@@ -86,8 +89,7 @@
           <img :src="'../assets/img/red-circle-times.png'" class="w-40px" alt="">
         </div>
         <div class="flex-1 fs-18">
-          {{ isReasonErr && isLimitDropErr ? 'Kamu belum memilih Limit yang disetujui dan menulis alasan.' : 'Kamu belum memasukkan alasan' }}
-          
+          {{ errMessage }}
         </div>
       </div>
     </div>
@@ -123,6 +125,8 @@ export default {
       commentVal: '',
       isLimitDropErr: false,
       isReasonErr: false,
+      errMessage: '',
+      isSubmitClicked: false,
   	}
   },
   computed: {
@@ -163,19 +167,30 @@ export default {
         console.log(vm.dropVal);
         vm.isReasonErr = (vm.commentVal == '');
         vm.isLimitDropErr = (vm.dropVal == '');
-        if(vm.commentVal == '' || vm.dropVal == ''){
+        if(vm.commentVal == '' && vm.dropVal == ''){
+          vm.errMessage = 'Kamu belum memilih Limit yang disetujui dan menulis alasan.';
+          return false;
+        }
+        if(vm.dropVal == ''){
+          vm.errMessage = 'Kamu belum memilih Limit yang disetujui ';
+          return false;
+        }
+        if(vm.commentVal == ''){
+          vm.errMessage = 'Kamu belum memasukkan alasan';
           return false;
         }
       }
       if(vm.status == 'reject'){
         if(vm.commentVal == ''){
           vm.isLimitDropErr = true;
+          vm.errMessage = 'Kamu belum memasukkan alasan';
           return false;
         }
       }
 
       vm.isLimitDropErr = false;
       vm.isReasonErr = false;
+      vm.isSubmitClicked = true;
 
       let params  = {
         reqId: vm.user._id,
@@ -183,21 +198,28 @@ export default {
         nominal: vm.status == 'approve-limit' ? vm.dropVal : vm.user.creditNew,
         reason: vm.commentVal
       }
-      axios.put(`api/users/approvalupdatecredit`, params, vm.requestedHeaders)
-      .then(async function (response) {
-        console.log(response);
-        if (response.data.status) {
-          await vm.modalOptButton('close');
-          await vm.showNotificationPopUp();
-        }else{
-          vm.$swal.fire('Error!', response.data.message, 'error');
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-        console.log(error.response);
-        vm.$swal.fire('Error!', error.response.data.message, 'error');
-      })
+
+      setTimeout(async () => {
+        vm.isSubmitClicked = false;
+        await vm.modalOptButton('close');
+        await vm.showNotificationPopUp({ comment: vm.commentVal, date: new Date() });
+      }, 3000);
+      // axios.put(`api/users/approvalupdatecredit`, params, vm.requestedHeaders)
+      // .then(async function (response) {
+      //   console.log(response);
+      //   vm.isSubmitClicked = false;
+      //   if (response.data.status) {
+      //     await vm.modalOptButton('close');
+      //     await vm.showNotificationPopUp();
+      //   }else{
+      //     vm.$swal.fire('Error!', response.data.message, 'error');
+      //   }
+      // })
+      // .catch(function (error) {
+      //   console.log(error);
+      //   console.log(error.response);
+      //   vm.$swal.fire('Error!', error.response.data.message, 'error');
+      // })
       
     },
   }
@@ -312,6 +334,7 @@ export default {
       border-radius: 5px;
       padding: 12px 15px;
       opacity: 1;
+      min-width: 80px;
 
       &.green{
         background: #28B867;

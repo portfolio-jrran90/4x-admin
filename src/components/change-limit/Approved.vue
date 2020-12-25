@@ -187,7 +187,7 @@
               </div>
               <div class="flex-1 detail-value fs-14">
                 <!-- 14:59:09 WIB -->
-                {{ new Date( userDetails.updatedAt ) | moment("HH:MM:SS") + ' WIB' }}
+                {{ new Date( userDetails.updatedAt ) | moment("HH:mm:SS") + ' WIB' }}
               </div>
             </div>
           </div>
@@ -817,19 +817,21 @@ export default {
      */
     async totalUsers() {
       let vm = this
-        vm.showUsersPerPage(1) // initial
+        // vm.showUsersPerPage(1) // initial
 
-      // try {
-      //   let totalRows = await axios.get(`/api/users?status=1&limit=3000`, vm.requestedHeaders)
-      //   vm.totalUserRows = totalRows.data.length
-      //
-      //   vm.showUsersPerPage(1) // initial
-      //
-      // } catch (e) {
-      //   alert(e)
-      //   vm.currentPage = 1
-      //   vm.loader.has = false
-      // }
+      try {
+        let totalRows = await axios.get(`/api/users/getuserupdatecredit?status=3&limit=100000`, vm.requestedHeaders)
+        vm.totalUserRows = totalRows.data.total
+
+        console.log(totalRows);
+      
+        vm.showUsersPerPage(1) // initial
+      
+      } catch (e) {
+        alert(e)
+        vm.currentPage = 1
+        vm.loader.has = false
+      }
     },
 
     /**
@@ -867,9 +869,9 @@ export default {
         vm.pagiData = {
           resultStart: skip + 1,
           resultEnd: skip + vm.users.data.length,
-          overallTotal: vm.users.total,
-          totalPages: Math.ceil(vm.users.total / vm.perPage),
-          currentPage: 1,
+          overallTotal: vm.totalUserRows,
+          totalPages: Math.ceil(vm.totalUserRows / vm.perPage),
+          currentPage: page,
         }
 
         _.map(vm.users.data, async (value, index)  =>  {

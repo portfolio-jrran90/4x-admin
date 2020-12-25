@@ -111,7 +111,8 @@
     </div>
 
     <!-- Details Modal -->
-    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="99" title="Detail Pending Change Limit"
+    <b-modal v-model="modalUserShow" modal-class="modal-pending-steps" size="99" 
+      :title="modalTitle"
       no-close-on-esc
       no-close-on-backdrop
       hide-footer>
@@ -196,7 +197,7 @@
               </div>
               <div class="flex-1 detail-value fs-14">
                 <!-- 14:59:09 WIB -->
-                {{ new Date( userDetails.updatedAt ) | moment("HH:MM:SS") + ' WIB' }}
+                {{ new Date( userDetails.updatedAt ) | moment("HH:mm:SS") + ' WIB' }}
               </div>
             </div>
           </div>
@@ -365,6 +366,7 @@ export default {
         totalPages: 1,
         currentPage: 1,
       },
+      modalTitle: 'Detail Pending Change Limit',
     }
   },
   watch: {
@@ -498,7 +500,7 @@ export default {
 
       try {
         let totalRows = await axios.get(`/api/users/getuserupdatecredit?status=0&skip=0&limit=3000`, vm.requestedHeaders)
-        vm.totalUserRows = totalRows.data.length
+        vm.totalUserRows = totalRows.data.total
         vm.showUsersPerPage(1) // initial
 
       } catch (e) {
@@ -543,9 +545,9 @@ export default {
         vm.pagiData = {
           resultStart: skip + 1,
           resultEnd: skip + vm.users.data.length,
-          overallTotal: vm.users.total,
-          totalPages: Math.ceil(vm.users.total / vm.perPage),
-          currentPage: 1,
+          overallTotal: vm.totalUserRows,
+          totalPages: Math.ceil(vm.totalUserRows / vm.perPage),
+          currentPage: page,
         }
         
         _.map(vm.users.data, async (value, index)  =>  {
@@ -874,13 +876,21 @@ export default {
     /*
     *activateNotification Pop up
     */
-    async showNotificationPopUp() {
+    async showNotificationPopUp(params) {
       let vm = this;
       
       vm.isNotificationShow = {
         show: true,
         status: vm.selectedStatus
       };
+      if(vm.selectedStatus == 'reject'){
+        vm.modalTitle = 'Detail Rejected Change Limit';
+      }else{
+        vm.modalTitle = 'Detail Approved Change Limit';
+      }
+      vm.userDetails.reason = params.comment;
+      vm.userDetails.updatedAt = params.date;
+      console.log(vm.userDetails);
       await vm.refreshData();
     },
 

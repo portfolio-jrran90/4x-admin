@@ -59,7 +59,7 @@
               <td>{{ data.user.mobileNumber }}</td>
               <td>{{ data.user.credit | currency }}</td>
               <td>{{ data.creditNew | currency }}</td>
-              <td>{{ new Date(data.updatedAt) | moment("DD MMM YYYY HH:MM:SS") + ' WIB' }}</td>
+              <td>{{ new Date(data.updatedAt) | moment("DD MMM YYYY HH:mm:SS") + ' WIB' }}</td>
               <td class="text-center"> <button type="button" class="btn btn-blue-custom btn-sm" name="button" @click="openModalUserDetails(data, index)"> Detail </button> </td>
             </tr>
           </tbody>

@@ -199,27 +199,27 @@ export default {
         reason: vm.commentVal
       }
 
-      setTimeout(async () => {
-        vm.isSubmitClicked = false;
-        await vm.modalOptButton('close');
-        await vm.showNotificationPopUp({ comment: vm.commentVal, date: new Date() });
-      }, 3000);
-      // axios.put(`api/users/approvalupdatecredit`, params, vm.requestedHeaders)
-      // .then(async function (response) {
-      //   console.log(response);
+      // setTimeout(async () => {
       //   vm.isSubmitClicked = false;
-      //   if (response.data.status) {
-      //     await vm.modalOptButton('close');
-      //     await vm.showNotificationPopUp();
-      //   }else{
-      //     vm.$swal.fire('Error!', response.data.message, 'error');
-      //   }
-      // })
-      // .catch(function (error) {
-      //   console.log(error);
-      //   console.log(error.response);
-      //   vm.$swal.fire('Error!', error.response.data.message, 'error');
-      // })
+      //   await vm.modalOptButton('close');
+      //   await vm.showNotificationPopUp({ comment: vm.commentVal, date: new Date() });
+      // }, 3000);
+      axios.put(`api/users/approvalupdatecredit`, params, vm.requestedHeaders)
+      .then(async function (response) {
+        console.log(response);
+        vm.isSubmitClicked = false;
+        if (response.data.status) {
+          await vm.modalOptButton('close');
+          await vm.showNotificationPopUp({ comment: vm.commentVal, date: new Date() });
+        }else{
+          vm.$swal.fire('Error!', response.data.message, 'error');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        console.log(error.response);
+        vm.$swal.fire('Error!', error.response.data.message, 'error');
+      })
       
     },
   }

@@ -57,7 +57,7 @@
                   </select>
                 </div>
                 <div v-if="isEditInfoShow" class="item-div d-flex mb-1">
-                  <label>Pendudukan</label>
+                  <label>Pekerjaan</label>
                   <input v-if="isEditInfoShow" type="text" v-model="updateInfoData.occupation">
                 </div>
                 <div class="item-div d-flex mb-1">

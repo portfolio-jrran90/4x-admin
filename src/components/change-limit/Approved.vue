@@ -3,7 +3,7 @@
     <loader v-if="loader.has" :message="loader.message"></loader>
 
     <h2>Approved Change Limit</h2>
-    <h5>Total: {{ users.total ? users.total : 0 }}</h5>
+    <h5>Total: {{ totalUserRows }}</h5>
 
     <div class="alert alert-secondary border-0 rounded-0 search-bar">
       <form class="form-inline" @submit.prevent="searchFilterResult">

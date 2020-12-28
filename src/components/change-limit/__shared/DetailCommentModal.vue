@@ -22,7 +22,7 @@
                 <p class="flex-10 fs-16 user-name m-0" v-bind:class="{'text-right' : list.commentBy == adminUser.displayName, 'mr-2' : list.commentBy == adminUser.displayName}">
                   {{ list.commentBy }}
                 </p>
-                <span class="flex-3 fs-12 time-text" v-bind:class="{'text-right' : list.commentBy != adminUser.displayName}">{{ list.createdAt | moment('from', 'now') }}</span>
+                <span class="flex-4 fs-12 time-text" v-bind:class="{'text-right' : list.commentBy != adminUser.displayName}">{{ list.createdAt | moment('from', 'now') }}</span>
               </div>
               <div class="d-flex">
                 <div v-if="list.commentBy != adminUser.displayName" class="flex-1 mr-2"></div>

@@ -51,10 +51,10 @@
                     href="#" 
                     class="font-weight-bold text-blue-custom"
                   >
-                    {{ data.otherDetails ? data.otherDetails.detail.name : '---' }}
+                    {{ data.user.detail.name }}
                   </a>
                 </p>
-                <p class="m-0 custom-limitter d-inline-block">{{ data.otherDetails ? data.otherDetails.detail.email : '---'}}</p>
+                <p class="m-0 custom-limitter d-inline-block">{{ data.user.detail.email }}</p>
               </td>
               <td>{{ data.user.mobileNumber }}</td>
               <td>{{ data.user.credit | currency }}</td>
@@ -552,7 +552,7 @@ export default {
         
         _.map(vm.users.data, async (value, index)  =>  {
           if(value.user != null){
-            value.otherDetails = await vm.getOtherDetails(value);
+            value.otherDetails = await vm.getOtherDetails(value); 
             value.transactionDetails = await vm.getTransactionDetails(value);
             let sideDetailsData = await vm.getSideDetails(value);
             value.sideDetails = sideDetailsData.information;

@@ -49,7 +49,7 @@
                 <p class="mb-1">
                   <a 
                     href="#" 
-                    class="font-weight-bold text-blue-custom"
+                    class="font-weight-bold text-blue-custom text-decoration-none cursor-none"
                   >
                     {{ data.user.detail.name }}
                   </a>

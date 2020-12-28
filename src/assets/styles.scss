@@ -111,3 +111,9 @@
 	&-12{ flex: 12; }
 	&-13{ flex: 13; }
 }
+
+.cursor{
+	&-none{
+		cursor: initial;
+	}
+}

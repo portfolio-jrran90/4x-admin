@@ -129,7 +129,7 @@
                   <input v-if="isEditInfoShow" type="date" v-model="updateInfoData.expiryDate">
                 </div>
               </div>
-              <div v-if="!isEditInfoShow " class="d-flex mt-4">
+              <div v-if="!isEditInfoShow && user.status == 0" class="d-flex mt-4">
                 <div class="flex-1"></div>
                 <div class="flex-1 text-right">
                   <button class="btn btn-submit" @click="toggleEditInfo(true)">Edit</button>

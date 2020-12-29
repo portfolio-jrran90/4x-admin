@@ -106,6 +106,7 @@
         :viewCommentModal="viewCommentModal" 
         :toggleTransactionsModal="toggleTransactionsModal"
         :isNotificationShow="isNotificationShow"
+        :toggleLoading="toggleLoading"
         status="pending"/>
       <div class="d-flex mt-4 custom-box-shadow modal-footer-custom">
         <div class="flex-1">
@@ -903,6 +904,11 @@ export default {
       let result = await axios.get(url, vm.requestedHeaders);
       return result.data.data;
     },
+
+    toggleLoading(opt) {
+      let vm = this
+      vm.loader.has = opt;
+    }
   }
 };
 </script>

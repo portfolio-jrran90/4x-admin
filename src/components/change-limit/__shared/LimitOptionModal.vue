@@ -122,6 +122,7 @@ export default {
         }
       },
       dropVal: '',
+      dropData: '',
       commentVal: '',
       isLimitDropErr: false,
       isReasonErr: false,
@@ -157,6 +158,7 @@ export default {
     },
     selectDrop(opt)  {
       let vm = this
+      vm.dropData = opt;
       vm.dropVal = 'Rp ' + opt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00'
     },
     approveOpt()  {
@@ -195,7 +197,7 @@ export default {
       let params  = {
         reqId: vm.user._id,
         approve:  vm.status == 'reject' ? 0 : 1,
-        nominal: vm.status == 'approve-limit' ? vm.dropVal : vm.user.creditNew,
+        nominal: vm.status == 'approve-limit' ? vm.dropData : vm.user.creditNew,
         reason: vm.commentVal
       }
 

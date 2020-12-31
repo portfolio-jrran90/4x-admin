@@ -61,7 +61,12 @@
               <td class="text-center"> <button type="button" class="btn btn-blue-custom btn-sm" name="button" @click="openModalUserDetails(data, index)"> Detail </button> </td>
             </tr>
             <tr v-if="users.total==0">
-              <td colspan="7">No data found!</td>
+              <td colspan="6" class="p-0">
+                <div class="no-search-div w-100 bg-white text-center p-4">
+                  <img :src="'../assets/img/no data results.png'" class="mb-3" alt="" style="width: 270px;">
+                  <p class="fs-20 my-4">Pencarian kamu tidak ditemukan</p>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>

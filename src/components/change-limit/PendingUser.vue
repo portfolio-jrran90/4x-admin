@@ -41,7 +41,14 @@
             </tr>
           </thead>
           <tbody v-if="users.total===0">
-            <tr><td colspan="4">No data found!</td></tr>
+            <tr>
+              <td colspan="6" class="p-0">
+                <div class="no-search-div w-100 bg-white text-center p-4">
+                  <img :src="'../assets/img/no data results.png'" class="mb-3" alt="" style="width: 270px;">
+                  <p class="fs-20 my-4">Pencarian kamu tidak ditemukan</p>
+                </div>
+              </td>
+            </tr>
           </tbody>
           <tbody v-else>
             <tr v-for="(data, index) in users.data">

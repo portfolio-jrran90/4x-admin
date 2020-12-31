@@ -41,7 +41,7 @@
             </tr>
           </thead>
           <tbody v-if="users.total===0">
-            <tr><td colspan="4">No record found!</td></tr>
+            <tr><td colspan="4">No data found!</td></tr>
           </tbody>
           <tbody v-else>
             <tr v-for="(data, index) in users.data">
@@ -49,12 +49,12 @@
                 <p class="mb-1">
                   <a 
                     href="#" 
-                    class="font-weight-bold text-blue-custom"
+                    class="font-weight-bold text-blue-custom text-decoration-none cursor-none"
                   >
-                    {{ data.otherDetails ? data.otherDetails.detail.name : '---' }}
+                    {{ data.user.detail.name }}
                   </a>
                 </p>
-                <p class="m-0 custom-limitter d-inline-block">{{ data.otherDetails ? data.otherDetails.detail.email : '---'}}</p>
+                <p class="m-0 custom-limitter d-inline-block">{{ data.user.detail.email }}</p>
               </td>
               <td>{{ data.user.mobileNumber }}</td>
               <td>{{ data.user.credit | currency }}</td>
@@ -65,23 +65,7 @@
           </tbody>
         </table>
 
-        <!-- <b-pagination
-          v-model="currentPage"
-          :total-rows="users.total"
-          :per-page="perPage"
-          size="sm"
-          v-if="!search.totalRows && users.total!==0"
-        ></b-pagination>
-
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="search.totalRows"
-          :per-page="perPage"
-          size="sm"
-          v-if="search.totalRows"
-        ></b-pagination> -->
-
-        <div class="d-flex custom-pagination" v-bind:class="{'bg-gray' : users.data.length % 2 == 0}">
+        <div v-if="!isSearchActive && users.total > 0" class="d-flex custom-pagination" v-bind:class="{'bg-gray' : users.data.length % 2 == 0}">
           <div class="flex-1 d-flex total-results-div font-weight-bold">
             <span class="mr-1">Terlihat</span>
             <span class="mr-1">{{ pagiData.resultStart }}-{{ pagiData.resultEnd }}</span> 
@@ -111,6 +95,7 @@
         :viewCommentModal="viewCommentModal" 
         :toggleTransactionsModal="toggleTransactionsModal"
         :isNotificationShow="isNotificationShow"
+        :toggleLoading="toggleLoading"
         status="approved"/>
       <div class="d-flex mt-4 custom-box-shadow modal-footer-custom">
         <div class="flex-1">
@@ -356,6 +341,7 @@ export default {
         totalPages: 1,
         currentPage: 1,
       },
+      isSearchActive: false,
     }
   },
   watch: {
@@ -1096,6 +1082,7 @@ export default {
 
       let searchFilterObj = {}
       searchFilterObj[vm.search.filterBy] = sanitizeQuery
+      vm.isSearchActive = true;
       vm.showUsersPerPage(1, searchFilterObj)
     },
 
@@ -1108,6 +1095,7 @@ export default {
       let vm = this
       delete vm.search.totalRows
       vm.search.showResult = false
+      vm.isSearchActive = false;
       vm.search.query = ''
       vm.showUsersPerPage(1)
     },
@@ -1206,6 +1194,11 @@ export default {
       let result = await axios.get(url, vm.requestedHeaders);
       return result.data.data;
     },
+
+    toggleLoading(opt) {
+      let vm = this
+      vm.loader.has = opt;
+    }
   }
 };
 </script>

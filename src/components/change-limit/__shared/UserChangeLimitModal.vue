@@ -460,6 +460,9 @@ export default {
     },
     isNotificationShow: {
       type: Object
+    },
+    toggleLoading:  {
+      type: Function 
     }
   },
   data() {
@@ -726,7 +729,9 @@ export default {
     * Toggle Edit info inputs
     */
     toggleEditInfo(opt) {
+      
       let vm = this
+      console.log(vm.user);
       vm.isEditInfoShow = opt;
       vm.updateInfoData = {};
       if(opt == true){
@@ -756,9 +761,9 @@ export default {
         city: vm.updateInfoData.city,
         ktp: vm.updateInfoData.idNumber,
         bloodType: vm.updateInfoData.bloodType,
-        birthPlaceBirthday: vm.updateInfoData.birthPlace + ', ' + this.$moment(vm.updateInfoData.dob).format('MM-DD-YYYY'),
+        birthPlaceBirthday: vm.updateInfoData.birthPlace + ', ' + this.$moment(vm.updateInfoData.dob).format('DD-MM-YYYY'),
         religion: vm.updateInfoData.religion,
-        expiryDate: this.$moment(vm.updateInfoData.expiryDate).format('MM-DD-YYYY'),
+        expiryDate: this.$moment(vm.updateInfoData.expiryDate).format('DD-MM-YYYY'),
         rtrw: vm.updateInfoData.rtrw,
         province: vm.updateInfoData.province,
         nationality: vm.updateInfoData.nationality,
@@ -767,13 +772,13 @@ export default {
         village: vm.updateInfoData.village,
         maritalStatus: vm.updateInfoData.maritalStatus
       }
-
+      vm.toggleLoading(true);
       await axios.put(`api/users/updateocr`, params, vm.requestedHeaders)
       .then(async function (response) {
         console.log(response);
         if (response.data.status) {
           vm.isEditInfoShow = false;
-          vm.getSideDetails();
+          await vm.getSideDetails();
           vm.$swal.fire('Success!', response.data.message, 'success');
         }else{
           vm.$swal.fire('Error!', response.data.message, 'error');
@@ -836,7 +841,21 @@ export default {
       // }
       return true;
       
-    }
+    },
+
+    /*
+    * getdetails for left side modal
+    *
+    */
+    async getSideDetails()  {
+      let vm = this
+      let url = `/api/users/getUserUpdateCreditDetail/${vm.user._id}`;
+      let result = await axios.get(url, vm.requestedHeaders);
+      // return result.data.data;
+      vm.user.sideDetails = result.data.data.information;
+      vm.user.imageDocs = result.data.data.docs;
+      vm.toggleLoading(false);
+    },
     
   }
 }

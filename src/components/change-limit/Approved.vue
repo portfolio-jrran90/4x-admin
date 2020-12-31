@@ -40,8 +40,8 @@
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody v-else>
-            <tr v-for="(data, index) in users.data">
+          <tbody>
+            <tr v-for="(data, index) in users.data" :key="data.index">
               <td>
                 <p class="mb-1">
                   <a 

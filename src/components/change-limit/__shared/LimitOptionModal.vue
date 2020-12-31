@@ -31,11 +31,11 @@
             toggle-class="btn-limit-drop"
             no-caret
           >
-            <b-dropdown-item href="#" @click="selectDrop('1000000')" :disabled="user.creditNew == '1000000'">Rp1.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('2000000')" :disabled="user.creditNew == '2000000'">Rp2.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('3000000')" :disabled="user.creditNew == '3000000'">Rp3.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('4000000')" :disabled="user.creditNew == '4000000'">Rp4.000.000</b-dropdown-item>
-            <b-dropdown-item href="#" @click="selectDrop('5000000')" :disabled="user.creditNew == '5000000'">Rp5.000.000</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('1000000')" :disabled="user.user.credit == '1000000'">Rp 1.000.000,00</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('2000000')" :disabled="user.user.credit == '2000000'">Rp 2.000.000,00</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('3000000')" :disabled="user.user.credit == '3000000'">Rp 3.000.000,00</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('4000000')" :disabled="user.user.credit == '4000000'">Rp 4.000.000,00</b-dropdown-item>
+            <b-dropdown-item href="#" @click="selectDrop('5000000')" :disabled="user.user.credit == '5000000'">Rp 5.000.000,00</b-dropdown-item>
           </b-dropdown>
         </div>
       </div>
@@ -157,7 +157,7 @@ export default {
     },
     selectDrop(opt)  {
       let vm = this
-      vm.dropVal = opt;
+      vm.dropVal = 'Rp ' + opt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',00'
     },
     approveOpt()  {
       let vm = this
@@ -238,7 +238,7 @@ export default {
       color: #333 !important;
       padding-top: 0;
       padding-left: 0;
-      width: 135px;
+      width: 145px;
       text-align: left;
       outline: none;
       box-shadow: none !important;

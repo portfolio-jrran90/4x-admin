@@ -4,7 +4,8 @@
       <div class="col col-md-4">
         <div class="card mt-5">
           <div class="card-header text-center">
-            <img src="https://empatkali.co.id/assets/img/logo-final.png" alt="empatkali logo" style="width: 50px" class="mb-2">
+            <!-- <img src="https://empatkali.co.id/assets/img/logo-final.png" alt="empatkali logo" style="width: 50px" class="mb-2"> -->
+            <img :src="'../assets/img/EmpatKali_LG.png'" alt="empatkali logo" style="width: 50px" class="mb-2">
             <h3 class="mb-0">Login</h3>
           </div>
           <div class="card-body">

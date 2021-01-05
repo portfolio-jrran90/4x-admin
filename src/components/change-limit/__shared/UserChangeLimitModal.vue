@@ -795,23 +795,23 @@ export default {
       let vm = this
       let errCtr = 0;
       let requiredKeys  = [
-        { name: 'Occupation', key: 'occupation' },
+        // { name: 'Occupation', key: 'occupation' },
         { name: 'Alamat', key: 'address' },
-        { name: 'Jenis Kelamin', key: 'gender' },
+        // { name: 'Jenis Kelamin', key: 'gender' },
         { name: 'Kota', key: 'city' },
-        { name: 'NIK', key: 'idNumber' },
-        { name: 'Golongan Darah', key: 'bloodType' },
-        { name: 'Tempat', key: 'birthPlace' },
-        { name: 'Tgl Lahir', key: 'dob' },
-        { name: 'Agama', key: 'religion' },
-        { name: 'Tanggal Kadaluarsa', key: 'expiryDate' },
+        // { name: 'NIK', key: 'idNumber' },
+        // { name: 'Golongan Darah', key: 'bloodType' },
+        // { name: 'Tempat', key: 'birthPlace' },
+        // { name: 'Tgl Lahir', key: 'dob' },
+        // { name: 'Agama', key: 'religion' },
+        // { name: 'Tanggal Kadaluarsa', key: 'expiryDate' },
         { name: 'RT/RW', key: 'rtrw' },
         { name: 'Propinsi', key: 'province' },
-        { name: 'Kewarganegaraan', key: 'nationality' },
+        // { name: 'Kewarganegaraan', key: 'nationality' },
         { name: 'Kecamatan', key: 'district' },
-        { name: 'Name', key: 'name' },
+        // { name: 'Name', key: 'name' },
         { name: 'Kelurahan', key: 'village' },
-        { name: 'Status Pernikahan', key: 'maritalStatus' },
+        // { name: 'Status Pernikahan', key: 'maritalStatus' },
       ];
       let errorKeys = [];
 

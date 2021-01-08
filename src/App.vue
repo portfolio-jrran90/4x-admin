@@ -1,17 +1,5 @@
 <template>
-    <div>
-        <div v-if="$auth.ready()">
-            <router-view></router-view>
-        </div>
-
-        <div v-if="!$auth.ready()">
-            Loading...
-        </div>
-    </div>
+  <div id="app">
+    <router-view/>
+  </div>
 </template>
-
-<script>
-
-export default {
-}
-</script>

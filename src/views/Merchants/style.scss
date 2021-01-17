@@ -1,0 +1,11 @@
+.merchants-container{
+  .merchants-content{
+    max-height: calc(100vh - 70px);
+
+    .tbl-merchant{
+      tbody tr:nth-child(odd) td{
+        background-color: #eee;
+      }
+    }
+  }
+}

@@ -4,6 +4,8 @@
 @tailwind utilities;
 
 @import "./card.scss";
+@import "./form.scss";
+@import "./modal.scss";
 
 html {
   box-sizing: border-box;
@@ -44,6 +46,13 @@ html,body{
   /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
   /* background-color: #f0f0f0; */
   background-color: transparent;
+}
+
+button:focus{
+  outline: none;
+}
+img{
+  display: initial !important;
 }
 
 .ff-thin{

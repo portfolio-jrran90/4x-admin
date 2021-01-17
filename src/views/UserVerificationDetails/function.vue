@@ -1,6 +1,6 @@
 <script>
 	// import axios from 'axios'
-	var UserVerificatonDetails = {
+	var UserVerificationDetails = {
 		data() {
 			return {
 				
@@ -12,5 +12,5 @@
       
     }
 	}
-	export default UserVerificatonDetails
+	export default UserVerificationDetails
 </script>

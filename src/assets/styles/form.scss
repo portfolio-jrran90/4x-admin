@@ -1,3 +1,10 @@
+.input-div input,
+.input-div select,
+.input-div textarea{
+  @apply border rounded-md px-3 py-2 w-full border-gray-400 text-gray-700;
+}
+
+
 input{
 
 }

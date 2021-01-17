@@ -1,0 +1,10 @@
+.verification-details-container{
+  max-height: calc(100vh - 70px);
+
+  .primary-text-size{
+    @apply text-sm;
+  }
+  .secondary-text-size{
+    @apply text-xs;
+  }
+}

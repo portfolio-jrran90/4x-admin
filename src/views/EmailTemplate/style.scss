@@ -1,0 +1,11 @@
+.email-template-container{
+  .email-template-content{
+    max-height: calc(100vh - 70px);
+
+    .template-content{
+      img{
+        display: initial !important;
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 <template>
 	<div class="users-list-container">
-		
+		<Loader v-if="loader.isShow" :message="loader.message"/>
+		<Header/>
 	</div>
 </template>
 

@@ -6,32 +6,35 @@
 			}
 		},
 		created() {
-			this.initializeListeners();
+			this.initializeShowHideListener();
 		},
 		methods: {
 			/*
-			 * For Event Listeners
+			 * For ShowHide Toggle Event Listeners
 			 */
-      initializeListeners()	{
+      initializeShowHideListener()	{
 				let vm = this
-				window.addEventListener("click",function(e){
-					
+				document.addEventListener("click",function(e){
 					if(vm.isShowUserChildMenu){
 						var el = e.target;
-						var parentSelector = document.getElementsByClassName('parent-toggle')[0];
+						var parentSelector = document.getElementsByClassName('sidemenu-user-toggle')[0];
 						if (parentSelector === undefined) {
 							parentSelector = document;
 						}
 						var p = el.parentNode;
 						var parentMatch = false;
-						while (p !== parentSelector) {
-							var o = p;
-							if(o == null){
-								break;
-							}
-							p = o.parentNode;
-							if(p == parentSelector){
-								parentMatch = true;
+						if(p == parentSelector){
+							parentMatch = true;
+						}else{
+							while (p !== parentSelector) {
+								var o = p;
+								if(o == null){
+									break;
+								}
+								p = o.parentNode;
+								if(p == parentSelector){
+									parentMatch = true;
+								}
 							}
 						}
 						vm.isShowUserChildMenu = parentMatch;

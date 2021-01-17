@@ -2,6 +2,9 @@
 	
 	// import axios from 'axios'
 	var Loader = {
+		props:	{
+			message: String
+		},
 		data() {
 			return {
 			}

@@ -1,0 +1,9 @@
+.modal-wrapper{
+  @apply shadow-none rounded-md py-4 px-2;
+}
+.modal-wrapper .vm-titlebar{
+  @apply border-0;
+}
+.modal-wrapper .vm-btn-close{
+  @apply outline-none;
+}

@@ -9,7 +9,7 @@
 
 		<div class="sidemenu-items">
 
-			<div class="menu-item flex items-center px-4 py-5 cursor-pointer rounded-xl bg-sidemenuActiveColor">
+			<div class="menu-item flex items-center px-4 py-5 cursor-pointer rounded-xl">
 				<div class="icon-container w-7 mr-3">
 					<img :src="'../assets/img/dashboard.png'" class="w-full" alt="">
 				</div>
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 
-			<div class="menu-item-w-child parent-toggle">
+			<div class="menu-item-w-child sidemenu-user-toggle">
 				<div @click="isShowUserChildMenu = isShowUserChildMenu ? false : true" class="menu-item flex items-center px-4 py-5 cursor-pointer rounded-xl">
 					<div class="icon-container w-7 mr-3">
 						<img :src="'../assets/img/users.png'" class="w-full" alt="">
@@ -59,24 +59,39 @@
 				</div>
 			</div>
 
-			<div class="menu-item flex items-center px-4 py-5 cursor-pointer rounded-xl">
-				<div class="icon-container w-7 mr-3">
-					<img :src="'../assets/img/change-limit.png'" class="w-full" alt="">
+			<router-link 
+				:to="{ name: 'Change Limit'}" 
+				class="w-full rounded-xl inline-block"
+				v-bind:class="{
+					'bg-sidemenuActiveColor' : $route.name == 'Change Limit'
+				}"
+			>
+				<div class="menu-item flex items-center px-4 py-5">
+					<div class="icon-container w-7 mr-3">
+						<img :src="'../assets/img/change-limit.png'" class="w-full" alt="">
+					</div>
+					<div class="flex-1">
+						<p class="text-md ff-medium font-bold">Change Limit</p>
+					</div>
 				</div>
-				<div class="flex-1">
-					<p class="text-md ff-medium font-bold">Change Limit</p>
-				</div>
-			</div>
+			</router-link>
 
-			<div class="menu-item flex items-center px-4 py-5 cursor-pointer rounded-xl">
-				<div class="icon-container w-7 mr-3">
-					<img :src="'../assets/img/settings.png'" class="w-full" alt="">
+			<router-link 
+				:to="{ name: 'Settings'}" 
+				class="w-full rounded-xl inline-block"
+				v-bind:class="{
+					'bg-sidemenuActiveColor' : $route.name == 'Email Template'
+				}"
+			>
+				<div class="menu-item flex items-center px-4 py-5">
+					<div class="icon-container w-7 mr-3">
+						<img :src="'../assets/img/settings.png'" class="w-full" alt="">
+					</div>
+					<div class="flex-1">
+						<p class="text-md ff-medium font-bold">Settings</p>
+					</div>
 				</div>
-				<div class="flex-1">
-					<p class="text-md ff-medium font-bold">Settings</p>
-				</div>
-			</div>
-			
+			</router-link>
 
 		</div>
 	</div>

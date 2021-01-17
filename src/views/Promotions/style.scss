@@ -1,0 +1,20 @@
+.promotions-container{
+  .promotions-content{
+    max-height: calc(100vh - 70px);
+  
+    .tbl-detail{
+      // background-color: #343a40;
+      border-color: #454d55;
+      td{
+        border-color: #454d55;
+        border-width: 1px;
+      }
+      td:first-child{
+        width: 30%;
+      }
+      .text-info{
+        color: #17a2b8!important;
+      }
+    }
+  }
+}

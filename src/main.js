@@ -5,6 +5,12 @@ import VueMoment from 'vue-moment';
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
 // import $ from 'jquery'; 
+// Viewer
+import Viewer from 'v-viewer'
+import VueModal from '@kouts/vue-modal';
+import VeeValidate from 'vee-validate';
+import './filters/index'
+
 
 
 /*  
@@ -15,6 +21,16 @@ import lodash from 'lodash'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { 
   faHome,
+  faTimes,
+  faCheck,
+  faUserFriends,
+  faEnvelope,
+  faCoins,
+  faAngleRight,
+  faPlusSquare,
+  faEdit,
+  faTrashAlt,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons'
 import { 
   faTwitter,
@@ -27,6 +43,16 @@ library.add(
   faTwitter,
   faLinkedin,
   faFacebookSquare,
+  faTimes,
+  faCheck,
+  faUserFriends,
+  faEnvelope,
+  faCoins,
+  faAngleRight,
+  faPlusSquare,
+  faEdit,
+  faTrashAlt,
+  faPlus,
 )
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
@@ -40,8 +66,11 @@ import router from './router';
 
 // import 'v-calendar/lib/v-calendar.min.css';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import '@kouts/vue-modal/dist/vue-modal.css';
+import 'viewerjs/dist/viewer.css'
 import './assets/styles/font.css';
 import './assets/styles/index.css';
+
 
 
 
@@ -57,57 +86,10 @@ Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 Vue.use(VCalendar);
 Vue.use(VueSweetalert2,options);
 Vue.use(VueMoment);
-
-Vue.directive('hide-on-click-outside', {
-  bind(el, binding, vnode){
-    // $("body").click(function (e) {
-    //   if ($(e.target).parents(".per-page-pagination").length === 0) {
-    //     $(".per_page").hide();
-    //   }
-    // });
-    console.log(el);
-    console.log(binding);
-    console.log(vnode);
-    window.addEventListener("click",function(e){
-      console.log(e);
-      console.log(e.target);
-      console.log(el);
-      console.log(binding.value);
-      // console.log(document.querySelector('div.user-menu-item'));
-      // console.log(document.querySelector(e).closest(binding.value));
-      // if (e.target.parents(el.value).length === 0){
-      //   // Clicked in box
-      //   console.log('out');
-      // }else{
-      //   console.log('in');
-      // }
-      const parents = getParents(e.target, el);
-      console.log(parents);
-      [0].style.visibility = 'hidden'
-    });
-
-    function getParents(el, parentSelector) {
-      if (parentSelector === undefined) {
-        parentSelector = document;
-      }
-      var p = el.parentNode;
-      var parentMatch = false;
-      while (p !== parentSelector) {
-        var o = p;
-        if(o == null){
-          break;
-        }
-        p = o.parentNode;
-        if(p == parentSelector){
-          console.log('MATCH');
-          parentMatch = true;
-        }
-      }
-      return parentMatch;
-    }
-  }
-})
-
+Vue.use(Viewer)
+Vue.use(VueModal)
+Vue.component('Modal', VueModal);
+Vue.use(VeeValidate)
 
 
 Vue.config.productionTip = false;

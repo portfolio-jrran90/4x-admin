@@ -6,7 +6,7 @@
 		<div class="main-content h-full">
 			<div class="flex h-full">
 				<Sidemenu v-if="$route.name != 'UserVerificatonDetails'"/>
-				<div class="flex-1">
+				<div class="flex-1 h-full" >
 					<router-view></router-view>
 				</div>
 			</div>
